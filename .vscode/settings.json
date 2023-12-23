@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/feb9a9ca-2f83-434a-9c8f-d11ccab76f74/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/PepbandWeb",
+    "appService.deploySubpath": "."
+}
