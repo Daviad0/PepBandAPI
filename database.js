@@ -129,6 +129,10 @@ class Database {
         return this.query("SELECT * FROM events WHERE eid = " + eid)
     }
 
+    getEvent_concurrency(concurrency){
+        return this.query("SELECT * FROM events WHERE concurrency = " + concurrency)
+    }
+
     getEvents(){
         return this.query("SELECT * FROM events")
     }
