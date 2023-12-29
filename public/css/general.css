@@ -1,0 +1,106 @@
+*{
+    font-family: 'Lexend Deca', sans-serif;
+}
+
+span{
+    display: block;
+}
+
+
+.header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height:50px;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+}
+
+
+
+.header .logo{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 120px;
+    filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.5));
+    -webkit-filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.5));
+}
+
+.header .content{
+    margin-left:120px;
+}
+
+.header .option{
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 10px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.5s ease all;
+    text-decoration: none;
+}
+
+.header .option:hover{
+    background-color: rgba(0,0,0,0.2);
+}
+
+.header .account-dot{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    border: 4px solid #ffcd00;
+    border-radius: 50%;
+    transform: translate(20%, -20%);
+    box-shadow: 4px 2px 5px rgba(0,0,0,0.5);
+}
+
+.mainbody{
+    margin-top:60px;
+    width: 100%;
+}
+
+
+.fill{
+    width: 100%;
+    height: 100%;
+}
+
+
+.account-dot span{
+    font-size:60px;
+    color: #ffcd00;
+}
+
+.footer{
+    position: fixed;
+    bottom: 10px;
+    right: 5px;
+}
+
+.footer .item{
+    padding: 6px 12px;
+    border-radius: 32px;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0px 5px;
+}
+
+
+
+.flex{
+    display: flex;
+}
+.center{
+    justify-content: center;
+    align-items: center;
+}
+.apart{
+    justify-content: space-between;
+    align-items: center;
+}

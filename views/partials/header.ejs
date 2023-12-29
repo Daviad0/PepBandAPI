@@ -1,0 +1,25 @@
+<nav class="header color-header flex center">
+    <img class="logo" src="/images/pepband.png" alt="Pep Band Logo">
+    <div class="fill flex apart">
+        <div class="content flex center">
+            <a href="events" class="option">Events</a>
+        </div>
+        <div class="content flex center">
+            
+            
+            
+            <% if(user) { %>
+                <a href="/account" class="option">Account</a>
+                <div style="width:65px;height:10px"></div>
+                
+            <% } else { %>
+                <a href="/account/authenticate" class="option">Log In</a>
+            <% } %>
+        </div>
+    </div>
+    <% if(user) { %>
+        <div class="account-dot flex center">
+            <span class="material-symbols-rounded">local_fire_department</span>
+        </div>
+    <% } %>
+</nav>

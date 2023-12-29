@@ -13,6 +13,7 @@ var cas = new CASAuthentication({
     is_dev_mode     : true,
     dev_mode_user   : 'djreeves',
     dev_mode_info   : {
+        displayName: 'David Reeves',
         uid: 1313131
     },
     session_name    : 'cas_user',

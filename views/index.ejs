@@ -2,13 +2,24 @@
 <html>
   <head>
     <title>Pep Band</title>
+    <%- include('./partials/links.ejs'); %>
   </head>
   <body>
-    <% if(!user) { %>
-    <h1>Not Logged In</h1>
-    <% } else { %>
-    <h1>Logged In</h1>
-    <p>Welcome, <%= user.full_name %></p>
-    <% } %>
+    <%- include('./partials/header.ejs'); %>
+    <div class="mainbody">
+        <div class="flex center">
+            <div>
+                <% if(!user) { %>
+                    <h1>Not Logged In</h1>
+                    <% } else { %>
+                    <h1>Logged In</h1>
+                    <p>Welcome, <%= user.full_name %></p>
+                    <% } %>
+            </div>
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
   </body>
 </html>

@@ -1,0 +1,11 @@
+.color-header{
+    background-color: #ffcd00 !important;
+}
+
+.header .account-dot{
+    background-color: white;
+}
+.footer .item{
+    background-color: #666666;
+    color: white;
+}
