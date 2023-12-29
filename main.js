@@ -46,10 +46,9 @@ app.use((req, res, next) => {
 
 app.use("/account", require('./routes/account.js')(db));
 app.use("/event", require('./routes/event.js')(db));
+app.use("/", require('./routes/index.js')(db));
 
-app.get("/", (req, res) => {
-    res.send(req.session);
-})
+app.set("view engine", "ejs");
 
 
 app.listen(port, () => {

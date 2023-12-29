@@ -17,6 +17,8 @@ class Database {
         this.name = name
         this.port = port
 
+        this.configCache = [];
+
         mssql.connect(`Server=${this.link},${this.port};Initial Catalog=${this.name};Persist Security Info=False;User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;`)
 
 
@@ -47,6 +49,28 @@ class Database {
         });
     }
 
+    /**
+     * Check access based on property name that would go into config (what permission level should be granted)
+     */
+
+    async checkAccess(permission_name, role){
+
+        if(!role) return false;
+
+        let permission = role.permission;
+        let config_uniq_name = "permission_" + permission_name;
+        let config = await this.getConfigProperty_uniq_name(config_uniq_name);
+
+        if(config.data.length == 0) return false;
+
+        try{
+            let config_value = parseInt(config.data[0].value);
+            return permission >= config_value;
+        }catch(e){
+            return false;
+        }
+    }
+
 
     /**
      * Custom SQL queries based off of database schema to GET
@@ -54,6 +78,46 @@ class Database {
 
     getConfig(){
         return this.query("SELECT * FROM config")
+    }
+
+    setConfig(uniq_name, name, value, uid, type){
+        
+        let existing_config = this.configProperty_uniq_name(uniq_name)
+
+        if(existing_config.success && existing_config.data.length > 0){
+
+            if(name == null) name = existing_config.data[0].name
+            if(value == null) value = existing_config.data[0].value
+            if(uid == null) uid = -1
+            if(type == null) type = existing_config.data[0].type
+
+
+            // config exists
+            let query = "UPDATE config SET name = '" + name + "', value = '" + value + "', uid = " + uid + ", type = " + type + " WHERE uniq_name = '" + uniq_name + "'"
+            return this.edit(query)
+        } else {
+
+            if(name == null) name = uniq_name
+            if(value == null) value = ""
+            if(uid == null) uid = -1
+            if(type == null) type = "string"
+
+            // config doesn't exist
+            let query = "INSERT INTO config (uniq_name, name, value, uid, type) VALUES ('" + uniq_name + "', '" + name + "', '" + value + "', " + uid + ", " + type + ")"
+            return this.edit(query)
+        }
+    }
+
+    configProperty_cid(cid){
+        return this.query("SELECT * FROM config WHERE cid = " + cid)
+    }
+
+    configProperty_uniq_name(uniq_name){
+        return this.query("SELECT * FROM config WHERE uniq_name = '" + uniq_name + "'")
+    }
+
+    getIdentities(){
+        return this.query("SELECT * FROM identity_management")
     }
 
     getIdentity_mtusso(mtu_id){
@@ -171,7 +235,8 @@ class Database {
     }
 
     getOverrides_eid(eid){
-        return this.query("SELECT * FROM event_participation_overrides WHERE eid = " + eid)
+        // return all users with overrides for this event (with a join on identity_management by uid)
+        return this.query("SELECT * FROM event_participation_overrides INNER JOIN identity_management ON event_participation_overrides.uid = identity_management.uid WHERE eid = " + eid)
     }
 
     getOverrides_uid(uid){

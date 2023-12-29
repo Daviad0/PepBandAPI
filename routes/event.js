@@ -36,6 +36,14 @@ router.get("/:eid", (req, res) => {
     })
 });
 
+router.get("/:eid/overrides", (req, res) => {
+
+    // returns user objects based on an inner join
+    db.getOverrides_eid(req.params.eid).then((result) => {
+        res.send(result.data);
+    });
+});
+
 router.post("/create", (req, res) => {
 
     // expecting etid_used in body, OK if null
@@ -108,6 +116,21 @@ router.post("/update", (req, res) => {
         res.send(result.data);
     })
 
+});
+
+router.post("/delete", (req, res) => {
+
+    // expecting eid in body, not OK if null
+
+    var eid = req.body.eid;
+    if(!eid){
+        res.status(400).send({message: "eid property required to delete event"});
+        return;
+    }
+    
+    db.deleteEvent(eid).then((result) => {
+        res.send(result.data);
+    });
 });
 
 module.exports = (useDb) => {

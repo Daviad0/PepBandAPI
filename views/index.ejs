@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pep Band</title>
+  </head>
+  <body>
+    <% if(!user) { %>
+    <h1>Not Logged In</h1>
+    <% } else { %>
+    <h1>Logged In</h1>
+    <p>Welcome, <%= user.full_name %></p>
+    <% } %>
+  </body>
+</html>
