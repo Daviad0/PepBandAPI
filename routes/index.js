@@ -15,8 +15,12 @@ router.get("/", (req, res) => {
     res.render("index", {user: req.session.user, role: req.session.role});
 });
 
-router.get("/events", (req, res) => {
-    res.render("events", {user: req.session.user, role: req.session.role});
+router.get("/events", async (req, res) => {
+
+    var events = (await db.getEvents()).data;
+    console.log(events);
+
+    res.render("events", {user: req.session.user, role: req.session.role, events: events});
 });
 
 

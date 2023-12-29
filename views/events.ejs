@@ -8,7 +8,13 @@
     <%- include('./partials/header.ejs'); %>
     <div class="mainbody">
         <div class="center">
-
+            <div>
+                <span class="large spacing">All Events</span>
+                <span class="small spacing">Here are all of the upcoming Pep Band events! You can attend any events as a Michigan Tech student, but fans of the Huskies can attend at a small price!</span>
+                <% events.forEach(function(e){ %>
+                    <%- include('./partials/event/event_basic.ejs', {event: e}); %>
+                <% }); %>
+            </div>
         </div>
     </div>
     <%- include('./partials/footer.ejs'); %>
