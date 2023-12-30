@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Events</title>
+    <%- include('../partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/error.css" />
+  </head>
+  <body>
+    <div class="mainbody flex center">
+        <div>
+            <div class="flex center">
+                <img src="/images/pepband.png" alt="Pep Band Logo" class="image" />
+            </div>
+            
+            <div class="holdboth">
+                <div class="error-section">
+                    <span class="huge"><%= error.code %></span>
+                    <span class="large">"<%= error.message %>"</span>
+                </div>
+                <div class="explanation-section">
+                    <span class="large">Oops! We couldn't get you to where you wanted to go. You may have gotten this error because you visited a broken link, or you don't have the permissions to view this page.</span>
+                    <div class="flex center options">
+                        <button class="button-main" onclick="history.back()"><span class="button-text">Go Back</span></button>
+                        <button class="button-alternate" onclick="history.back()"><span class="button-text">Contact for Support</span></button>
+                    </div>
+                    
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        
+    </div>
+  </body>
+</html>

@@ -25,6 +25,17 @@ router.get("/events", async (req, res) => {
 
 
 
+// WARNING: this route must be last
+
+router.get("*", (req, res) => {
+    res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+        code: 404,
+        message: "Page not found"
+    }});
+});
+
+
+
 module.exports = (useDb) => {
     db = useDb;
     return router;

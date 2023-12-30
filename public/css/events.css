@@ -1,0 +1,48 @@
+.splitpage{
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+/*
+
+If the screen is smaller than 600px, stack the links on top of each other, instead of next to each other with width 100%
+
+*/
+
+.splitpage .content-left{
+    width: 60%;
+    margin:10px;
+}
+
+.splitpage .content-right{
+    width: 30%;
+    margin:10px;
+}
+
+@media screen and (max-width: 1000px) {
+    .splitpage {
+        flex-direction: column;
+    }
+    .splitpage .content-left{
+        width: 100%;
+        margin: 10px 0px;
+    }
+    .splitpage .content-right{
+        width: 100%;
+        margin: 10px 0px;
+    }
+}
+
+.event{
+    width: 300px;
+}
+
+.event-image{
+    margin-right:10px;
+    width: 40px;
+}
+
+.event-content{
+    width: 100%;
+}

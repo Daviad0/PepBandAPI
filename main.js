@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 })
 
 app.use("/account", require('./routes/account.js')(db));
-app.use("/event", require('./routes/event.js')(db));
+app.use("/api", require('./routes/api/api.js')(db));
 app.use("/", require('./routes/index.js')(db));
 
 app.set("view engine", "ejs");

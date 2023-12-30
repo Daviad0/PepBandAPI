@@ -1,6 +1,6 @@
 const express = require('express');
 
-const router = express.Router("/event");
+const router = express.Router("/api/event");
 
 var db;
 
