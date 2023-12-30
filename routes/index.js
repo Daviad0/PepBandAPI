@@ -23,6 +23,21 @@ router.get("/events", async (req, res) => {
     res.render("events", {user: req.session.user, role: req.session.role, events: events});
 });
 
+router.get("/event/create", async (req, res) => {
+        // access control for later :)
+        
+        // if(!(await db.checkAccess(req.session.role, "event_create"))){
+        //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+        //         code: 403,
+        //         message: "Access denied"
+        //     }});
+        //     return;
+        // }
+    
+        res.render("event_create", {user: req.session.user, role: req.session.role});
+    
+});
+
 
 
 // WARNING: this route must be last

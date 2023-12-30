@@ -108,11 +108,11 @@ class Database {
         }
     }
 
-    configProperty_cid(cid){
+    getConfigProperty_cid(cid){
         return this.query("SELECT * FROM config WHERE cid = " + cid)
     }
 
-    configProperty_uniq_name(uniq_name){
+    getConfigProperty_uniq_name(uniq_name){
         return this.query("SELECT * FROM config WHERE uniq_name = '" + uniq_name + "'")
     }
 
@@ -152,7 +152,7 @@ class Database {
 
     // returns the direct user
     // ONLY the CAS is allowed to call this function
-    async setup_user(mtu_id, uid){
+    async setup_user(mtu_id, uid, is_mtu){
         mtu_id = sanitizer.sanitize(mtu_id)
 
         let identity = await this.getIdentity_uid(uid)
@@ -167,12 +167,12 @@ class Database {
             return identity.data[0]
         } else {
             // user doesn't exist
-            let query = "INSERT INTO identity_management (mtu_id, uid) VALUES ('" + mtu_id + "', " + uid + ")"
+            let query = "INSERT INTO identity_management (mtu_id, uid, mtu_based) VALUES ('" + mtu_id + "', " + uid + ", " + is_mtu + ")"
 
             let result = await this.edit(query)
 
             if(result.success){
-                return await this.setup_user(mtu_id, uid)
+                return await this.setup_user(mtu_id, uid, is_mtu)
             } else {
                 return null
             }
@@ -205,7 +205,7 @@ class Database {
         return this.edit("INSERT INTO events (etid_used) VALUES (" + etid_used + ")")
     }
 
-    async updateEvent(eid, etyid, etid_used, name, begin, end, show, open, data){
+    async updateEvent(eid, etyid, etid_used, name, begin, end, show, open, data, location, description){
         // each of the parameters should contain the original values if not being changed
 
         let existing_event = (await this.getEvent(eid))[0]
@@ -218,6 +218,8 @@ class Database {
         if(show == null) show = existing_event.show
         if(open == null) open = existing_event.open
         if(data == null) data = existing_event.data
+        if(location == null) location = existing_event.location
+        if(description == null) description = existing_event.description
         
 
         name = sanitizer.sanitize(name)

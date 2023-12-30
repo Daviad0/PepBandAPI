@@ -23,7 +23,7 @@ var cas = new CASAuthentication({
 
 router.get( '/authenticate', cas.bounce, (req, res) => {
     console.log(db);
-    db.setup_user(req.session[cas.session_name], req.session[cas.session_info].uid).then((result) => {
+    db.setup_user(req.session[cas.session_name], req.session[cas.session_info].uid, true).then((result) => {
         if(result != null){
             db.update_user_information(result.uid, req.session[cas.session_info].displayName);
             req.session.user = result;

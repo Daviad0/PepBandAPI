@@ -28,3 +28,26 @@
 .button-text{
     color: inherit;
 }
+
+.input{
+    border: 2px solid rgba(0,0,0,0.5);
+}
+.input:focus{
+    border: 2px solid #ffcd00;
+}
+.input:disabled{
+    background-color: rgba(0,0,0,0.1);
+    border: 2px solid rgba(0,0,0,0.5);
+}
+.input-error{
+    border: 2px solid red;
+}
+.input-valid{
+    border: 2px solid green;
+}
+select{
+    background-color: white;
+}
+.select-from-none:first{
+    color: rgba(0,0,0,0.7);
+}

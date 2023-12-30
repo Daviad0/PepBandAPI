@@ -88,6 +88,8 @@ router.post("/update", (req, res) => {
     // expecting show in body, OK if null
     // expecting open in body, OK if null
     // expecting data in body, OK if null
+    // expecting location in body, OK if null
+    // expecting description in body, OK if null
 
     var eid = req.body.eid;
     if(!eid){
@@ -103,6 +105,8 @@ router.post("/update", (req, res) => {
     var show = req.body.show;
     var open = req.body.open;
     var data = req.body.data;
+    var location = req.body.location;
+    var description = req.body.description;
     if(!etyid) etyid = null;
     if(!etid_used) etid_used = null;
     if(!name) name = null;
@@ -111,8 +115,10 @@ router.post("/update", (req, res) => {
     if(!show) show = null;
     if(!open) open = null;
     if(!data) data = null;
+    if(!location) location = null;
+    if(!description) description = null;
 
-    db.updateEvent(eid, etyid, etid_used, name, begin, end, show, open, data).then((result) => {
+    db.updateEvent(eid, etyid, etid_used, name, begin, end, show, open, data, location, description).then((result) => {
         res.send(result.data);
     })
 
