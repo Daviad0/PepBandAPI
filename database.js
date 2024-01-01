@@ -233,6 +233,67 @@ class Database {
         return this.edit("DELETE FROM events WHERE eid = " + eid)
     }
 
+    getEventTypes(){
+        return this.query("SELECT * FROM event_types")
+    }
+
+    getEventType(etyid){
+        return this.query("SELECT * FROM event_types WHERE etyid = " + etyid)
+    }
+
+    setEventType(etyid, name, icon, color, extra_data){
+        let existing_event_type = this.getEventType(etyid)
+
+        if(existing_event_type.success && existing_event_type.data.length > 0){
+            var event_type = existing_event_type.data[0]
+
+            if(name == null) name = event_type.name
+            if(icon == null) icon = event_type.icon
+            if(color == null) color = event_type.color
+            if(extra_data == null) extra_data = event_type.extra_data
+
+            return this.edit("UPDATE event_types SET name = '" + name + "', icon = '" + icon + "', color = '" + color + "', extra_data = '" + extra_data + "', updated = CURRENT_TIMESTAMP WHERE etyid = " + etyid)
+        }else{
+            return this.edit("INSERT INTO event_types (name, icon, color, extra_data, updated) VALUES ('" + name + "', '" + icon + "', '" + color + "', '" + extra_data + "', CURRENT_TIMESTAMP)")
+        }
+
+    }
+
+    deleteEventType(etyid){
+        return this.edit("DELETE FROM event_types WHERE etyid = " + etyid)
+    }
+
+    getEventTemplates(){
+        return this.query("SELECT * FROM event_templates")
+    }
+    getEventTemplates_etyid(etyid){
+        return this.query("SELECT * FROM event_templates WHERE etyid = " + etyid)
+    }
+    getEventTemplate(etid){
+        return this.query("SELECT * FROM event_templates WHERE etid = " + etid)
+    }
+
+    setEventTemplate(etid, etyid, name, data){
+        let existing_event_template = this.getEventTemplate(etid)
+        if(existing_event_template.success && existing_event_template.data.length > 0){
+            var event_template = existing_event_template.data[0]
+
+            if(etyid == null) etyid = event_template.etyid
+            if(name == null) name = event_template.name
+            if(data == null) data = event_template.data
+
+            return this.edit("UPDATE event_templates SET etyid = " + etyid + ", name = '" + name + "', data = '" + data + "', updated = CURRENT_TIMESTAMP WHERE etid = " + etid)
+        }else{
+            return this.edit("INSERT INTO event_templates (etyid, name, data, updated) VALUES (" + etyid + ", '" + name + "', '" + data + "', CURRENT_TIMESTAMP)")
+        }
+    }
+
+    deleteEventTemplate(etid){
+        return this.edit("DELETE FROM event_templates WHERE etid = " + etid)
+    }
+    
+
+
     setOverride(eid, uid, override){
         return this.edit("UPDATE events SET event_participation_overrides = " + override + " WHERE eid = " + eid + " AND uid = " + uid)
     }
