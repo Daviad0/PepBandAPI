@@ -74,6 +74,97 @@ router.get("/:uid/overrides", async (req, res) => {
 });
 
 
+router.get("/roles", async (req, res) => {
+    if(!(await db.checkAccess(req.session.role, "other_roles"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    db.getRoles().then((result) => {
+        res.send(result.data);
+    })
+});
+
+router.get("/roles/:rid", async (req, res) => {
+    if(!(await db.checkAccess(req.session.role, "other_roles"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    db.getRole(req.params.rid).then((result) => {
+        res.send(result.data);
+    })
+
+});
+
+router.post("/roles/new", async (req, res) => {
+    // expecting name in body, not OK if null
+
+    if(!(await db.checkAccess(req.session.role, "other_roles_edit"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    let name = req.body.name;
+    if(!name){
+        res.status(400).send({message: "Missing name"});
+        return;
+    }
+
+    db.setRole(null, req.body.name, null, null).then((result) => {
+        // we also want to get the role we just created to send back (with rid)
+    });
+});
+
+router.post("/roles", async (req, res) => {
+    
+    // expecting name in body, not OK if null
+    // expecting permission in body, not OK if null
+    // expecting rid in body, not OK if null
+    // expecting description in body, OK if null
+
+    if(!(await db.checkAccess(req.session.role, "other_roles_edit"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    let name = req.body.name;
+    let permission = req.body.permission;
+    let rid = req.body.rid;
+    let description = req.body.description;
+    if(!name){
+        res.status(400).send({message: "Missing name"});
+        return;
+    }
+    if(!permission){
+        res.status(400).send({message: "Missing permission"});
+        return;
+    }
+    if(!rid){
+        res.status(400).send({message: "Missing rid"});
+        return;
+    }
+    if(!description) description = null;
+
+    db.setRole(rid, name, permission, description).then((result) => {
+        res.send(result.data);
+    })
+});
+
+router.post("/roles/:rid/delete", async (req, res) => {
+    
+        if(!(await db.checkAccess(req.session.role, "other_roles_edit"))){
+            res.status(403).send({message: "Access denied"});
+            return;
+        }
+    
+        db.deleteRole(req.params.rid).then((result) => {
+            res.send(result.data);
+        })
+    
+});
+
+
 
 module.exports = (useDb) => {
     db = useDb;

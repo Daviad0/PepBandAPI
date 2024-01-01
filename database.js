@@ -197,6 +197,45 @@ class Database {
     }
 
 
+    getRoles(){
+        // have each role contain a count of how many users have that role
+        return this.query("SELECT identity_management_roles.*, COUNT(identity_management.rid) AS user_count FROM identity_management_roles LEFT JOIN identity_management ON identity_management_roles.rid = identity_management.rid GROUP BY identity_management_roles.rid, identity_management_roles.name, identity_management_roles.[description], identity_management_roles.rid, identity_management_roles.permission")
+    }
+
+    getRole(rid){
+        return this.query("SELECT * FROM identity_management_roles WHERE rid = " + rid)
+    }
+
+    getUsersWithRole(rid){
+        return this.query("SELECT * FROM identity_management WHERE rid = " + rid)
+    }
+
+    setRole(rid, name, permission, description){
+        let existing_role = this.getRole(rid)
+
+        if(existing_role.success && existing_role.data.length > 0){
+            var role = existing_role.data[0]
+
+            if(name == null) name = role.name
+            if(permission == null) permission = role.permission
+            if(description == null) description = role.description
+
+            return this.edit("UPDATE identity_management_roles SET name = '" + name + "', permission = " + permission + ", description = '" + description + "', updated = CURRENT_TIMESTAMP WHERE rid = " + rid)
+        }else{
+
+            if(name == null) name = name;
+            if(permission == null) permission = 0
+            if(description == null) description = ""
+            // modify to send back the role that was created (or at least the rid)
+            return this.edit("INSERT INTO identity_management_roles (name, permission, updated, description) VALUES ('" + name + "', " + permission + ", CURRENT_TIMESTAMP, '" + description + "')")
+        }
+    }
+
+    deleteRole(rid){
+        return this.edit("DELETE FROM identity_management_roles WHERE rid = " + rid)
+    }
+
+
 
     getEvent(eid){
         return this.query("SELECT * FROM events WHERE eid = " + eid)

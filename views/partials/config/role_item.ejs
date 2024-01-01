@@ -1,0 +1,23 @@
+<!-- 
+
+    "role" parameter is passed from the parent view
+
+    - rid
+    - name
+    - description
+    - permission
+
+-->
+
+<div class="role-view floating-box">
+    <div class="flex center">
+        <div class="config-detail-item">
+            <div class="flex apart">
+                <span class="tiny role-detail-tag">Visible Name</span>
+            </div>
+            <div class="flex apart">
+                <input data-rid="<%= role.rid %>" type="text" class="input role-detail-value" placeholder="Role Name" value="<%= role.name %>"/>
+            </div>
+        </div>
+    </div>
+</div>

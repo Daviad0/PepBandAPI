@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Roles - Manage</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/roles.css" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs'); %>
+    <script src="/js/roles.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="flex center">
+                <span class="large spacing">Role Management</span>
+            </div>
+            
+
+            <span class="small spacing">Manage all of the roles that contain user permissions. Each user can only have one role with a "permission power", which can be defined to be more or less powerful based on the desired permissions.</span>
+            <div class="message message-info">
+                <span class="small message-content">You may only edit roles that <strong>contain less than your permission power</strong>. You may not make any role more powerful than your "permission power".</span>
+            </div>
+            <div class="message message-warning">
+                <span class="small message-content">Any changes made to your role that downgrade its "permission power" are permanent. Exercise caution when changing your role's permission power.</span>
+            </div>
+            <div id="role-list">
+                <%- include('./partials/config/all_roles.ejs', {roles: roles}); %>
+            </div>
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

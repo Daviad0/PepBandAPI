@@ -1,0 +1,51 @@
+.config-detail-item{
+    margin: 0px 10px;
+}
+
+.config-details{
+    flex-wrap: wrap;
+}
+
+.config-detail-value{
+    font-weight: bold;
+}
+
+.role-item{
+    padding: 15px 0px;
+    border-bottom: 1px dashed #ccc;
+
+}
+
+.role-main-info{
+    margin: 5px;
+}
+
+.role-detail-tag{
+    margin-left:5px;
+    margin-bottom: 2px;
+}
+
+.role-list{
+    height: 100%;
+    overflow-y: auto;
+}
+.role-header{
+    margin-bottom: 20px;
+
+}
+
+.role-vertical-flex{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    height: calc(100vh - 100px);
+}
+
+.no-display{
+    display: none;
+}
+
+.error-message{
+    margin-top:5px;
+}
+

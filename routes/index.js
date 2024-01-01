@@ -29,6 +29,13 @@ router.get("/config", async (req, res) => {
     
 });
 
+router.get("/roles", async (req, res) => {
+    var roles = (await db.getRoles()).data;
+
+    res.render("roles", {user: req.session.user, role: req.session.role, roles: roles});
+
+});
+
 router.get("/event/create", async (req, res) => {
         // access control for later :)
 

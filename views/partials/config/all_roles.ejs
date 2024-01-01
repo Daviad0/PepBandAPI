@@ -1,0 +1,5 @@
+<div class="flex center">
+    <% roles.forEach(function(r){ %>
+        <%- include('./role_item.ejs', {role: r}); %>
+    <% }); %>
+</div>
