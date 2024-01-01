@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Events</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/config.css" />
+  </head>
+  <body>
+    <% let default_config_item_data = {cid: "DEFAULT_CID", name: "DEFAULT_NAME", uniq_name: "DEFAULT_UNIQ_NAME", value: "DEFAULT_VALUE", uid: "DEFAULT_UID"} %>
+    <script>
+        let config_item_template = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data}) %>`;
+    </script>
+    <%- include('./partials/header.ejs'); %>
+    <script src="/js/config.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div>
+                <div class="flex center">
+                    <span class="large spacing">Configuration Management</span>
+                </div>
+                
+
+                <span class="small spacing">Manage all of the existing configuration for the entire pep band website.</span>
+                <div class="message message-warning">
+                    <span class="small message-content">This configuration applies for all users of the website. If you would like to edit your own configuration, please go <strong>here.</strong></span>
+                </div>
+                <div class="flex center">
+                    <span class="small spacing">Unique Config Name</span>
+                    <input type="text" class="input small" placeholder="Config_Name" name="name" id="config-create-uniq_name" />
+                    <button class="button-main" onclick="createConfig()"><span class="button-text">Create Config</span></button>
+                </div>
+                <div id="config-list">
+                    <%- include('./partials/config/all_config.ejs', {config: config}); %>
+                </div>
+                
+                
+            </div>
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

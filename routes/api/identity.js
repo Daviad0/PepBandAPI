@@ -4,6 +4,8 @@ const router = express.Router("/api/identity");
 
 var db;
 
+router.get("/role")
+
 router.get('/overrides', (req, res) => {
     if(req.session.user){
         db.getOverrides_uid(req.session.user.uid).then((result) => {

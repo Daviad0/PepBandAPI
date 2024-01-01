@@ -41,6 +41,7 @@ class Database {
         return new Promise((resolve, reject) => {
             mssql.query(query, function (err, result) {
                 if (err) {
+                    console.log(err);
                     resolve(new DBQuery(null, false))
                 } else {
                     resolve(new DBQuery(result, true))
@@ -82,7 +83,7 @@ class Database {
 
     setConfig(uniq_name, name, value, uid, type){
         
-        let existing_config = this.configProperty_uniq_name(uniq_name)
+        let existing_config = this.getConfigProperty_uniq_name(uniq_name)
 
         if(existing_config.success && existing_config.data.length > 0){
 
@@ -100,7 +101,7 @@ class Database {
             if(name == null) name = uniq_name
             if(value == null) value = ""
             if(uid == null) uid = -1
-            if(type == null) type = "string"
+            if(type == null) type = null
 
             // config doesn't exist
             let query = "INSERT INTO config (uniq_name, name, value, uid, type) VALUES ('" + uniq_name + "', '" + name + "', '" + value + "', " + uid + ", " + type + ")"

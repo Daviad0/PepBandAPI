@@ -1,0 +1,5 @@
+<div>
+    <% config.forEach(function(c){ %>
+        <%- include('./config_item.ejs', {config: c}); %>
+    <% }); %>
+</div>

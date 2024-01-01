@@ -1,0 +1,25 @@
+.config-detail-item{
+    margin: 0px 10px;
+}
+
+.config-details{
+    flex-wrap: wrap;
+}
+
+.config-detail-value{
+    font-weight: bold;
+}
+
+.config-item{
+    margin: 15px 0px;
+    
+}
+
+.config-main-info{
+    margin: 5px;
+}
+
+.config-detail-tag{
+    margin-left:5px;
+    margin-bottom: 2px;
+}

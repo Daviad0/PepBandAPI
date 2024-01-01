@@ -1,0 +1,51 @@
+<!--
+
+    "config" parameter passed in. This parameter contains...
+    - cid
+    - name
+    - value
+    - updated
+    - uid
+    - type
+    - uniq_name
+
+
+-->
+
+<div class="config-item">
+    <div>
+        <div class="flex center">
+            <span class="tiny config-main-info">Configuration ID: </span>
+            <span class="tiny config-detail-value config-main-info"><%= config.cid %></span>
+            <span class="tiny config-main-info"><i>Last Updated by <%= config.uid %></i></span>
+        </div>
+        <div class="flex center config-details">
+            <div class="config-detail-item">
+                <div class="flex apart">
+                    <span class="tiny config-detail-tag">Unique Name</span>
+                </div>
+                <div class="flex apart">
+                    <input data-cid="<%= config.cid %>" type="text" class="input config-detail-value" placeholder="config_name" name="name" value="<%= config.uniq_name %>" />
+                </div>
+            </div>
+            <div class="config-detail-item">
+                <div class="flex apart">
+                    <span class="tiny config-detail-tag">Visible Name</span>
+                </div>
+                <div class="flex apart">
+                    <input data-cid="<%= config.cid %>" type="text" class="input config-detail-value" placeholder="Config Name" name="name" value="<%= config.name %>" />
+                </div>
+            </div>
+            <div class="config-detail-item">
+                <div class="flex apart">
+                    <span class="tiny config-detail-tag">Value</span>
+                </div>
+                <div class="flex apart">
+                    <input data-cid="<%= config.cid %>" type="text" class="input config-detail-value" placeholder="1234" name="name" value="<%= config.value %>" />
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>

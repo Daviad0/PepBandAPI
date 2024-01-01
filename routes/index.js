@@ -18,14 +18,20 @@ router.get("/", (req, res) => {
 router.get("/events", async (req, res) => {
 
     var events = (await db.getEvents()).data;
-    console.log(events);
 
     res.render("events", {user: req.session.user, role: req.session.role, events: events});
 });
 
+router.get("/config", async (req, res) => {
+    var config = (await db.getConfig()).data;
+
+    res.render("config", {user: req.session.user, role: req.session.role, config: config});
+    
+});
+
 router.get("/event/create", async (req, res) => {
         // access control for later :)
-        
+
         // if(!(await db.checkAccess(req.session.role, "event_create"))){
         //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
         //         code: 403,
