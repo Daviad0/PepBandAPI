@@ -52,6 +52,18 @@ select{
     color: rgba(0,0,0,0.7);
 }
 
+.error{
+    color: #DB1A1A;
+}
+.success{
+    color: #00BE35;
+}
+.info{
+    color: #1D8BF1;
+}
+.warning{
+    color: #E98C00;
+}
 
 .message-error{
     /*#DB1A1A
@@ -80,4 +92,12 @@ select{
     background-color: rgba(233, 140, 0, 0.2);
     border-color: #E98C00;
     color: #E98C00;
+}
+
+.resolve-further{
+    background-color: rgba(0,0,0,0.1);
+}
+
+.resolve-further:hover{
+    border: 2px solid #ffcd00;
 }

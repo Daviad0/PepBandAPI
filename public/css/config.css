@@ -11,8 +11,9 @@
 }
 
 .config-item{
-    margin: 15px 0px;
-    
+    padding: 15px 0px;
+    border-bottom: 1px dashed #ccc;
+
 }
 
 .config-main-info{
@@ -23,3 +24,28 @@
     margin-left:5px;
     margin-bottom: 2px;
 }
+
+.config-list{
+    height: 100%;
+    overflow-y: auto;
+}
+.config-header{
+    margin-bottom: 20px;
+
+}
+
+.config-vertical-flex{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    height: calc(100vh - 100px);
+}
+
+.no-display{
+    display: none;
+}
+
+.error-message{
+    margin-top:5px;
+}
+

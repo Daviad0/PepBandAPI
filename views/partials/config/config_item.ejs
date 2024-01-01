@@ -12,38 +12,64 @@
 
 -->
 
-<div class="config-item">
+<div class="config-item" data-uniq_name="<%= config.uniq_name %>">
     <div>
-        <div class="flex center">
-            <span class="tiny config-main-info">Configuration ID: </span>
-            <span class="tiny config-detail-value config-main-info"><%= config.cid %></span>
-            <span class="tiny config-main-info"><i>Last Updated by <%= config.uid %></i></span>
+        <div class="flex apart">
+            <div class="flex center config-detail-tag">
+                <span class="tiny config-main-info">Configuration ID: </span>
+                <span class="tiny config-detail-value config-main-info"><%= config.cid %></span>
+                <span class="tiny config-main-info"><i>Last Updated by: </i></span>
+                <span class="tiny config-detail-value config-main-info resolve-further" onclick="resolve_user(this)" data-about="uid" data-value="<%= config.uid %>"><%= config.uid %></span>
+            </div>
         </div>
-        <div class="flex center config-details">
-            <div class="config-detail-item">
-                <div class="flex apart">
-                    <span class="tiny config-detail-tag">Unique Name</span>
+        
+        <div class="flex apart config-details">
+            <div class="flex center config-details">
+                <div class="config-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny config-detail-tag">Unique Name</span>
+                    </div>
+                    <div class="flex apart">
+                        <input data-uniq_name="<%= config.uniq_name %>" type="text" class="input config-detail-value" placeholder="config_name" value="<%= config.uniq_name %>" disabled/>
+                    </div>
                 </div>
-                <div class="flex apart">
-                    <input data-cid="<%= config.cid %>" type="text" class="input config-detail-value" placeholder="config_name" name="name" value="<%= config.uniq_name %>" />
+                <div class="config-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny config-detail-tag">Visible Name</span>
+                    </div>
+                    <div class="flex apart">
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="text" class="input config-detail-value" placeholder="Config Name" name="name" value="<%= config.name %>" />
+                    </div>
+                </div>
+                <div class="config-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny config-detail-tag">Value</span>
+                    </div>
+                    <div class="flex apart">
+                        <% if (config.type == 'string'){ %>
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="text" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" />
+                        <% } else if (config.type == 'number'){ %>
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="number" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" />
+                        <% } else if (config.type == 'boolean'){ %>
+                        <select data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" class="input config-detail-value" name="value">
+                            <option value="true" <% if (config.value == 'true'){ %> selected <% } %>>True</option>
+                            <option value="false" <% if (config.value == 'false'){ %> selected <% } %>>False</option>
+                        </select>
+                        <% } else if (config.type == 'date'){ %>
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="date" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" />
+                        <% } else if (config.type == 'datetime'){ %>
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="datetime-local" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" />
+                        <% } %>
+                    </div>
                 </div>
             </div>
+            
             <div class="config-detail-item">
-                <div class="flex apart">
-                    <span class="tiny config-detail-tag">Visible Name</span>
-                </div>
-                <div class="flex apart">
-                    <input data-cid="<%= config.cid %>" type="text" class="input config-detail-value" placeholder="Config Name" name="name" value="<%= config.name %>" />
-                </div>
+                <button data-uniq_name="<%= config.uniq_name %>" onclick="deleteConfig(this)" class="button-main"><span class="button-text">Remove</span></button>
             </div>
-            <div class="config-detail-item">
-                <div class="flex apart">
-                    <span class="tiny config-detail-tag">Value</span>
-                </div>
-                <div class="flex apart">
-                    <input data-cid="<%= config.cid %>" type="text" class="input config-detail-value" placeholder="1234" name="name" value="<%= config.value %>" />
-                </div>
-            </div>
+        </div>
+        <div>
+            <span class="small no-display error error-message" name="error" data-uniq_name="<%= config.uniq_name%>"></span>
         </div>
     </div>
     

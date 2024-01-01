@@ -50,6 +50,16 @@ router.get("/users", async (req, res) => {
         res.send(result.data);
     })
 });
+router.get("/find/:uid", async (req, res) => {
+    if(!(await db.checkAccess(req.session.role, "other_users"))){
+        res.status(403).send({success:false, message: "Access denied"});
+        return;
+    }
+
+    db.getIdentity_uid(req.params.uid).then((result) => {
+        res.send({success: true, data: result.data});
+    })
+});
 
 router.get("/:uid/overrides", async (req, res) => {
     if(!(await db.checkAccess(req.session.role, "other_users_membership"))){

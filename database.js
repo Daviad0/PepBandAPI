@@ -52,9 +52,13 @@ class Database {
 
     /**
      * Check access based on property name that would go into config (what permission level should be granted)
+     * 
+     * formatted as permission_[permission_name]
+     * 
+     * All of these should be specified under the REQUIRED_CONFIG environment variable to ensure that there are no permission errors
      */
 
-    async checkAccess(permission_name, role){
+    async checkAccess(role, permission_name){
 
         if(!role) return false;
 
@@ -81,9 +85,9 @@ class Database {
         return this.query("SELECT * FROM config")
     }
 
-    setConfig(uniq_name, name, value, uid, type){
+    async setConfig(uniq_name, name, value, uid, type){
         
-        let existing_config = this.getConfigProperty_uniq_name(uniq_name)
+        let existing_config = await this.getConfigProperty_uniq_name(uniq_name)
 
         if(existing_config.success && existing_config.data.length > 0){
 
@@ -94,19 +98,23 @@ class Database {
 
 
             // config exists
-            let query = "UPDATE config SET name = '" + name + "', value = '" + value + "', uid = " + uid + ", type = " + type + " WHERE uniq_name = '" + uniq_name + "'"
+            let query = `UPDATE config SET name = '${name}', value = '${value}', uid = ${uid}, type = '${type}' WHERE uniq_name = '${uniq_name}'`
             return this.edit(query)
         } else {
 
             if(name == null) name = uniq_name
             if(value == null) value = ""
             if(uid == null) uid = -1
-            if(type == null) type = null
+            if(type == null) type = type
 
             // config doesn't exist
-            let query = "INSERT INTO config (uniq_name, name, value, uid, type) VALUES ('" + uniq_name + "', '" + name + "', '" + value + "', " + uid + ", " + type + ")"
+            let query = "INSERT INTO config (uniq_name, name, value, uid, type) VALUES ('" + uniq_name + "', '" + name + "', '" + value + "', " + uid + ", '" + type + "')"
             return this.edit(query)
         }
+    }
+
+    deleteConfig(uniq_name){
+        return this.edit("DELETE FROM config WHERE uniq_name = '" + uniq_name + "'")
     }
 
     getConfigProperty_cid(cid){
@@ -291,7 +299,7 @@ class Database {
     deleteEventTemplate(etid){
         return this.edit("DELETE FROM event_templates WHERE etid = " + etid)
     }
-    
+
 
 
     setOverride(eid, uid, override){
