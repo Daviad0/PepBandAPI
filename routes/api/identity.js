@@ -112,14 +112,18 @@ router.post("/roles/new", async (req, res) => {
     }
 
     db.setRole(null, req.body.name, null, null).then((result) => {
+        let rid = result.data.recordset[0].rid;
         // we also want to get the role we just created to send back (with rid)
+        db.getRole(rid).then((result) => {
+            res.send(result);
+        })
     });
 });
 
 router.post("/roles", async (req, res) => {
     
-    // expecting name in body, not OK if null
-    // expecting permission in body, not OK if null
+    // expecting name in body, OK if null
+    // expecting permission in body, OK if null
     // expecting rid in body, not OK if null
     // expecting description in body, OK if null
 
@@ -132,13 +136,14 @@ router.post("/roles", async (req, res) => {
     let permission = req.body.permission;
     let rid = req.body.rid;
     let description = req.body.description;
-    if(!name){
-        res.status(400).send({message: "Missing name"});
-        return;
-    }
-    if(!permission){
-        res.status(400).send({message: "Missing permission"});
-        return;
+    if(!name) name = null;
+    if(!permission) permission = null;
+    if(permission){
+        let userPermission = req.session.role.permission;
+        if(userPermission <= permission){
+            res.status(403).send({message: "Cannot set permission higher than or equal to your own"});
+            return;
+        }
     }
     if(!rid){
         res.status(400).send({message: "Missing rid"});
@@ -147,19 +152,20 @@ router.post("/roles", async (req, res) => {
     if(!description) description = null;
 
     db.setRole(rid, name, permission, description).then((result) => {
-        res.send(result.data);
+        res.send(result);
     })
 });
 
 router.post("/roles/:rid/delete", async (req, res) => {
     
-        if(!(await db.checkAccess(req.session.role, "other_roles_edit"))){
+    // have to do some damage control to change roles of users with this role
+        if(!(await db.checkAccess(req.session.role, "other_roles_remove"))){
             res.status(403).send({message: "Access denied"});
             return;
         }
     
         db.deleteRole(req.params.rid).then((result) => {
-            res.send(result.data);
+            res.send(result);
         })
     
 });

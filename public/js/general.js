@@ -24,6 +24,11 @@ function resolve(about, origValue, newValue, access){
 function resolve_user(element){
     let uid = element.getAttribute("data-value");
 
+    if(uid == "-1"){
+        resolve("uid", uid, "Unknown User", true);
+        return;
+    }
+
     let url = "/api/identity/find/" + uid;
     apiGet(url, (result) => {
         if(result.success){

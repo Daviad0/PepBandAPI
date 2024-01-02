@@ -32,7 +32,6 @@ function updateConfigView(selected_config){
     html = html.replaceAll("DEFAULT_UID", selected_config.uid);
 
 
-    console.log(html);
     // gotta replace each detail with the new config info
     document.getElementById("config-list").innerHTML += html;
 }

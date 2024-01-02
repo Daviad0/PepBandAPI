@@ -29,10 +29,42 @@ router.get("/config", async (req, res) => {
     
 });
 
-router.get("/roles", async (req, res) => {
+router.get("/roles/edit", async (req, res) => {
     var roles = (await db.getRoles()).data;
+    var default_role = (await db.getConfigProperty_uniq_name("registered_default_rid_mtu"));
+    if(default_role.data.length == 0){
+        default_role = null;
+    }else{
+        default_role = default_role.data[0].value;
+    }
 
-    res.render("roles", {user: req.session.user, role: req.session.role, roles: roles});
+    // check if user has access to other_roles
+    if(!(await db.checkAccess(req.session.role, "other_roles"))){
+        res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 403,
+            message: "Access denied"
+        }});
+        return;
+    }
+
+    res.render("roles_edit", {user: req.session.user, role: req.session.role, roles: roles, default_role: default_role});
+
+});
+
+router.get("/roles/assign", async (req, res) => {
+    var roles = (await db.getRoles()).data;
+    var identities = (await db.getIdentities()).data;
+
+    // check if user has access to other_roles
+    if(!(await db.checkAccess(req.session.role, "other_roles_assign"))){
+        res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 403,
+            message: "Access denied"
+        }});
+        return;
+    }
+
+    res.render("roles_assign", {user: req.session.user, role: req.session.role, roles: roles, identities: identities});
 
 });
 

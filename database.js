@@ -21,6 +21,21 @@ class Database {
 
         mssql.connect(`Server=${this.link},${this.port};Initial Catalog=${this.name};Persist Security Info=False;User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;`)
 
+        setTimeout(() => {
+            var required_config = process.env.REQUIRED_CONFIG.split(",")
+            var default_values = process.env.REQUIRED_CONFIG_DEFAULT.split(",")
+
+            for (var i = 0; i < required_config.length; i++) {
+                var j = i;
+                this.getConfigProperty_uniq_name(required_config[i]).then((result) => {
+                    if (result.data.length == 0) {
+                        console.log("Creating required config " + result.uniq_name)
+                        this.setConfig(required_config[j], required_config[j], default_values[j], -1, "string");
+                    }
+                });
+                
+            }
+        },5000);
 
     }
 
@@ -199,7 +214,7 @@ class Database {
 
     getRoles(){
         // have each role contain a count of how many users have that role
-        return this.query("SELECT identity_management_roles.*, COUNT(identity_management.rid) AS user_count FROM identity_management_roles LEFT JOIN identity_management ON identity_management_roles.rid = identity_management.rid GROUP BY identity_management_roles.rid, identity_management_roles.name, identity_management_roles.[description], identity_management_roles.rid, identity_management_roles.permission")
+        return this.query("SELECT identity_management_roles.*, COUNT(identity_management.rid) AS user_count FROM identity_management_roles LEFT JOIN identity_management ON identity_management_roles.rid = identity_management.rid GROUP BY identity_management_roles.rid, identity_management_roles.name, identity_management_roles.[description], identity_management_roles.rid, identity_management_roles.permission, identity_management_roles.updated")
     }
 
     getRole(rid){
@@ -210,8 +225,8 @@ class Database {
         return this.query("SELECT * FROM identity_management WHERE rid = " + rid)
     }
 
-    setRole(rid, name, permission, description){
-        let existing_role = this.getRole(rid)
+    async setRole(rid, name, permission, description){
+        let existing_role = await this.getRole(rid)
 
         if(existing_role.success && existing_role.data.length > 0){
             var role = existing_role.data[0]
@@ -227,7 +242,7 @@ class Database {
             if(permission == null) permission = 0
             if(description == null) description = ""
             // modify to send back the role that was created (or at least the rid)
-            return this.edit("INSERT INTO identity_management_roles (name, permission, updated, description) VALUES ('" + name + "', " + permission + ", CURRENT_TIMESTAMP, '" + description + "')")
+            return this.edit("INSERT INTO identity_management_roles (name, permission, updated, description) OUTPUT Inserted.rid VALUES ('" + name + "', " + permission + ", CURRENT_TIMESTAMP, '" + description + "')")
         }
     }
 

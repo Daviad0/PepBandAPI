@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Roles - Assign</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/roles.css" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs'); %>
+    <% let myRole = role %>
+    <% let default_role_item_data_safe = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 0 } %>
+    <% let default_role_item_data_danger_1 = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 1 } %>
+    <% let default_role_item_data_danger_plural = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 2 } %>
+    
+    <script>
+        let role_item_template_safe = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_safe, myRole: role}) %>`;
+        let role_item_template_danger_1 = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_1, myRole: role}) %>`;
+        let role_item_template_danger_plural = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_plural, myRole: role}) %>`;
+    </script>
+    
+    <script src="/js/roles.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="role-vertical-flex">
+                <div class="role-header">
+                    <div class="flex center">
+                        <span class="large spacing">Role Assignment</span>
+                    </div>
+                    
+        
+                    <span class="small spacing">Assign roles to each user based on their username and existance within the current system.</span>
+                    <div class="message message-info">
+                        <span class="small message-content">Only the top 10 results will be shown. Filter your search to obtain better results!</span>
+                    </div>
+                    <div class="flex center">
+                        <span class="small spacing">Search by...</span>
+                        <div class="role-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny role-detail-tag">User ID</span>
+                            </div>
+                            <div class="flex apart">
+                                <input type="text" class="input small" placeholder="12345678" name="uid" id="assignment-search-uid" />
+                            </div>
+                        </div>
+                        <div class="role-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny role-detail-tag">MTU ID</span>
+                            </div>
+                            <div class="flex apart">
+                                <input type="text" class="input small" placeholder="fnlastname" name="mtu_id" id="assignment-search-mtu_id" />
+                            </div>
+                        </div>
+                        <div class="role-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny role-detail-tag">Full Name</span>
+                            </div>
+                            <div class="flex apart">
+                                <input type="text" class="input small" placeholder="John Doe" name="full_name" id="assignment-search-full_name" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                </div>
+                <div id="result-list" class="flex center start role-list">
+                    
+                </div>
+            </div>
+            
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

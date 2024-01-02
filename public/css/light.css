@@ -65,6 +65,23 @@ select{
     color: #E98C00;
 }
 
+.error-bg{
+    background-color: #DB1A1A;
+    color: white;
+}
+.success-bg{
+    background-color: #00BE35;
+    color: white;
+}
+.info-bg{
+    background-color: #1D8BF1;
+    color: white;
+}
+.warning-bg{
+    background-color: #E98C00;
+    color: white;
+}
+
 .message-error{
     /*#DB1A1A
     background is slightly transparent*/
