@@ -34,7 +34,10 @@ router.get( '/authenticate', cas.bounce, (req, res) => {
     })
 });
 
-router.get( '/logout', cas.logout );
+router.get( '/logout', (req, res, next) => {
+    req.session.destroy();
+    next();
+}, cas.logout );
 
 
 module.exports = (useDb) => {
