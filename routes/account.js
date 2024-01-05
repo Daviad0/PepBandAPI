@@ -20,7 +20,7 @@ var cas = new CASAuthentication({
     },
     session_name    : 'cas_user',
     session_info    : 'cas_userinfo',
-    destroy_session : false
+    destroy_session : true
 });
 
 router.get( '/authenticate', cas.bounce, (req, res) => {
@@ -36,10 +36,7 @@ router.get( '/authenticate', cas.bounce, (req, res) => {
     })
 });
 
-router.get( '/logout', (req, res, next) => {
-    req.session.destroy();
-    next();
-}, cas.logout );
+router.get( '/logout', cas.logout );
 
 
 module.exports = (useDb) => {
