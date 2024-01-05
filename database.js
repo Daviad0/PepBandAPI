@@ -191,7 +191,8 @@ class Database {
             return identity.data[0]
         } else {
             // user doesn't exist
-            let query = "INSERT INTO identity_management (mtu_id, mtu_based) VALUES ('" + mtu_id + "', " + is_mtu + ")"
+            let is_mtu_bit = is_mtu ? 1 : 0
+            let query = "INSERT INTO identity_management (mtu_id, mtu_based) VALUES ('" + mtu_id + "', " + is_mtu_bit + ")"
 
             let result = await this.edit(query)
 
@@ -203,10 +204,11 @@ class Database {
         }
     }
 
-    async update_user_information(uid, full_name){
+    async update_user_information(mtu_id, full_name, email){
         full_name = sanitizer.sanitize(full_name);
+        email = sanitizer.sanitize(email);
 
-        let query = "UPDATE identity_management SET full_name = '" + full_name + "' WHERE uid = " + uid
+        let query = "UPDATE identity_management SET full_name = '" + full_name + "', email = '" + email + "' WHERE mtu_id = '" + mtu_id + "'";
 
         return await this.edit(query)
     }
