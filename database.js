@@ -147,7 +147,7 @@ class Database {
     getIdentity_mtusso(mtu_id){
         mtu_id = sanitizer.sanitize(mtu_id)
 
-        return this.query("SELECT * FROM identity_management WHERE mtu_id = " + mtu_id)
+        return this.query("SELECT * FROM identity_management WHERE mtu_id = '" + mtu_id + "'")
     }
 
     getIdentity_uid(uid){
@@ -185,7 +185,7 @@ class Database {
             // user exists
 
             // set last_seen of user to current time
-            let query = "UPDATE identity_management SET last_seen = CURRENT_TIMESTAMP WHERE mtu_id = " + mtu_id
+            let query = "UPDATE identity_management SET last_seen = CURRENT_TIMESTAMP WHERE mtu_id = '" + mtu_id + "'"
             this.edit(query);
 
             return identity.data[0]
@@ -316,7 +316,7 @@ class Database {
 
             return this.edit("UPDATE event_types SET name = '" + name + "', icon = '" + icon + "', color = '" + color + "', extra_data = '" + extra_data + "', updated = CURRENT_TIMESTAMP WHERE etyid = " + etyid)
         }else{
-            return this.edit("INSERT INTO event_types (name, icon, color, extra_data, updated) VALUES ('" + name + "', '" + icon + "', '" + color + "', '" + extra_data + "', CURRENT_TIMESTAMP)")
+            return this.edit("INSERT INTO event_types (name, icon, color, extra_data, updated) OUTPUT Inserted.etyid VALUES ('" + name + "', '" + icon + "', '" + color + "', '" + extra_data + "', CURRENT_TIMESTAMP)")
         }
 
     }
@@ -346,7 +346,7 @@ class Database {
 
             return this.edit("UPDATE event_templates SET etyid = " + etyid + ", name = '" + name + "', data = '" + data + "', updated = CURRENT_TIMESTAMP WHERE etid = " + etid)
         }else{
-            return this.edit("INSERT INTO event_templates (etyid, name, data, updated) VALUES (" + etyid + ", '" + name + "', '" + data + "', CURRENT_TIMESTAMP)")
+            return this.edit("INSERT INTO event_templates (etyid, name, data, updated) OUTPUT Inserted.eitd VALUES (" + etyid + ", '" + name + "', '" + data + "', CURRENT_TIMESTAMP)")
         }
     }
 

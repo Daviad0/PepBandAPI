@@ -10,6 +10,10 @@ router.use(express.static('public'));
 router.use(express.static('views/partials'));
 
 
+router.get("/authenticate", (req, res) => {
+    res.redirect("/account/authenticate");
+})
+
 router.get("/", (req, res) => {
     console.log(req.session.user);
     res.render("index", {user: req.session.user, role: req.session.role});
