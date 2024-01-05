@@ -176,27 +176,27 @@ class Database {
 
     // returns the direct user
     // ONLY the CAS is allowed to call this function
-    async setup_user(mtu_id, uid, is_mtu){
+    async setup_user_cas(mtu_id, is_mtu){
         mtu_id = sanitizer.sanitize(mtu_id)
 
-        let identity = await this.getIdentity_uid(uid)
+        let identity = await this.getIdentity_mtusso(mtu_id)
         console.log(identity.data)
         if(identity.success && identity.data.length > 0){
             // user exists
 
             // set last_seen of user to current time
-            let query = "UPDATE identity_management SET last_seen = CURRENT_TIMESTAMP WHERE uid = " + uid
+            let query = "UPDATE identity_management SET last_seen = CURRENT_TIMESTAMP WHERE mtu_id = " + mtu_id
             this.edit(query);
 
             return identity.data[0]
         } else {
             // user doesn't exist
-            let query = "INSERT INTO identity_management (mtu_id, uid, mtu_based) VALUES ('" + mtu_id + "', " + uid + ", " + is_mtu + ")"
+            let query = "INSERT INTO identity_management (mtu_id, mtu_based) VALUES ('" + mtu_id + "', " + is_mtu + ")"
 
             let result = await this.edit(query)
 
             if(result.success){
-                return await this.setup_user(mtu_id, uid, is_mtu)
+                return await this.setup_user(mtu_id, is_mtu)
             } else {
                 return null
             }

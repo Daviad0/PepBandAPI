@@ -5,12 +5,14 @@ const router = express.Router("/account");
 
 var db;
 
+var isDev = process.env.CAS_TEST_MODE == "false" ? false : true;
+
 var cas = new CASAuthentication({
     cas_url         : 'https://sso.mtu.edu/cas',
-    service_url     : 'https://pep.robosmrt.com',
+    service_url     : 'https://pep.robosmrt.com/account',
     cas_version     : '3.0',
     renew           : false,
-    is_dev_mode     : true,
+    is_dev_mode     : isDev,
     dev_mode_user   : 'djreeves',
     dev_mode_info   : {
         displayName: 'David Reeves',
@@ -22,10 +24,10 @@ var cas = new CASAuthentication({
 });
 
 router.get( '/authenticate', cas.bounce, (req, res) => {
-    console.log(db);
-    db.setup_user(req.session[cas.session_name], req.session[cas.session_info].uid, true).then((result) => {
+    // all MTU-related accounts will have a uid determined by the identity table
+    db.setup_user_cas(req.session[cas.session_name], true).then((result) => {
         if(result != null){
-            db.update_user_information(result.uid, req.session[cas.session_info].displayName);
+            db.update_user_information(req.session[cas.session_name], req.session[cas.session_info].displayName);
             req.session.user = result;
             res.redirect('/');
         } else {
