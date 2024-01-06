@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Event Types</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/event_type.css" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs'); %>
+    <!-- <% let myRole = role %>
+    <% let default_role_item_data_safe = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 0 } %>
+    <% let default_role_item_data_danger_1 = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 1 } %>
+    <% let default_role_item_data_danger_plural = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 2 } %>
+    
+    <script>
+        let role_item_template_safe = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_safe, myRole: role}) %>`;
+        let role_item_template_danger_1 = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_1, myRole: role}) %>`;
+        let role_item_template_danger_plural = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_plural, myRole: role}) %>`;
+    </script> -->
+    
+    <script src="/js/event_type.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="role-vertical-flex">
+                <div class="role-header">
+                    <div class="flex center">
+                        <span class="large spacing">Event Types</span>
+                    </div>
+                    
+        
+                    <span class="small spacing">Edit the types of events that are to be created / shown on the home page. Event types link up to specific templates, so they can be created and modified easily!</span>
+                    <div class="message message-error">
+                        <span class="small message-content">Event types only can be deleted if they aren't used in any upcoming events. All past events with a deleted event type will be inaccessible and cannot be changed until a valid event type is chosen.</span>
+                    </div>
+                    <div class="flex center">
+                        <button class="button-main"><span class="button-text">New Event Type</span></button>
+                    </div>
+                    
+
+                    
+                    
+                </div>
+                <div id="event-type-list" class="flex center start event-type-list">
+                    
+                </div>
+            </div>
+            
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

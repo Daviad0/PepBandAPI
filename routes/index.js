@@ -87,6 +87,23 @@ router.get("/event/create", async (req, res) => {
     
 });
 
+router.get("/event/types", async (req, res) => {
+
+    // access control for later :)
+
+    // if(!(await db.checkAccess(req.session.role, "event_types_edit"))){
+        //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+        //         code: 403,
+        //         message: "Access denied"
+        //     }});
+        //     return;
+        // }
+
+    var event_types = (await db.getEventTypes()).data;
+
+    res.render("event_types", {user: req.session.user, role: req.session.role, event_types: event_types});
+});
+
 
 
 // WARNING: this route must be last
