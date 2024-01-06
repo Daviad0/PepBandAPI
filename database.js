@@ -216,7 +216,7 @@ class Database {
 
     getRoles(){
         // have each role contain a count of how many users have that role
-        return this.query("SELECT identity_management_roles.*, COUNT(identity_management.rid) AS user_count FROM identity_management_roles LEFT JOIN identity_management ON identity_management_roles.rid = identity_management.rid GROUP BY identity_management_roles.rid, identity_management_roles.name, identity_management_roles.[description], identity_management_roles.rid, identity_management_roles.permission, identity_management_roles.updated")
+        return this.query("SELECT identity_management_roles.*, COUNT(identity_management.rid) AS user_count FROM identity_management_roles LEFT JOIN identity_management ON identity_management_roles.rid = identity_management.rid GROUP BY identity_management_roles.rid, identity_management_roles.name, identity_management_roles.[description], identity_management_roles.rid, identity_management_roles.permission, identity_management_roles.icon, identity_management_roles.updated")
     }
 
     getRole(rid){

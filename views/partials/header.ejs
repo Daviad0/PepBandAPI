@@ -9,17 +9,19 @@
             
             
             <% if(user) { %>
-                <a href="/account" class="option">Account</a>
+                <a href="/account/logout" class="option">Log Out</a>
                 <div style="width:65px;height:10px"></div>
                 
             <% } else { %>
-                <a href="/account/authenticate" class="option">Log In</a>
+                <a href="/account/authenticate" class="option">Sign In</a>
             <% } %>
         </div>
     </div>
     <% if(user) { %>
         <div class="account-dot flex center">
-            <span class="material-symbols-rounded">local_fire_department</span>
+            <span class="material-symbols-rounded role-icon">
+                <%= role ? role.icon : "music_note" %>
+            </span>
         </div>
     <% } %>
 </nav>

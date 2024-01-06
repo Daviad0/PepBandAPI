@@ -7,16 +7,11 @@
   </head>
   <body>
     <%- include('./partials/header.ejs'); %>
-    <!-- <% let myRole = role %>
     <% let default_role_item_data_safe = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 0 } %>
     <% let default_role_item_data_danger_1 = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 1 } %>
     <% let default_role_item_data_danger_plural = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 2 } %>
     
-    <script>
-        let role_item_template_safe = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_safe, myRole: role}) %>`;
-        let role_item_template_danger_1 = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_1, myRole: role}) %>`;
-        let role_item_template_danger_plural = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_plural, myRole: role}) %>`;
-    </script> -->
+   
     
     <script src="/js/event_type.js"></script>
     <div class="mainbodyoutside flex center">
@@ -41,7 +36,7 @@
                     
                 </div>
                 <div id="event-type-list" class="flex center start event-type-list">
-                    
+                    <%- include('./partials/config/all_event_types.ejs', {eventTypes: eventTypes}); %>
                 </div>
             </div>
             

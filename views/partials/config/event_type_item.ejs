@@ -11,58 +11,56 @@
 
 -->
 
-<div class="role-view floating-box" data-rid="<%= role.rid %>">
+<div class="event-type-view floating-box" data-etyid="<%= eventType.etyid %>">
     <div class="flex apart">
-        <% if(myRole && myRole.name == role.name) { %>
-            <span class="tiny tag-text info-bg">You have this role</span>
-        <% } else { %>
-            <span></span>
-        <% } %>
+        <span></span>
         <div class="flex center">
-            <span class="tiny">Role ID: </span>
-            <span class="tiny role-detail-value role-main-info"><%= role.rid %></span>
+            <span class="tiny">Event Type ID: </span>
+            <span class="tiny event-type-detail-value event-type-main-info"><%= eventType.etyid %></span>
         </div>
         
     </div>
-    <% if(role.user_count > 0) { %>
-        <div class="message message-error message-in-box">
-            <span class="small message-content"><%= role.user_count %> <% if(role.user_count > 1) { %>users currently have<% } else { %>user currently has<% } %> this role!</span>
+    <% if(eventType.event_count == 0) { %>
+        <div class="message message-warning message-in-box">
+            <span class="small message-content">This event type is used for any events. Consider removing unused event types if they are old!</span>
         </div>
     <% } %>
-    <div class="flex center role-details">
-        <div class="role-detail-item">
+    <div class="flex center event-type-details">
+        <div class="event-type-detail-item">
             <div class="flex apart">
-                <span class="tiny role-detail-tag">Visible Name</span>
+                <span class="tiny event-type-detail-tag">Event Type Name</span>
             </div>
             <div class="flex apart">
-                <input data-rid="<%= role.rid %>" onchange="editRole(this)" name="name" type="text" class="input role-detail-value" placeholder="Role Name" value="<%= role.name %>"/>
+                <input data-etyid="<%= eventType.etyid %>" onchange="editRole(this)" name="name" type="text" class="input event-type-detail-value" placeholder="Name" value="<%= eventType.name %>"/>
             </div>
         </div>
-        <div class="role-detail-item">
+    </div>
+    <div class="flex center event-type-details">
+        <div class="event-type-detail-item">
             <div class="flex apart">
-                <span class="tiny role-detail-tag">Permission</span>
+                <span class="tiny event-type-detail-tag">Visible Icon</span>
             </div>
             <div class="flex apart">
-                <input data-rid="<%= role.rid %>" onchange="editRole(this)" name="permission" type="number" class="input role-detail-value permission-input" placeholder="Role Name" value="<%= role.permission %>"/>
+                <input data-etyid="<%= eventType.etyid %>" disabled name="permission" type="number" class="input event-type-detail-value permission-input" placeholder="Role Name" value="<%= eventType.icon %>"/>
             </div>
         </div>
     </div>
     <div class="flex center">
-        <div class="role-detail-item">
+        <div class="event-type-detail-item">
             <div class="flex apart">
-                <span class="tiny role-detail-tag">Description</span>
+                <span class="tiny event-type-detail-tag">Main Color</span>
             </div>
             <div class="flex apart">
-                <textarea data-rid="<%= role.rid %>" onchange="editRole(this)" name="description" class="input small role-detail-value"><%= role.description %></textarea>
+                <input data-etyid="<%= eventType.etyid %>" disabled name="permission" type="number" class="input event-type-detail-value permission-input" placeholder="Role Name" value="<%= eventType.icon %>"/>
             </div>
         </div>
     </div>
     <div class="flex center">
-        <span class="small no-display error error-message" name="error" data-rid="<%= role.rid %>"></span>
+        <span class="small no-display error error-message" name="error" data-etyid="<%= eventType.etyid %>"></span>
     </div>
     <div class="flex apart">
         <div class="flex center">
-            <button data-rid="<%= role.rid %>" onclick="deleteRole(this)" class="button-alternate"><span class="button-text">Remove</span></button>
+            <button data-etyid="<%= eventType.etyid %>" onclick="deleteRole(this)" class="button-alternate"><span class="button-text">Remove</span></button>
         </div>
     </div>
 </div>

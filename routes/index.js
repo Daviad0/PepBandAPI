@@ -101,7 +101,7 @@ router.get("/event/types", async (req, res) => {
 
     var event_types = (await db.getEventTypes()).data;
 
-    res.render("event_types", {user: req.session.user, role: req.session.role, event_types: event_types});
+    res.render("event_types", {user: req.session.user, role: req.session.role, eventTypes: event_types});
 });
 
 

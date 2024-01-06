@@ -44,10 +44,12 @@ function createConfig(){
     
     if(uniq_name == ""){
         document.getElementById("config-create-uniq_name").classList.add("input-error");
+        button.removeAttribute("disabled");
         return;
     }
     if(type == ""){
         document.getElementById("config-create-type").classList.add("input-error");
+        button.removeAttribute("disabled");
         return;
     }
 

@@ -31,19 +31,23 @@
 
 .input{
     border: 2px solid rgba(0,0,0,0.5);
+    border-color: rgba(0,0,0,0.5);
 }
 .input:focus{
     border: 2px solid #ffcd00;
+    border-color: #ffcd00;
 }
 .input:disabled{
     background-color: rgba(0,0,0,0.1);
     border: 2px solid rgba(0,0,0,0.5);
 }
 .input-error{
-    border: 2px solid red;
+    border: 2px solid #DB1A1A;
+    border-color: #DB1A1A;
 }
 .input-valid{
-    border: 2px solid green;
+    border: 2px solid #00BE35;
+    border-color: #00BE35;
 }
 select{
     background-color: white;
