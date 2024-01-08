@@ -31,13 +31,13 @@
                 <span class="tiny event-type-detail-tag">Event Type Name</span>
             </div>
             <div class="flex apart">
-                <input data-etyid="<%= eventType.etyid %>" onchange="editEventTypes(this)" name="name" type="text" class="input event-type-detail-value" placeholder="Name" value="<%= eventType.name %>"/>
+                <input data-etyid="<%= eventType.etyid %>" onchange="editEventType(this)" name="name" type="text" class="input event-type-detail-value" placeholder="Name" value="<%= eventType.name %>"/>
             </div>
         </div>
     </div>
     <div class="flex center event-type-details">
         <div class="event-type-detail-item flex center">
-            <div class="flex center">
+            <div class="flex center icon-container">
                 <span class="material-symbols-rounded icon" data-etyid="<%= eventType.etyid %>" <%= eventType.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= eventType.icon %></span>
                 <img class="icon" data-etyid="<%= eventType.etyid %>" name="icon_image" <%= eventType.icon.startsWith("IMAGE:") ? "" : "hidden" %> src="<%= eventType.icon %>"/>
             </div>

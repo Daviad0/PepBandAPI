@@ -69,14 +69,14 @@
     background-color: rgba(128, 128, 128, 0.5);
     font-size: 24px;
     transition: background-color 0.5s;
+    width: 30px;
+    height: 30px;
 }
 .icon-container:hover{
     background-color: rgba(128, 128, 128, 0.8);
     cursor: pointer;
 }
 .icon{
-    width: 30px;
-    height: 30px;
     
 }
 
