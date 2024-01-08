@@ -1,3 +1,6 @@
+<%- include('./dialog_box.ejs') %>
+
+
 <nav class="header color-header flex center">
     <a href="/"><img class="logo" src="/images/pepband.png" alt="Pep Band Logo"></a>
     <div class="fill flex apart">
@@ -9,11 +12,11 @@
             
             
             <% if(user) { %>
-                <a href="/account/logout" class="option">Log Out</a>
+                <a onclick="log_out_click()" class="option">Log Out</a>
                 <div style="width:65px;height:10px"></div>
                 
             <% } else { %>
-                <a href="/account/authenticate" class="option">Sign In</a>
+                <a onclick="sign_in_click()" class="option">Sign In</a>
             <% } %>
         </div>
     </div>

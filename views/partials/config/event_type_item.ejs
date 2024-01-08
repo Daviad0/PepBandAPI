@@ -31,17 +31,21 @@
                 <span class="tiny event-type-detail-tag">Event Type Name</span>
             </div>
             <div class="flex apart">
-                <input data-etyid="<%= eventType.etyid %>" onchange="editRole(this)" name="name" type="text" class="input event-type-detail-value" placeholder="Name" value="<%= eventType.name %>"/>
+                <input data-etyid="<%= eventType.etyid %>" onchange="editEventTypes(this)" name="name" type="text" class="input event-type-detail-value" placeholder="Name" value="<%= eventType.name %>"/>
             </div>
         </div>
     </div>
     <div class="flex center event-type-details">
-        <div class="event-type-detail-item">
+        <div class="event-type-detail-item flex center">
+            <div class="flex center">
+                <span class="material-symbols-rounded icon" data-etyid="<%= eventType.etyid %>" <%= eventType.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= eventType.icon %></span>
+                <img class="icon" data-etyid="<%= eventType.etyid %>" name="icon_image" <%= eventType.icon.startsWith("IMAGE:") ? "" : "hidden" %> src="<%= eventType.icon %>"/>
+            </div>
             <div class="flex apart">
                 <span class="tiny event-type-detail-tag">Visible Icon</span>
             </div>
             <div class="flex apart">
-                <input data-etyid="<%= eventType.etyid %>" disabled name="permission" type="number" class="input event-type-detail-value permission-input" placeholder="Role Name" value="<%= eventType.icon %>"/>
+                <input data-etyid="<%= eventType.etyid %>" hidden disabled name="permission" type="number" class="input event-type-detail-value permission-input" placeholder="Role Name" value="<%= eventType.icon %>"/>
             </div>
         </div>
     </div>
@@ -51,7 +55,7 @@
                 <span class="tiny event-type-detail-tag">Main Color</span>
             </div>
             <div class="flex apart">
-                <input data-etyid="<%= eventType.etyid %>" disabled name="permission" type="number" class="input event-type-detail-value permission-input" placeholder="Role Name" value="<%= eventType.icon %>"/>
+                <input data-etyid="<%= eventType.etyid %>" name="color" type="color" class="input event-type-detail-value permission-input" onchange="editEventType(this)" value="<%= eventType.icon %>"/>
             </div>
         </div>
     </div>
@@ -60,7 +64,7 @@
     </div>
     <div class="flex apart">
         <div class="flex center">
-            <button data-etyid="<%= eventType.etyid %>" onclick="deleteRole(this)" class="button-alternate"><span class="button-text">Remove</span></button>
+            <button data-etyid="<%= eventType.etyid %>" onclick="deleteEventType(this)" class="button-alternate"><span class="button-text">Remove</span></button>
         </div>
     </div>
 </div>

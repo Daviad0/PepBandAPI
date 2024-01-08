@@ -152,6 +152,10 @@ a .logo:hover{
 .start{
     align-items: start;
 }
+.wrap{
+    flex-wrap: wrap;
+
+}
 
 .floating-box{
     padding: 10px;
@@ -177,6 +181,7 @@ select{
 
 button{
     cursor: pointer;
+    border:none;
 }
 
 button:hover{
@@ -194,7 +199,6 @@ button:disabled{
     padding: 8px 16px;
     border-radius: 8px;
     transition: 0.5s ease all;
-    border: 2px solid transparent;
     margin: 0px 5px;
 }
 
@@ -202,7 +206,6 @@ button:disabled{
     padding: 8px 16px;
     border-radius: 8px;
     transition: 0.5s ease all;
-    border: 2px solid transparent;
     margin: 0px 5px;
 }
 
@@ -254,4 +257,101 @@ button:disabled{
     border: 2px solid transparent;
     transition: 0.5s ease all;
     margin: 0px 5px;
+}
+
+.dialog-parent{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+    
+}
+
+.dialog-show{
+    animation: dialog-blur-in 0.5s ease forwards;
+}
+
+/* create animation to blur in dialog box once added*/
+
+@keyframes dialog-blur-in {
+    from {
+        backdrop-filter: blur(0px);
+        opacity: 0;
+    }
+    to {
+        backdrop-filter: blur(5px);
+        opacity: 1;
+    }
+    
+}
+
+.dialog-hide{
+    animation: dialog-blur-out 0.5s ease forwards;
+}
+
+/* create animation to blur out dialog box once removed*/
+
+@keyframes dialog-blur-out {
+    from {
+        backdrop-filter: blur(5px);
+        opacity: 1;
+    }
+    to {
+        backdrop-filter: blur(0px);
+        opacity: 0;
+    }
+    
+}
+
+
+
+.dialog-box{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 16px;
+    z-index: 101;
+}
+
+.dialog-information{
+    width:100%;
+    min-width: 40vw;
+    margin: 10px 0px;
+}
+
+.dialog-icon-flex{
+    margin-right:20px;
+}
+
+.dialog-icon-dot{
+    width: 60px;
+    height: 60px;
+    border-radius: 40px;
+}
+.dialog-icon{
+    color: inherit;
+    font-size: 30px;
+}
+
+.dialog-text-content{
+    text-align: left;
+    margin-top:10px;
+    max-height:30vh;
+}
+
+.dialog-buttons{
+    margin-top: 10px;
+}
+
+.dialog-button{
+    margin: 5px;
+}
+
+.dialog-hidden{
+    display: none;
 }

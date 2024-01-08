@@ -7,10 +7,13 @@
   </head>
   <body>
     <%- include('./partials/header.ejs'); %>
-    <% let default_role_item_data_safe = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 0 } %>
-    <% let default_role_item_data_danger_1 = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 1 } %>
-    <% let default_role_item_data_danger_plural = {rid: "DEFAULT_RID", name: "DEFAULT_NAME", permission: "DEFAULT_PERMISSION", description: "DEFAULT_DESCRIPTION", user_count: 2 } %>
+    <% let default_event_type_item_data_icon = {etyid: "DEFAULT_ETYID", name: "DEFAULT_NAME", color: "DEFAULT_COLOR", icon: "DEFAULT_ICON", image: false} %>
+    <% let default_event_type_item_data_image = {etyid: "DEFAULT_ETYID", name: "DEFAULT_NAME", color: "DEFAULT_COLOR", icon: "IMAGE:DEFAULT_ICON", image: true} %>
     
+    <script>
+        let event_type_item_template_icon = `<%- include('./partials/config/event_type_item.ejs', {eventType: default_event_type_item_data_icon}) %>`;
+        let event_type_item_template_image = `<%- include('./partials/config/event_type_item.ejs', {eventType: default_event_type_item_data_image}) %>`;
+    </script>
    
     
     <script src="/js/event_type.js"></script>
@@ -28,7 +31,7 @@
                         <span class="small message-content">Event types only can be deleted if they aren't used in any upcoming events. All past events with a deleted event type will be inaccessible and cannot be changed until a valid event type is chosen.</span>
                     </div>
                     <div class="flex center">
-                        <button class="button-main"><span class="button-text">New Event Type</span></button>
+                        <button class="button-main" onclick="createEventType()"><span class="button-text">New Event Type</span></button>
                     </div>
                     
 

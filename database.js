@@ -305,8 +305,8 @@ class Database {
         return this.query("SELECT * FROM event_types WHERE etyid = " + etyid)
     }
 
-    setEventType(etyid, name, icon, color, extra_data){
-        let existing_event_type = this.getEventType(etyid)
+    async setEventType(etyid, name, icon, color, extra_data){
+        let existing_event_type = await this.getEventType(etyid)
 
         if(existing_event_type.success && existing_event_type.data.length > 0){
             var event_type = existing_event_type.data[0]
@@ -337,8 +337,8 @@ class Database {
         return this.query("SELECT * FROM event_templates WHERE etid = " + etid)
     }
 
-    setEventTemplate(etid, etyid, name, data){
-        let existing_event_template = this.getEventTemplate(etid)
+    async setEventTemplate(etid, etyid, name, data){
+        let existing_event_template = await this.getEventTemplate(etid)
         if(existing_event_template.success && existing_event_template.data.length > 0){
             var event_template = existing_event_template.data[0]
 

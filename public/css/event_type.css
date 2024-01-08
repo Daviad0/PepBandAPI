@@ -62,3 +62,21 @@
     margin: 5px 10px;
     margin-top:10px;
 }
+
+.icon-container{
+    padding: 4px;
+    border-radius: 8px;
+    background-color: rgba(128, 128, 128, 0.5);
+    font-size: 24px;
+    transition: background-color 0.5s;
+}
+.icon-container:hover{
+    background-color: rgba(128, 128, 128, 0.8);
+    cursor: pointer;
+}
+.icon{
+    width: 30px;
+    height: 30px;
+    
+}
+

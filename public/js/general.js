@@ -38,3 +38,133 @@ function resolve_user(element){
         }
     })
 }
+
+
+
+
+
+function sign_in_click(){
+    showDialog({
+        title: "Sign In Options",
+        description: "Please choose a method to sign into the Husky Pep Band system. If you originally signed in with a certain method, you must use that method to sign in again!",
+        icon: "group_add",
+        buttons: [
+            {
+                text: "Michigan Tech ISO",
+                class: "button-main",
+                onclick: () => {
+                    window.location.href = "/account/authenticate";
+                }
+            },
+            {
+                text: "Manual Sign In",
+                class: "button-main",
+                onclick: () => {
+                    window.location.href = "/account/manual";
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    })
+}
+
+function log_out_click(){
+    showDialog({
+        title: "Log Out",
+        description: "Are you sure you want to log out? You will not be able to log back into the system unless you have access to your original sign-in system!",
+        icon: "door_open",
+        buttons: [
+            {
+                text: "Log Out",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+                    window.location.href = "/account/logout";
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    })
+
+}
+
+
+
+
+
+
+/**
+ * 
+ * @param {object} properties
+ * @param {string} properties.title
+ * @param {string} properties.description
+ * @param {string} properties.icon
+ * @param {list} properties.buttons
+ */
+function showDialog(properties){ 
+
+
+    let dialog_component = document.getElementById("dialog-component");
+    let dialog_title = document.getElementById("dialog-title");
+    let dialog_description = document.getElementById("dialog-description");
+    let dialog_icon = document.getElementById("dialog-icon");
+
+    let dialog_buttons = document.getElementById("dialog-buttons");
+
+    let title = properties.title;
+    let description = properties.description;
+    let icon = properties.icon;
+    let buttons = properties.buttons;
+
+    dialog_title.innerHTML = title;
+    dialog_description.innerHTML = description;
+    dialog_icon.innerHTML = icon;
+
+    dialog_buttons.innerHTML = "";
+    buttons.forEach((button) => {
+        // expecting text, class, and onclick
+        // background may be defined 
+        let button_element = document.createElement("button");
+        button_element.innerHTML = button.text;
+        button_element.classList.add(button.class);
+        button_element.classList.add("dialog-button");
+        if(button.background){
+            button_element.classList.add(button.background);
+        }
+        button_element.onclick = button.onclick;
+        dialog_buttons.appendChild(button_element);
+    });
+    
+    dialog_component.classList.remove("dialog-hide");
+    dialog_component.classList.add("dialog-show");
+    dialog_component.classList.remove("dialog-hidden");
+
+
+}
+
+function hideDialog(){
+    let dialog_component = document.getElementById("dialog-component");
+    let dialog_title = document.getElementById("dialog-title");
+    let dialog_description = document.getElementById("dialog-description");
+    let dialog_icon = document.getElementById("dialog-icon");
+
+    let dialog_buttons = document.getElementById("dialog-buttons");
+
+    dialog_component.classList.remove("dialog-show");
+    dialog_component.classList.add("dialog-hide");
+    setTimeout(() => {
+        dialog_component.classList.add("dialog-hidden");
+    }, 600);
+}
