@@ -376,6 +376,59 @@ class Database {
     }
 
 
+    getSongs(){
+        return this.query("SELECT * FROM songs")
+    }
+
+    getSong(soid){
+        return this.query("SELECT * FROM songs WHERE soid = " + soid)
+    }
+
+    async setSong(soid, name, friendly_name, modification, artist, duration, source){
+        let existing_song = await this.getSong(soid)
+
+        if(existing_song.success && existing_song.data.length > 0){
+            var song = existing_song.data[0]
+
+            if(name == null) name = song.name
+            if(friendly_name == null) friendly_name = song.friendly_name
+            if(modification == null) modification = song.modification
+            if(artist == null) artist = song.artist
+            if(duration == null) duration = song.duration
+            if(source == null) source = song.source
+
+            return this.edit("UPDATE songs SET name = '" + name + "', friendly_name = '" + friendly_name + "', modification = '" + modification + "', artist = '" + artist + "', duration = '" + duration + "', source = '" + source + "', updated = CURRENT_TIMESTAMP WHERE soid = " + soid)
+        }else{
+            return this.edit("INSERT INTO songs (name, friendly_name, modification, artist, duration, source, updated) OUTPUT Inserted.soid VALUES ('" + name + "', '" + friendly_name + "', '" + modification + "', '" + artist + "', '" + duration + "', '" + source + "', CURRENT_TIMESTAMP)")
+        }
+    }
+
+    deleteSong(soid){
+        return this.edit("DELETE FROM songs WHERE soid = " + soid)
+    }
+
+    getSongUsage(soid){
+        return this.query("SELECT * FROM song_usage WHERE soid = " + soid)
+    }
+
+    async setSongUsage(soid, eid){
+        let existing_song_usage = await this.getSongUsage(soid)
+
+        if(existing_song_usage.success && existing_song_usage.data.length > 0){
+            var song_usage = existing_song_usage.data[0]
+
+            if(eid == null) eid = song_usage.eid
+
+            return this.edit("UPDATE song_usage SET last_used = CURRENT_TIMESTAMP WHERE soid = " + soid + " AND eid = " + eid)
+        }else{
+            return this.edit("INSERT INTO song_usage (soid, eid, last_used) OUTPUT Inserted.suid VALUES (" + soid + ", " + eid + ", CURRENT_TIMESTAMP)")
+        }
+
+    }
+
+    deleteSongUsage(soid, eid){
+        return this.edit("DELETE FROM song_usage WHERE soid = " + soid + " AND eid = " + eid)
+    }
 
 }
 

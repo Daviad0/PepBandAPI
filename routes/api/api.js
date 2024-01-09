@@ -10,6 +10,10 @@ router.use((req, res, next) => {
     // eventually we want to implement API keys to get the user's role
 });
 
+router.get("/", (req, res) => {
+    res.send({message: "I'm alive!"})
+});
+
 
 
 module.exports = (useDb) => {
