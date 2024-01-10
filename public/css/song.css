@@ -1,0 +1,51 @@
+.song-detail-item{
+    margin: 5px 10px;
+}
+
+.song-details{
+    flex-wrap: wrap;
+}
+
+.song-detail-value{
+    font-weight: bold;
+}
+
+.song-item{
+    padding: 15px 0px;
+    border-bottom: 1px dashed #ccc;
+
+}
+
+.song-main-info{
+    margin: 5px;
+}
+
+.song-detail-tag{
+    margin-left:5px;
+    margin-bottom: 2px;
+}
+
+.song-list{
+    height: 100%;
+    overflow-y: auto;
+}
+.song-header{
+    margin-bottom: 20px;
+
+}
+
+.song-vertical-flex{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    height: calc(100vh - 100px);
+}
+
+.no-display{
+    display: none;
+}
+
+.error-message{
+    margin-top:5px;
+}
+

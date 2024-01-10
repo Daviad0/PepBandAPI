@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Event Template Edit</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/event_management.css" />
+  </head>
+  <body>
+    
+    <%- include('./partials/header.ejs'); %>
+    <script src="/js/config.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="config-vertical-flex">
+                <div class="config-header">
+                    <div class="flex center">
+                        <span class="large spacing">Manage </span>
+                        <input class="large" type="text" placeholder="Event Template Name" id="event-template-name" />
+                    </div>
+
+                    <div class="flex-center">
+                        <button class="button-main error-bg"><span class="button-text">Delete Event Template</span></button>
+                        <button class="button-main"><span class="button-text">Duplicate Event Template</span></button>
+                    </div>
+                    
+    
+                    
+            </div>
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!--
+
+    "song" parameter is passed from the above snippet
+
+    - soid
+    - name
+    - friendly_name
+    - artist
+    - modification
+    - duration
+    - source
+
+
+
+-->
+
+<div class="config-item" data-soid="<%= song.soid %>">
+    <div>
+        <div class="flex apart">
+            <div class="flex center config-detail-tag">
+                <span class="tiny config-main-info">Song ID: </span>
+                <span class="tiny config-detail-value config-main-info"><%= config.cid %></span>
+                
+            </div>
+        </div>
+        
+        <div class="flex apart config-details">
+            <div class="flex center config-details">
+                <div class="config-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny config-detail-tag">Full Name</span>
+                    </div>
+                    <div class="flex apart">
+                        <input data-soid="<%= song.soid %>" value="<%= song.name %>" type="text" class="input config-detail-value" name="name" placeholder="name" value="<%= song.soid %>"/>
+                    </div>
+                </div>
+                <div class="config-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny config-detail-tag">Artist</span>
+                    </div>
+                    <div class="flex apart">
+                        <input data-soid="<%= song.soid %>" value="<%= song.name %>" type="text" class="input config-detail-value" name="artist" placeholder="name" value="<%= song.soid %>"/>
+                    </div>
+                </div>
+                
+                <div class="config-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny config-detail-tag">Visible Name</span>
+                    </div>
+                    <div class="flex apart">
+                        <input data-soid="<%= song.soid %>" onchange="editConfig(this)" type="text" class="input config-detail-value" placeholder="Config Name" name="name" value="<%= config.name %>" />
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="config-detail-item">
+                <button data-soid="<%= song.soid %>" onclick="deleteConfig(this)" class="button-alternate"><span class="button-text">Delete</span></button>
+                <button data-soid="<%= song.soid %>" onclick="deleteConfig(this)" class="button-alternate"><span class="button-text">Duplicate</span></button>
+            </div>
+        </div>
+        <div>
+            <span class="small no-display error error-message" name="error" data-soid="<%= song.soid%>"></span>
+        </div>
+    </div>
+    
+    
+</div>

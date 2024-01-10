@@ -83,7 +83,9 @@ router.get("/event/create", async (req, res) => {
         //     return;
         // }
     
-        res.render("event_create", {user: req.session.user, role: req.session.role});
+        var event_types = (await db.getEventTypes()).data;
+
+        res.render("event_create", {user: req.session.user, role: req.session.role, eventTypes: event_types});
     
 });
 
@@ -102,6 +104,40 @@ router.get("/event/types", async (req, res) => {
     var event_types = (await db.getEventTypes()).data;
 
     res.render("event_types", {user: req.session.user, role: req.session.role, eventTypes: event_types});
+});
+
+router.get("/event/templates", async (req, res) => {
+    
+    // access control for later :)
+
+    // if(!(await db.checkAccess(req.session.role, "event_templates_edit"))){
+        //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+        //         code: 403,
+        //         message: "Access denied"
+        //     }});
+        //     return;
+        // }
+
+    var event_templates = (await db.getEventTemplates()).data;
+
+    res.render("event_templates", {user: req.session.user, role: req.session.role, eventTemplates: event_templates});
+});
+
+router.get("/event/template/:etid", async (req, res) => {
+        
+    // access control for later :)
+
+    // if(!(await db.checkAccess(req.session.role, "event_templates_edit"))){
+        //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+        //         code: 403,
+        //         message: "Access denied"
+        //     }});
+        //     return;
+        // }
+
+    var event_template = (await db.getEventTemplate(req.params.etid)).data;
+
+    res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template});
 });
 
 

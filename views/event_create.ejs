@@ -7,6 +7,7 @@
   </head>
   <body>
     <%- include('./partials/header.ejs'); %>
+    <script src="/js/event_create.js"></script>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
             <span class="large">Create Event</span>
@@ -28,13 +29,9 @@
                     <span class="small label">Event Type</span>
                     <select class="input select-from-none">
                         <option value="" disabled selected>Select your option</option>
-                        <option value="1">Pep Band</option>
-                        <option value="2">Hockey</option>
-                        <option value="3">Basketball</option>
-                        <option value="4">Volleyball</option>
-                        <option value="5">Football</option>
-                        <option value="6">Soccer</option>
-                        <option value="7">Other</option>
+                        <% eventTypes.forEach(function(eventType) { %>
+                            <option value="<%= eventType.etyid %>"><%= eventType.name %></option>
+                        <% }); %>
                     </select>
                 </div>
                 <div class="flex center section">

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Events</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/song.css" />
+  </head>
+  <body>
+    
+    <%- include('./partials/header.ejs'); %>
+    <script src="/js/song.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="config-vertical-flex">
+                <div class="config-header">
+                    <div class="flex center">
+                        <span class="large spacing">Manage Song List</span>
+                    </div>
+                    
+    
+                    <span class="small spacing">Manage all of the existing configuration for the entire pep band website.</span>
+                    <div class="message message-warning">
+                        <span class="small message-content">This configuration applies for all users of the website. If you would like to edit your own configuration, please go <strong>here.</strong></span>
+                        <span class="small message-content"><i>All edits to the site configuration are logged!</i></span>
+                    </div>
+                    <div class="flex center">
+                        <span class="small spacing">Unique Config Name</span>
+                        <input type="text" class="input small" placeholder="Config_Name" name="name" id="config-create-uniq_name" />
+                        <select class="input small" name="type" id="config-create-type">
+                            <option value="" disabled selected>Config Type</option>
+                            <option value="string">String</option>
+                            <option value="number">Number</option>
+                            <option value="boolean">Boolean</option>
+                            <option value="date">Date</option>
+                            <option value="datetime">Datetime</option>
+                        </select>
+                        <button class="button-main" onclick="createConfig()" id="config-create"><span class="button-text">Create Config</span></button>
+                    </div>
+                    
+                    
+                    
+                </div>
+                <div id="config-list" class="config-list">
+                    <%- include('./partials/config/all_config.ejs', {config: config}); %>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

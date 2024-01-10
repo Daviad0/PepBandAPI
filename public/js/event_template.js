@@ -78,3 +78,5 @@ function changeSlots(element, value){
     }
 }
 
+
+
