@@ -150,6 +150,12 @@ class Database {
         return this.query("SELECT * FROM identity_management WHERE mtu_id = '" + mtu_id + "'")
     }
 
+    getIdentity_mtuuid(mtu_uid){
+        mtu_uid = sanitizer.sanitize(mtu_uid)
+
+        return this.query("SELECT * FROM identity_management WHERE mtu_uid = '" + mtu_uid + "'")
+    }
+
     getIdentity_uid(uid){
 
         return this.query("SELECT * FROM identity_management WHERE uid = " + uid)
@@ -176,39 +182,41 @@ class Database {
 
     // returns the direct user
     // ONLY the CAS is allowed to call this function
-    async setup_user_cas(mtu_id, is_mtu){
+    async setup_user_cas(mtu_id, mtu_uid, is_mtu){
         mtu_id = sanitizer.sanitize(mtu_id)
+        mtu_uid = sanitizer.sanitize(mtu_uid)
 
-        let identity = await this.getIdentity_mtusso(mtu_id)
+        let identity = await this.getIdentity_mtuuid(mtu_uid)
         console.log(identity.data)
         if(identity.success && identity.data.length > 0){
             // user exists
 
             // set last_seen of user to current time
-            let query = "UPDATE identity_management SET last_seen = CURRENT_TIMESTAMP WHERE mtu_id = '" + mtu_id + "'"
+            // update mtu_id if it's different
+            let query = "UPDATE identity_management SET last_seen = CURRENT_TIMESTAMP, mtu_id = '" + mtu_id + "' WHERE mtu_uid = '" + mtu_uid + "'"
             this.edit(query);
 
             return identity.data[0]
         } else {
             // user doesn't exist
             let is_mtu_bit = is_mtu ? 1 : 0
-            let query = "INSERT INTO identity_management (mtu_id, mtu_based) VALUES ('" + mtu_id + "', " + is_mtu_bit + ")"
+            let query = "INSERT INTO identity_management (mtu_id, mtu_uid, mtu_based) VALUES ('" + mtu_id + "', '" + mtu_uid + "' , " + is_mtu_bit + ")"
 
             let result = await this.edit(query)
 
             if(result.success){
-                return await this.setup_user(mtu_id, is_mtu)
+                return await this.setup_user_cas(mtu_id, mtu_uid, is_mtu)
             } else {
                 return null
             }
         }
     }
 
-    async update_user_information(mtu_id, full_name, email){
+    async update_user_information(mtu_uid, full_name, email){
         full_name = sanitizer.sanitize(full_name);
         email = sanitizer.sanitize(email);
 
-        let query = "UPDATE identity_management SET full_name = '" + full_name + "', email = '" + email + "' WHERE mtu_id = '" + mtu_id + "'";
+        let query = "UPDATE identity_management SET full_name = '" + full_name + "', email = '" + email + "' WHERE mtu_uid = '" + mtu_uid + "'";
 
         return await this.edit(query)
     }
@@ -348,7 +356,7 @@ class Database {
 
             return this.edit("UPDATE event_templates SET etyid = " + etyid + ", name = '" + name + "', data = '" + data + "', updated = CURRENT_TIMESTAMP WHERE etid = " + etid)
         }else{
-            return this.edit("INSERT INTO event_templates (etyid, name, data, updated) OUTPUT Inserted.eitd VALUES (" + etyid + ", '" + name + "', '" + data + "', CURRENT_TIMESTAMP)")
+            return this.edit("INSERT INTO event_templates (etyid, name, data, updated) OUTPUT Inserted.etid VALUES (" + etyid + ", '" + name + "', '" + data + "', CURRENT_TIMESTAMP)")
         }
     }
 

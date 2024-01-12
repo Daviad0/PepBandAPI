@@ -8,24 +8,42 @@
   <body>
     
     <%- include('./partials/header.ejs'); %>
-    <script src="/js/config.js"></script>
+    <script src="/js/event-template.js"></script>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
-            <div class="config-vertical-flex">
-                <div class="config-header">
+            <div class="event-management-vertical-flex">
+                <div class="event-management-header">
                     <div class="flex center">
-                        <span class="large spacing">Manage </span>
-                        <input class="large" type="text" placeholder="Event Template Name" id="event-template-name" />
+                        <span class="large spacing">Manage <%= eventTemplate.name %></span>
+                        <input class="large input" type="text" placeholder="Event Template Name" id="event-template-name" />
+                    </div>
+                    <div class="flex center spacing">
+                        <span class="small spacing">Event Template ID: </span>
+                        <span class="tiny event-management-detail-value event-management-main-info"><%= eventTemplate.etid %></span>
+
+                    </div>
+                    
+                    <div class="message message-warning">
+                        <span class="small message-content">You have unsaved changes! Press the "Save Event Template" button or use CTRL-S to save!</span>
                     </div>
 
-                    <div class="flex-center">
+                    <div class="flex center spacing">
                         <button class="button-main error-bg"><span class="button-text">Delete Event Template</span></button>
                         <button class="button-main"><span class="button-text">Duplicate Event Template</span></button>
+                        <button class="button-main success-bg" disabled id="save-event-template"><span class="button-text">Save Event Template</span></button>
                     </div>
                     
-    
+                </div>
+
+                <div>
+                    <%- include('./partials/event/song_slot.ejs') %>
+                </div>
+
+                
                     
             </div>
+
+
             
         </div>
         

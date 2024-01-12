@@ -14,49 +14,49 @@
 
 -->
 
-<div class="config-item" data-soid="<%= song.soid %>">
+<div class="song-item" data-soid="<%= song.soid %>">
     <div>
         <div class="flex apart">
-            <div class="flex center config-detail-tag">
-                <span class="tiny config-main-info">Song ID: </span>
-                <span class="tiny config-detail-value config-main-info"><%= config.cid %></span>
+            <div class="flex center song-detail-tag">
+                <span class="tiny song-main-info">Song ID: </span>
+                <span class="tiny song-detail-value song-main-info"><%= song.cid %></span>
                 
             </div>
         </div>
         
-        <div class="flex apart config-details">
-            <div class="flex center config-details">
-                <div class="config-detail-item">
+        <div class="flex apart song-details">
+            <div class="flex center song-details">
+                <div class="song-detail-item">
                     <div class="flex apart">
-                        <span class="tiny config-detail-tag">Full Name</span>
+                        <span class="tiny song-detail-tag">Full Name</span>
                     </div>
                     <div class="flex apart">
-                        <input data-soid="<%= song.soid %>" value="<%= song.name %>" type="text" class="input config-detail-value" name="name" placeholder="name" value="<%= song.soid %>"/>
+                        <input data-soid="<%= song.soid %>" value="<%= song.name %>" type="text" class="input song-detail-value" name="name" placeholder="name" value="<%= song.soid %>"/>
                     </div>
                 </div>
-                <div class="config-detail-item">
+                <div class="song-detail-item">
                     <div class="flex apart">
-                        <span class="tiny config-detail-tag">Artist</span>
+                        <span class="tiny song-detail-tag">Artist</span>
                     </div>
                     <div class="flex apart">
-                        <input data-soid="<%= song.soid %>" value="<%= song.name %>" type="text" class="input config-detail-value" name="artist" placeholder="name" value="<%= song.soid %>"/>
+                        <input data-soid="<%= song.soid %>" value="<%= song.name %>" type="text" class="input song-detail-value" name="artist" placeholder="name" value="<%= song.soid %>"/>
                     </div>
                 </div>
                 
-                <div class="config-detail-item">
+                <div class="song-detail-item">
                     <div class="flex apart">
-                        <span class="tiny config-detail-tag">Visible Name</span>
+                        <span class="tiny song-detail-tag">Visible Name</span>
                     </div>
                     <div class="flex apart">
-                        <input data-soid="<%= song.soid %>" onchange="editConfig(this)" type="text" class="input config-detail-value" placeholder="Config Name" name="name" value="<%= config.name %>" />
+                        <input data-soid="<%= song.soid %>" onchange="editsong(this)" type="text" class="input song-detail-value" placeholder="song Name" name="name" value="<%= song.name %>" />
                     </div>
                 </div>
                 
             </div>
             
-            <div class="config-detail-item">
-                <button data-soid="<%= song.soid %>" onclick="deleteConfig(this)" class="button-alternate"><span class="button-text">Delete</span></button>
-                <button data-soid="<%= song.soid %>" onclick="deleteConfig(this)" class="button-alternate"><span class="button-text">Duplicate</span></button>
+            <div class="song-detail-item">
+                <button data-soid="<%= song.soid %>" onclick="deletesong(this)" class="button-alternate"><span class="button-text">Delete</span></button>
+                <button data-soid="<%= song.soid %>" onclick="deletesong(this)" class="button-alternate"><span class="button-text">Duplicate</span></button>
             </div>
         </div>
         <div>

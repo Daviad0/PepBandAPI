@@ -135,6 +135,17 @@ router.get("/event/template/:etid", async (req, res) => {
         //     return;
         // }
 
+    var etid = req.params.etid;
+
+    if(etid == "create"){
+        db.setEventTemplate(null, null, null, null).then((result) => {
+            let etid = result.data.recordset[0].etid;
+        
+            res.redirect("/event/template/" + etid);
+        });
+        return;
+    }
+
     var event_template = (await db.getEventTemplate(req.params.etid)).data;
 
     res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template});
