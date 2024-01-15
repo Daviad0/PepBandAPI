@@ -27,6 +27,21 @@ router.post("/create", (req, res) => {
     });
 });
 
+router.post("/:soid/delete", (req, res) => {
+    // expecting soid in body, not OK if null
+
+    var soid = req.body.soid;
+    if(!soid){
+        res.status(400).send({message: "soid property required to delete song"});
+        return;
+    }
+
+    db.deleteSong(soid).then((result) => {
+        res.send(result.data);
+    });
+
+});
+
 router.post("/", (req, res) => {
     // expecting soid in body, not OK if null
     // expecting name in body, OK if null

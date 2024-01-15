@@ -23,7 +23,7 @@ function createRole(){
         return;
     }
 
-    let url = "/api/identity/roles/new";
+    let url = "/api/identity/roles/create";
     let data = {name: name};
 
     apiPost(url, data, (result) => {

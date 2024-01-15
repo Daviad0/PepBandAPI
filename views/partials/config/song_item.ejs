@@ -19,61 +19,72 @@
         <div class="flex apart">
             <div class="flex center song-detail-tag">
                 <span class="tiny song-main-info">Song ID: </span>
-                <span class="tiny song-detail-value song-main-info"><%= song.cid %></span>
+                <span class="tiny song-detail-value song-main-info"><%= song.soid %></span>
                 
             </div>
         </div>
         
         <div class="flex apart song-details">
-            <div class="flex center wrap song-details">
-                <div class="song-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny song-detail-tag">Full Name</span>
+            <div>
+                <div class="flex center wrap song-details">
+                    <div class="song-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny song-detail-tag">Full Name</span>
+                        </div>
+                        <div class="flex apart">
+                            <input data-soid="<%= song.soid %>" onchange="editSong(this)" value="<%= song.name %>" type="text" class="input song-detail-value" name="name" placeholder="name"/>
+                        </div>
                     </div>
-                    <div class="flex apart">
-                        <input data-soid="<%= song.soid %>" value="<%= song.name %>" type="text" class="input song-detail-value" name="name" placeholder="name" value="<%= song.soid %>"/>
+                    <div class="song-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny song-detail-tag">Artist</span>
+                        </div>
+                        <div class="flex apart">
+                            <input data-soid="<%= song.soid %>" onchange="editSong(this)" value="<%= song.name %>" type="text" class="input song-detail-value" name="artist" placeholder="artist"/>
+                        </div>
                     </div>
-                </div>
-                <div class="song-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny song-detail-tag">Artist</span>
+                    
+                    <div class="song-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny song-detail-tag">Source</span>
+                        </div>
+                        <div class="flex apart">
+                            <input data-soid="<%= song.soid %>" onchange="editSong(this)" type="text" class="input song-detail-value" placeholder="Source" name="source"/>
+                        </div>
                     </div>
-                    <div class="flex apart">
-                        <input data-soid="<%= song.soid %>" value="<%= song.name %>" type="text" class="input song-detail-value" name="artist" placeholder="name" value="<%= song.soid %>"/>
-                    </div>
-                </div>
-                
-                <div class="song-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny song-detail-tag">Visible Name</span>
-                    </div>
-                    <div class="flex apart">
-                        <input data-soid="<%= song.soid %>" onchange="editsong(this)" type="text" class="input song-detail-value" placeholder="song Name" name="name" value="<%= song.name %>" />
-                    </div>
-                </div>
-
-                <div class="song-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny song-detail-tag">Duration</span>
-                    </div>
-                    <div class="flex apart">
-                        
+                    <div onclick="toggleSongExpansion(this)" class="song-expand-button flex center" data-soid="<%= song.soid %>">
+                        <span class="material-symbols-rounded song-expand-button-content medium">arrow_downward</span>
                     </div>
                 </div>
-                
-                <div class="song-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny song-detail-tag">Source</span>
+                <div class="flex center wrap song-expand song-expand-hide" data-soid="<%= song.soid %>">
+                    <div class="song-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny song-detail-tag">Visible Name</span>
+                        </div>
+                        <div class="flex apart">
+                            <input data-soid="<%= song.soid %>" onchange="editSong(this)" value="<%= song.friendly_name %>" type="text" class="input song-detail-value" name="friendly_name" placeholder="friendly_name"/>
+                        </div>
                     </div>
-                    <div class="flex apart">
-                        <input data-soid="<%= song.soid %>" onchange="editsong(this)" type="text" class="input song-detail-value" placeholder="song Name" name="name" value="<%= song.name %>" />
-                    </div>
+                    
+                    
                 </div>
-                
+                <div class="flex center wrap song-expand song-expand-hide" data-soid="<%= song.soid %>">
+                    <div class="song-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny song-detail-tag">Modification</span>
+                        </div>
+                        <div class="flex apart">
+                            <input data-soid="<%= song.soid %>" onchange="editSong(this)" value="<%= song.modification %>" type="text song-italics" class="input song-detail-value" name="modification" placeholder="Act 1"/>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
             </div>
             
+            
             <div class="song-detail-item">
-                <button data-soid="<%= song.soid %>" onclick="deletesong(this)" class="button-alternate"><span class="button-text">Delete</span></button>
+                <button data-soid="<%= song.soid %>" onclick="deleteSong(this)" class="button-alternate"><span class="button-text">Delete</span></button>
                 <button data-soid="<%= song.soid %>" onclick="deletesong(this)" class="button-alternate"><span class="button-text">Duplicate</span></button>
             </div>
         </div>

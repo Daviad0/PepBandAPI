@@ -97,7 +97,7 @@ router.get("/roles/:rid", async (req, res) => {
 
 });
 
-router.post("/roles/new", async (req, res) => {
+router.post("/roles/create", async (req, res) => {
     // expecting name in body, not OK if null
 
     if(!(await db.checkAccess(req.session.role, "other_roles_edit"))){

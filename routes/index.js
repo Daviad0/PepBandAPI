@@ -161,6 +161,13 @@ router.get("/event/template/:etid", async (req, res) => {
     res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template});
 });
 
+router.get("/songs", async (req, res) => {
+    var songs = (await db.getSongs()).data;
+
+    res.render("songs", {user: req.session.user, role: req.session.role, songs: songs});
+
+});
+
 
 
 // WARNING: this route must be last

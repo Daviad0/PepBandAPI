@@ -49,3 +49,46 @@
     margin-top:5px;
 }
 
+/* make italics*/
+.song-italics{
+    font-style: italic;
+}
+
+
+
+.song-expand{
+    height: auto;
+    overflow: hidden;
+    transition: all 0.5s ease-in-out;
+}
+.song-expand-hide{
+    max-height: 0px;   
+    
+}
+.song-expand-show{
+    max-height: 1000px;
+}
+
+.song-expand-button{
+    margin: 5px 0px;
+    width: 30px;
+    height: 30px;
+    border-radius: 32px;
+    cursor: pointer;
+    background-color: #ffcd00;
+    color: white;
+    transition: all 0.5s ease-in-out;
+}
+
+.song-expand-button-content{
+    color: inherit;
+}
+
+.song-expand-button:hover{
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+}
+
+.song-expand-button-show{
+    transform: rotate(180deg);
+}
+
