@@ -25,7 +25,7 @@
         </div>
         
         <div class="flex apart song-details">
-            <div class="flex center song-details">
+            <div class="flex center wrap song-details">
                 <div class="song-detail-item">
                     <div class="flex apart">
                         <span class="tiny song-detail-tag">Full Name</span>
@@ -46,6 +46,24 @@
                 <div class="song-detail-item">
                     <div class="flex apart">
                         <span class="tiny song-detail-tag">Visible Name</span>
+                    </div>
+                    <div class="flex apart">
+                        <input data-soid="<%= song.soid %>" onchange="editsong(this)" type="text" class="input song-detail-value" placeholder="song Name" name="name" value="<%= song.name %>" />
+                    </div>
+                </div>
+
+                <div class="song-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny song-detail-tag">Duration</span>
+                    </div>
+                    <div class="flex apart">
+                        
+                    </div>
+                </div>
+                
+                <div class="song-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny song-detail-tag">Source</span>
                     </div>
                     <div class="flex apart">
                         <input data-soid="<%= song.soid %>" onchange="editsong(this)" type="text" class="input song-detail-value" placeholder="song Name" name="name" value="<%= song.name %>" />

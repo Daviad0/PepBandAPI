@@ -1,0 +1,32 @@
+<div class="segment floating-box" name="segment" data-segid="<%= segment.segid %>">
+    <div class="flex apart spacing">
+        <div>
+            <div class="flex apart">
+                <span class="tiny event-management-detail-tag">Segment Name</span>
+            </div>
+            <div class="flex apart">
+                <input class="medium input" onchange="editSegmentProperty(this)" data-segid="<%= segment.segid %>" value="<%= segment.name %>" name="name" type="text" placeholder="Segment Name" />
+            </div>
+        </div>
+        
+        <div class="flex center">
+            <button onclick="deleteSegment(this)" data-segid="<%= segment.segid %>" class="button-main error-bg flex center"><span class="button-text large material-symbols-rounded">delete</span></button>
+            <button onclick="moveSegment(this, -1)" data-segid="<%= segment.segid %>" class="button-alternate flex center"><span class="button-text large material-symbols-rounded">arrow_upward</span></button>
+            <button onclick="moveSegment(this, 1)" data-segid="<%= segment.segid %>" class="button-alternate flex center"><span class="button-text large material-symbols-rounded">arrow_downward</span></button>
+        </div>
+    </div>
+    <div class="slot-list">
+        <div class="flex center wrap" name="slot-list" data-segid="<%= segment.segid %>">
+            <% for(let s = 0; s < segment.slots; s++) { %>
+                <!-- Let the javascript do the seeding of the songs. It needs to verify with the database that the information is correct... -->
+                <%- include('./song_slot.ejs', {segment: segment, slotIndex: s}) %>
+            <% } %>
+        </div>
+        <div class="flex center spacing">
+            <button onclick="addSlot(this)" name="add-slot" class="button-alternate flex" data-segid="<%= segment.segid %>"><span class="button-text">Add Slot</span></button>
+        </div>
+        
+
+    </div>
+    
+</div>

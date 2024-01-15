@@ -121,11 +121,37 @@ router.post("/template", (req, res) => {
     if(!data) data = null;
 
     db.setEventTemplate(etid, etyid, name, data).then((result) => {
-        res.send(result.data);
+        res.send(result);
     
     });
 
 })
+
+router.post("/template/clone", (req, res) => {
+    // expecting etid in body, not OK if null
+
+    var oldEtid = req.body.etid;
+    if(!oldEtid){
+        res.status(400).send({message: "etid property required to clone event template"});
+        return;
+    }
+
+    db.setEventTemplate(null,null,null,null).then(async (result) => {
+        let etid = result.data.recordset[0].etid;
+
+        
+
+        let oldEvent = (await db.getEventTemplate(oldEtid)).data[0];
+        
+        db.setEventTemplate(etid, oldEvent.etyid, oldEvent.name, oldEvent.data).then((result) => {
+            db.getEventTemplate(etid).then((result) => {
+                res.send(result);
+            });
+        });
+
+        
+    });
+});
 
 router.post("/template/delete", (req, res) => {
 

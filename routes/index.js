@@ -148,6 +148,16 @@ router.get("/event/template/:etid", async (req, res) => {
 
     var event_template = (await db.getEventTemplate(req.params.etid)).data;
 
+    if(event_template.length == 0){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Event template not found"
+        }});
+        return;
+    }
+
+    event_template = event_template[0];
+
     res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template});
 });
 

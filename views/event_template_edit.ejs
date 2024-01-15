@@ -6,16 +6,49 @@
     <link rel="stylesheet" href="/css/event_management.css" />
   </head>
   <body>
+    <!--
+        slots can by default be 0 since the user has to manaully add slots for them
+    -->
+    <% let default_segment = { segid: "DEFAULT_SEGID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", idealTime: "DEFAULT_IDEALTIME", notifyOnChange: "DEFAULT_NOTIFYONCHANGE", slots: "DEFAULT_SLOTS" } %>
+    <% let default_slot = { slotIndex: "DEFAULT_SLOTINDEX", segment: default_segment, song: "DEFAULT_SONG" } %>
+    <% let templateData = JSON.parse(eventTemplate.data) %>
+    <% if(templateData == null || templateData == {}) { %>
+        <% templateData = {segments: []}; %>
+    <% } %>
+    <script>
+        let segment_template = `<%- include('./partials/event/segment.ejs', {segment: default_segment}) %>`;
+        let slot_template = `<%- include('./partials/event/song_slot.ejs', default_slot) %>`;
+        // get template data directly from the server; it needs to be stored for a JSON builder
+        let dataStructure = JSON.stringify(<%- eventTemplate.data %>);
+        let usingEtid = "<%= eventTemplate.etid %>";
+        dataStructure = JSON.parse(dataStructure);
+        if(dataStructure == null || dataStructure == {}) {
+            dataStructure = {segments: []};
+        }
+    </script>
     
     <%- include('./partials/header.ejs'); %>
-    <script src="/js/event-template.js"></script>
+    <script src="/js/event_template.js"></script>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
             <div class="event-management-vertical-flex">
                 <div class="event-management-header">
+                    <div class="flex center spacing">
+                        <button onclick="window.location = '/event/templates'" class="button-alternate"><span class="button-text">See All Templates</span></button>
+                    </div>
+                    
                     <div class="flex center">
-                        <span class="large spacing">Manage <%= eventTemplate.name %></span>
-                        <input class="large input" type="text" placeholder="Event Template Name" id="event-template-name" />
+                        <span class="large spacing">Manage</span>
+                        <div class="config-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny event-management-detail-tag">Template Name</span>
+                            </div>
+                            <div class="flex apart">
+                                <input name="name" onchange="editTemplate(this)" class="large input" value="<%= eventTemplate.name %>" type="text" placeholder="Event Template Name" id="event-template-name" />
+                            </div>
+                        </div>
+                        
+                        
                     </div>
                     <div class="flex center spacing">
                         <span class="small spacing">Event Template ID: </span>
@@ -28,16 +61,29 @@
                     </div>
 
                     <div class="flex center spacing">
-                        <button class="button-main error-bg"><span class="button-text">Delete Event Template</span></button>
-                        <button class="button-main"><span class="button-text">Duplicate Event Template</span></button>
-                        <button class="button-main success-bg" disabled id="save-event-template"><span class="button-text">Save Event Template</span></button>
+                        <button onclick="deleteEventTemplate()" class="button-main error-bg"><span class="button-text">Delete Event Template</span></button>
+                        <button onclick="cloneEventTemplate()" class="button-main"><span class="button-text">Duplicate Event Template</span></button>
+                        <button onclick="saveTemplateStructure()" class="button-main success-bg" disabled id="save-event-template"><span class="button-text">Save Template Structure</span></button>
+                    </div>
+                    <div>
+                        <span class="small no-display error error-message" name="error"></span>
                     </div>
                     
                 </div>
 
-                <div>
-                    <%- include('./partials/event/song_slot.ejs') %>
+                <div class="event-management-list">
+                    <div class="flex center spacing">
+                        <button onclick="createSegment()" class="button-main"><span class="button-text">Add Segment</span></button>
+                    </div>
+    
+                    <div id="segment-list">
+                        <% templateData.segments.forEach((segment) => { %>
+                            <%- include('./partials/event/segment.ejs', {segment: segment}) %>
+                        <% }); %>
+                    </div>
                 </div>
+
+                
 
                 
                     

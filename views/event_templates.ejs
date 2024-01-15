@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Events</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/event_management.css" />
+  </head>
+  <body>
+    
+    <%- include('./partials/header.ejs'); %>
+    <script src="/js/event_template.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="event-management-vertical-flex">
+                <div class="event-management-header">
+                    <div class="flex center">
+                        <span class="large spacing">View / Manage Event Templates</span>
+                    </div>
+                    
+    
+                    <span class="small spacing">Manage all of the event templates that make it easier to quickly create events for any occasion!</span>
+                    <div class="message message-info">
+                        <span class="small message-content">Events are not dependant on their event templates after they are created. Deleting event templates is okay, but you must take caution that the event template you are deleting is no longer useful.</span>
+                        
+                    </div>
+                    
+                </div>
+
+                <div class="event-management-list">
+    
+                    <div>
+                        <% eventTemplates.forEach((eventTemplate) => { %>
+                            <%- include('./partials/event/event_template.ejs', {eventTemplate: eventTemplate}) %>
+                        <% }); %>
+                    </div>
+                </div>
+
+                
+
+                
+                    
+            </div>
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

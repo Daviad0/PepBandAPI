@@ -1,0 +1,25 @@
+<div class="spacing floating-box">
+
+    <% let templateData = JSON.parse(eventTemplate.data); %>
+    <% if(templateData == null || templateData == {}) { %>
+        <% templateData = {segments: []}; %>
+    <% } %>
+    <% let segmentCount = templateData.segments.length; %>
+    
+    <div class="flex apart">
+        <span class="large spacing"><%= eventTemplate.name %></span>
+        <div class="flex center spacing">
+            <span class="small spacing">Event Template ID: </span>
+            <span class="tiny event-management-detail-value event-management-main-info"><%= eventTemplate.etid %></span>
+
+        </div>
+    </div>
+    <div class="flex apart">
+        <div></div>
+        <div class="flex center spacing">
+            <button onclick="window.location = '/event/template/<%= eventTemplate.etid %>'" class="button-main"><span class="button-text">Edit</span></button>
+            <button onclick="cloneEventTemplate('<%= eventTemplate.etid %>','<%= eventTemplate.name %>')" class="button-main"><span class="button-text">Duplicate</span></button>
+            <button onclick="deleteEventTemplate('<%= eventTemplate.etid %>','<%= eventTemplate.name %>')" class="button-main error-bg"><span class="button-text">Delete</span></button>
+        </div>
+    </div>
+</div>

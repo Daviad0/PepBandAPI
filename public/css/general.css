@@ -136,6 +136,11 @@ a .logo:hover{
     margin: 0px 5px;
 }
 
+.manage{
+    position: fixed;
+    bottom: 10px;
+    left: 5px;
+}
 
 
 .flex{
