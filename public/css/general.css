@@ -360,3 +360,41 @@ button:disabled{
 .dialog-hidden{
     display: none;
 }
+
+
+
+
+
+
+.checkbox-container{
+    display: block;
+    position: relative;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width:20px;
+    margin-bottom:12px;
+}
+
+.checkbox-container input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    border-radius: 4px;
+}
+
+
+

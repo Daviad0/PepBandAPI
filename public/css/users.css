@@ -13,12 +13,14 @@
 
 .user-item{
     padding: 15px 0px;
+    width:100%;
     border-bottom: 1px dashed #ccc;
 
 }
 
 .user-main-info{
     margin: 5px;
+    text-align: left;
 }
 
 .user-detail-tag{
@@ -46,6 +48,22 @@
     height: calc(100vh - 100px);
 }
 
+
+.user-details-account{
+    width: 55%;
+    justify-content: start;
+}
+
+.user-details-role{
+    width:20%;
+}
+
+.user-details-actions{
+    width: 20%;
+    justify-content: end;
+}
+
+
 .no-display{
     display: none;
 }
@@ -61,4 +79,8 @@
 .message-in-box{
     margin: 5px 10px;
     margin-top:10px;
+}
+
+.checkbox-container{
+    margin-right:10px;
 }

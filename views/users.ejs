@@ -11,6 +11,7 @@
     
     
     <script>
+        let myUid = "<%= user.uid %>";
         let user_item_template = `<%- include('./partials/config/user_item.ejs', {user: default_user_item, permissions: permissions}) %>`;
     </script>
     
@@ -54,13 +55,14 @@
                         </div>
                     </div>
                     
+                    <div class="spacing flex center">
+                        <span class="tag-text small gray-bg" id="selected-users-indicator">No Users Selected</span>
+                    </div>
                     
                     
                 </div>
-                <div  class="flex center start">
-                    <div id="user-list" class="user-list">
+                <div id="user-list" class="user-list">
 
-                    </div>
                 </div>
             </div>
             

@@ -4,8 +4,40 @@ let showUsers = [];
 let selectedUsers = [];
 
 let filter_mtu_id = "";
-let filter_mtu_name = "";
+let filter_full_name = "";
 let filter_uid = "";
+
+
+function updateSelectedUsers(){
+    let indicator = document.getElementById("selected-users-indicator");
+
+    let totalCount = selectedUsers.length;
+    let totalCountShown = selectedUsers.filter(u => showUsers.find(su => su.uid == u)).length;
+
+    indicator.innerHTML = `${totalCount} User${totalCount == 1 ? "" : "s"} Selected (${totalCount-totalCountShown} Hidden)`;
+    if(totalCount == 0){
+        indicator.classList.add("gray-bg");
+        indicator.classList.remove("main-bg");
+        
+
+    }else{
+        indicator.classList.add("main-bg");
+        indicator.classList.remove("gray-bg");
+    
+    }
+}
+
+function selectUser(element){
+    let uid = element.getAttribute("data-uid");
+
+    if(element.checked){
+        if(selectedUsers.includes(uid)) return;
+        selectedUsers.push(uid);
+    }
+    else{
+        selectedUsers = selectedUsers.filter(u => u != uid);
+    }
+}
 
 function addUser(user){
 
@@ -30,22 +62,35 @@ function addUser(user){
     user_item.innerHTML = html;
     user_item = user_item.firstChild;
 
+    if(user.uid == myUid){
+        // show the "This is You" box
+        user_item.querySelector("div.user-actions[name='different']").remove();
+    }else{
+        user_item.querySelector("div.user-actions[name='same']").remove();
+    }
 
 
+    showUsers.push(user);
 
     document.getElementById("user-list").appendChild(user_item);
 
 }
 
 function updateUserList(){
+
+    filter_uid = document.getElementById("user-search-uid").value;
+    filter_mtu_id = document.getElementById("user-search-mtu_id").value;
+    filter_full_name = document.getElementById("user-search-full_name").value;
+
+
     // get all appropriate users due to the filters
     let wantToShowUsers = users.filter((user) => {
         let show = true;
         if(filter_mtu_id.length > 0){
             show = show && user.mtu_id.includes(filter_mtu_id);
         }
-        if(filter_mtu_name.length > 0){
-            show = show && user.mtu_name.includes(filter_mtu_name);
+        if(filter_full_name.length > 0){
+            show = show && user.full_name.includes(filter_full_name);
         }
         if(filter_uid.length > 0){
             show = show && user.uid == filter_uid;
@@ -55,15 +100,16 @@ function updateUserList(){
 
     // loop through each item in showUsers that isn't in wantToShowUsers and remove the div from the DOM
     showUsers.forEach((user) => {
-        if(!wantToShowUsers.includes(user)){
+        if(!wantToShowUsers.find(u => u.uid == user.uid)){
             let user_item = document.querySelector(`div.user-item[data-uid="${user.uid}"]`);
             user_item.remove();
+            showUsers = showUsers.filter(u => u.uid != user.uid);
         }
     });
 
     // loop through each item in wantToShowUsers that isn't in showUsers and add the div to the DOM
     wantToShowUsers.forEach((user) => {
-        if(!showUsers.includes(user)){
+        if(!showUsers.find(u => u.uid == user.uid)){
             addUser(user);
         }
     });

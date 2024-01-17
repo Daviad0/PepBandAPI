@@ -83,6 +83,15 @@ select{
     background-color: #E98C00;
     color: white;
 }
+.main-bg{
+    background-color: #ffcd00;
+    color: white;
+}
+.gray-bg{
+    background-color: #666666;
+    color: white;
+
+}
 
 .message-error{
     /*#DB1A1A
@@ -131,4 +140,18 @@ select{
 .slot-empty-content{
     font-weight: bold;
     color: rgba(255, 255, 255, 0.5);
+}
+
+
+.checkmark{
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 8px;
+    transition: all 0.5s ease-in-out;
+}
+.checkbox-container:hover input ~ .checkmark{
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+}
+.checkbox-container input:checked ~ .checkmark{
+    background-color: #ffcd00;
 }

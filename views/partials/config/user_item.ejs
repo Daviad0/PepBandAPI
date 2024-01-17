@@ -1,5 +1,9 @@
 <div class="flex apart user-item" data-uid="<%= user.uid %>">
-    <div class="flex center">
+    <div class="flex center user-details-account">
+        <label class="checkbox-container">
+            <input type="checkbox" onclick="selectUser(this)" data-uid="<%= user.uid %>"/>
+            <span class="checkmark"></span>
+        </label>
         <div class="user-detail-item">
             <div class="flex apart">
                 <span class="tiny user-detail-tag">Full Name</span>
@@ -16,9 +20,17 @@
                 <span class="medium user-detail-value user-main-info"><%= user.mtu_id %></span>
             </div>
         </div>
+        <div class="user-detail-item">
+            <div class="flex apart">
+                <span class="tiny user-detail-tag">Email</span>
+            </div>
+            <div class="flex apart">
+                <span class="medium user-detail-value user-main-info resolve-further"><%= user.email %></span>
+            </div>
+        </div>
     </div>
 
-    <div class="flex center">
+    <div class="flex center user-details-role">
         <div class="user-detail-item">
             <div class="flex apart">
                 <span class="tiny user-detail-tag">Role</span>
@@ -34,6 +46,21 @@
                 <span class="medium user-detail-value user-main-info"><%= user.rid %></span>
                 <% } %>
             </div>
+        </div>
+    </div>
+
+    <div class="flex center user-details-actions">
+        <div class="user-actions" name="different">
+            <% if(permissions.includes("other_users_remove")) { %>
+                <button data-uid="<%= user.uid %>" onclick="deleteUser(this)" class="button-alternate error-bg"><span class="button-text">Remove</span></button>
+            <% } %>
+            <% if(permissions.includes("other_users_punish")) { %>
+                <button data-uid="<%= user.uid %>" onclick="deleteUser(this)" class="button-alternate error-bg"><span class="button-text">Restrict</span></button>
+            <% } %>
+            <button data-uid="<%= user.uid %>" onclick="deleteUser(this)" class="button-alternate error-bg"><span class="button-text">Remove</span></button>
+        </div>
+        <div class="user-actions" name="same">
+            <span class="tag-text info-bg">This is You!</span>
         </div>
     </div>
 </div>

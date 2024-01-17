@@ -280,6 +280,8 @@ function cloneEventTemplate(etid, name){
                     apiPost("/api/event/template/clone", {etid: cloneEtid}, (result) => {
                         // open new event template in new tab
                         window.open(`/event/template/${result.data[0].etid}`, "_blank");
+                        // reload current page
+                        window.location.reload();
                     });
 
                     

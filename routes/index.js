@@ -73,6 +73,14 @@ router.get("/roles", async (req, res) => {
 router.get("/users", async (req, res) => {
     var roles = (await db.getRoles()).data;
 
+    if(!(await db.checkAccess(req.session.role, "other_users"))){
+        res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 403,
+            message: "You do not have the proper permissions for this page!"
+        }});
+        return;
+    }
+
     // permissions to reflect on the front-end ONLY
     let permissions = await permissionsRequest(req, ["other_roles_assign", "other_users"]);
 
