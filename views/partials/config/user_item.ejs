@@ -1,0 +1,39 @@
+<div class="flex apart user-item" data-uid="<%= user.uid %>">
+    <div class="flex center">
+        <div class="user-detail-item">
+            <div class="flex apart">
+                <span class="tiny user-detail-tag">Full Name</span>
+            </div>
+            <div class="flex apart">
+                <span class="medium user-detail-value user-main-info"><%= user.full_name %></span>
+            </div>
+        </div>
+        <div class="user-detail-item">
+            <div class="flex apart">
+                <span class="tiny user-detail-tag">MTU ID</span>
+            </div>
+            <div class="flex apart">
+                <span class="medium user-detail-value user-main-info"><%= user.mtu_id %></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex center">
+        <div class="user-detail-item">
+            <div class="flex apart">
+                <span class="tiny user-detail-tag">Role</span>
+            </div>
+            <div class="flex apart">
+                <% if(permissions.includes("other_roles_assign")) { %>
+                    <select data-uid="<%= user.uid %>" onchange="editUser(this)" class="input user-detail-value" name="role">
+                        <% for (let i = 0; i < roles.length; i++) { %>
+                            <option value="<%= roles[i].rid %>"><%= roles[i].name %></option>
+                        <% } %>
+                    </select>
+                <% } else { %>
+                <span class="medium user-detail-value user-main-info"><%= user.rid %></span>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

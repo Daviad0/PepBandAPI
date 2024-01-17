@@ -158,7 +158,7 @@ class Database {
 
     getIdentity_uid(uid){
 
-        return this.query("SELECT * FROM identity_management WHERE uid = " + uid)
+        return this.query("SELECT (uid, full_name, rid, last_seen, mtu_based, email) FROM identity_management WHERE uid = " + uid)
     }
 
     getIdentityGroups(uid){

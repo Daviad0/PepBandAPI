@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User Management</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/users.css" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs'); %>
+    <% let default_user_item = {uid: "DEFAULT_UID", full_name: "DEFAULT_FULLNAME", mtu_id: "DEFAULT_MTUID", rid: "DEFAULT_RID", last_seen: "DEFAULT_LASTSEEN", email: "DEFAULT_EMAIL"} %>
+    
+    
+    <script>
+        let user_item_template = `<%- include('./partials/config/user_item.ejs', {user: default_user_item, permissions: permissions}) %>`;
+    </script>
+    
+    <script src="/js/users.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="user-vertical-flex">
+                <div class="user-header">
+                    <div class="flex center">
+                        <span class="large spacing">User Management</span>
+                    </div>
+                    
+        
+                    <span class="small spacing">Manage all users that use this website, either through manual login or login through MTU.</span>
+                    
+                    <div class="flex center">
+                        <span class="small spacing">Search by...</span>
+                        <div class="user-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny user-detail-tag">User ID</span>
+                            </div>
+                            <div class="flex apart">
+                                <input type="text" class="input small" onchange="updateUserList()" placeholder="12345678" name="uid" id="user-search-uid" />
+                            </div>
+                        </div>
+                        <div class="user-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny user-detail-tag">MTU ID</span>
+                            </div>
+                            <div class="flex apart">
+                                <input type="text" class="input small" onchange="updateUserList()" placeholder="fnlastname" name="mtu_id" id="user-search-mtu_id" />
+                            </div>
+                        </div>
+                        <div class="user-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny user-detail-tag">Full Name</span>
+                            </div>
+                            <div class="flex apart">
+                                <input type="text" class="input small" onchange="updateUserList()" placeholder="John Doe" name="full_name" id="user-search-full_name" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                </div>
+                <div  class="flex center start">
+                    <div id="user-list" class="user-list">
+
+                    </div>
+                </div>
+            </div>
+            
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

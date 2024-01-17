@@ -9,10 +9,25 @@ var db;
 router.use(express.static('public'));
 router.use(express.static('views/partials'));
 
+async function permissionsRequest(req, permissions){
+    let available_permissions = [];
+    for(var p = 0; p < permissions.length; p++){
+        if((await db.checkAccess(req.session.role, permissions[p]))){
+            available_permissions.push(permissions[p]);
+        }
+    }
+    return available_permissions;
+}
 
 router.get("/authenticate", (req, res) => {
     res.redirect("/account/authenticate");
 })
+
+router.use((req, res, next) => 
+{
+    // eventually get common-set of management or header functions hereq
+    next();
+});
 
 router.get("/", (req, res) => {
     console.log(req.session.user);
@@ -33,7 +48,7 @@ router.get("/config", async (req, res) => {
     
 });
 
-router.get("/roles/edit", async (req, res) => {
+router.get("/roles", async (req, res) => {
     var roles = (await db.getRoles()).data;
     var default_role = (await db.getConfigProperty_uniq_name("registered_default_rid_mtu"));
     if(default_role.data.length == 0){
@@ -55,20 +70,13 @@ router.get("/roles/edit", async (req, res) => {
 
 });
 
-router.get("/roles/assign", async (req, res) => {
+router.get("/users", async (req, res) => {
     var roles = (await db.getRoles()).data;
-    var identities = (await db.getIdentities()).data;
 
-    // check if user has access to other_roles
-    if(!(await db.checkAccess(req.session.role, "other_roles_assign"))){
-        res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
-            code: 403,
-            message: "Access denied"
-        }});
-        return;
-    }
+    // permissions to reflect on the front-end ONLY
+    let permissions = await permissionsRequest(req, ["other_roles_assign", "other_users"]);
 
-    res.render("roles_assign", {user: req.session.user, role: req.session.role, roles: roles, identities: identities});
+    res.render("users", {user: req.session.user, role: req.session.role, permissions: permissions, roles: roles});
 
 });
 

@@ -47,7 +47,7 @@ router.get("/users", async (req, res) => {
     }
 
     db.getIdentities().then((result) => {
-        res.send(result.data);
+        res.send(result);
     })
 });
 router.get("/find/:uid", async (req, res) => {
@@ -81,7 +81,7 @@ router.get("/roles", async (req, res) => {
     }
 
     db.getRoles().then((result) => {
-        res.send(result.data);
+        res.send(result);
     })
 });
 
