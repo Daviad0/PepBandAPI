@@ -80,6 +80,12 @@ function addUser(user){
         checkbox.removeAttribute("checked");
     }
 
+    let select = user_item.querySelector("select[name='role']");
+    if(select != null){
+        select.value = user.rid;
+    }
+    
+
 
 
     showUsers.push(user);
