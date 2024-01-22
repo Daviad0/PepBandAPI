@@ -20,6 +20,32 @@ function toggleSongExpansion(element){
     }
 }
 
+function updateSongFilter(){
+    let filter_name = document.getElementById("song-search-name").value;
+    let filter_category = document.getElementById("song-search-category").value;
+
+    for(let i = 0; i < songs.length; i++){
+        let song = songs[i];
+
+        if(filter_name != ""){
+            if(!song.name.toLowerCase().includes(filter_name.toLowerCase())){
+                document.querySelector(`div.song-item[data-soid="${song.soid}"]`).classList.add("no-display");
+                continue;
+            }
+        }
+
+        if(filter_category != "any"){
+            if(song.category != filter_category){
+                document.querySelector(`div.song-item[data-soid="${song.soid}"]`).classList.add("no-display");
+                continue;
+            }
+        }
+
+        document.querySelector(`div.song-item[data-soid="${song.soid}"]`).classList.remove("no-display");
+        
+    }
+}
+
 function updateSongView(song){
     songs.push(song);
 
@@ -41,6 +67,24 @@ function updateSongView(song){
     updateNonAutomatic();
 
 }
+
+function getSongs(){
+    let url = "/api/song/list";
+
+    apiGet(url, (result) => {
+        if(result.success){
+            for(let i = 0; i < result.data.length; i++){
+                updateSongView(result.data[i]);
+            }
+            updateNonAutomatic();
+        }else{
+            // error
+        }
+    });
+
+}
+
+
 
 function editSong(element){
     let error_span = document.querySelector(`span[data-soid="${element.getAttribute("data-soid")}"][name="error"]`);
@@ -129,7 +173,8 @@ function updateNonAutomatic(){
 }
 
 setTimeout(() => {
-    updateNonAutomatic();
+    getSongs();
+    
 }, 500);
 
 

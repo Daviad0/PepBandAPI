@@ -6,7 +6,7 @@ var db;
 
 router.get("/list", (req, res) => {
     db.getSongs().then((result) => {
-        res.send(result.data);
+        res.send(result);
     })
 });
 

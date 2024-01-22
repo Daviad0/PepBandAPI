@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/css/song.css" />
   </head>
   <body>
-    <% let default_song = {soid: "DEFAULT_SOID", name: "DEFAULT_NAME", artist: "DEFAULT_ARTIST", friendly_name: "DEFAULT_FRIENDLYNAME", modification: "DEFAULT_MODIFICATION", updated: "DEFAULT_UPDATED", duration: "DEFAULT_DURATION", source: "DEFAULT_SOURCE" } %>
+    <% let default_song = {soid: "DEFAULT_SOID", name: "DEFAULT_NAME", artist: "DEFAULT_ARTIST", friendly_name: "DEFAULT_FRIENDLYNAME", modification: "DEFAULT_MODIFICATION", updated: "DEFAULT_UPDATED", duration: "DEFAULT_DURATION", source: "DEFAULT_SOURCE", category: "DEFAULT_CATEGORY" } %>
     <script>
         let song_template = `<%- include('./partials/config/song_item.ejs', {song: default_song}) %>`;
         
@@ -35,7 +35,7 @@
                                     <span class="tiny song-detail-tag">Song Name</span>
                                 </div>
                                 <div class="flex apart">
-                                    <input type="text" class="input small" onchange="updateUserList()" placeholder="Song" name="name" id="song-search-name" />
+                                    <input type="text" class="input small" onchange="updateSongFilter()" placeholder="Song" name="name" id="song-search-name" />
                                 </div>
                             </div>
                             <div class="song-detail-item">
@@ -43,7 +43,7 @@
                                     <span class="tiny song-detail-tag">Song Type</span>
                                 </div>
                                 <div class="flex apart">
-                                    <select onchange="updateUserList()" class="input small" name="age" id="song-search-category">
+                                    <select onchange="updateSongFilter()" class="input small" name="age" id="song-search-category">
                                         <option value="any">Any</option>
                                         <option value="regular">Regular</option>
                                         <option value="quick">Quickie</option>
@@ -63,7 +63,7 @@
                     
                 </div>
                 <div id="song-list" class="song-list">
-                    <%- include('./partials/config/all_songs.ejs', {songs: songs}); %>
+                    
                 </div>
             </div>
             
