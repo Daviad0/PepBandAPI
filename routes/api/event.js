@@ -240,7 +240,7 @@ router.post("/create", (req, res) => {
 
 })
 
-router.post("/update", (req, res) => {
+router.post("/", (req, res) => {
 
     // expecting eid in body, not OK if null
     // expecting etyid in body, OK if null

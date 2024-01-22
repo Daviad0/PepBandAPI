@@ -37,6 +37,8 @@ function selectUser(element){
     else{
         selectedUsers = selectedUsers.filter(u => u != uid);
     }
+
+    updateSelectedUsers();
 }
 
 function addUser(user){
@@ -50,6 +52,7 @@ function addUser(user){
     html = html.replaceAll("DEFAULT_FULLNAME", user.full_name);
     html = html.replaceAll("DEFAULT_EMAIL", user.email);
     html = html.replaceAll("DEFAULT_RID", user.rid);
+    html = html.replaceAll("DEFAULT_LASTSEEN", user.last_seen.substring(0,10));
 
     // get the role of the user
     let userRole = roles.find(r => r.rid == user.rid);
@@ -69,10 +72,79 @@ function addUser(user){
         user_item.querySelector("div.user-actions[name='same']").remove();
     }
 
+    let checkbox = user_item.querySelector("input[type='checkbox']");
+    if(selectedUsers.includes(user.uid.toString())){
+        checkbox.setAttribute("checked", true);
+    }
+    else{
+        checkbox.removeAttribute("checked");
+    }
+
+
 
     showUsers.push(user);
 
     document.getElementById("user-list").appendChild(user_item);
+
+}
+
+function deleteUser(element){
+    let uid = element.getAttribute("data-uid");
+    let error_span = document.querySelector(`span[data-uid="${uid}"][name="error"]`);
+
+
+    showDialog({
+        title: "Delete User '" + users.find(u => u.uid == uid).full_name + "'?",
+        description: "You are about to delete the user '" + users.find(u => u.uid == uid).full_name + "'. This user's records will be removed from our database, but will be able to sign in through MTU's SSO to create a new account at any time.",
+        icon: "delete",
+        buttons: [
+            {
+                text: "Delete User",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+
+                    let url = `/api/identity/users/${uid}/delete`;
+                    let data = {uid: uid};
+
+                    
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            users = users.filter(u => u.uid != uid);
+                            showUsers = showUsers.filter(u => u.uid != uid);
+                            selectedUsers = selectedUsers.filter(u => u != uid);
+
+                            let user_item = document.querySelector(`div.user-item[data-uid="${uid}"]`);
+                            user_item.remove();
+
+                            updateSelectedUsers();
+                        }else{
+                            if(result.message){
+                                showError(error_span, result.message);
+                            }
+                            else{
+                                showError(error_span, "Error deleting user");
+                            }
+                        }
+                    });
+
+                    hideDialog();
+
+                    
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    })
+
+    
 
 }
 
@@ -81,7 +153,7 @@ function updateUserList(){
     filter_uid = document.getElementById("user-search-uid").value;
     filter_mtu_id = document.getElementById("user-search-mtu_id").value;
     filter_full_name = document.getElementById("user-search-full_name").value;
-
+    filter_last_seen = document.getElementById("user-search-last_seen").value;
 
     // get all appropriate users due to the filters
     let wantToShowUsers = users.filter((user) => {
@@ -94,6 +166,21 @@ function updateUserList(){
         }
         if(filter_uid.length > 0){
             show = show && user.uid == filter_uid;
+        }
+        if(filter_last_seen != "any"){
+            let now = new Date();
+            let last_seen = Date.parse(user.last_seen);
+            let diff = now - last_seen;
+
+            let hours = diff / (1000 * 60 * 60);
+
+            if(filter_last_seen < 0){
+                // show if last_seen is less than the number of hours
+                show = show && hours < Math.abs(filter_last_seen);
+            }else{
+                // show if last_seen is greater than the number of hours
+                show = show && hours > filter_last_seen;
+            }
         }
         return show;
     });
@@ -113,8 +200,125 @@ function updateUserList(){
             addUser(user);
         }
     });
+
+    let select = document.getElementById("selected-users-role-select");
+    select.value = "";
+    updateSelectedUsers();
 }
 
+function editUserRole(element){
+    let uid = element.getAttribute("data-uid");
+    let error_span = document.querySelector(`span[data-uid="${element.getAttribute("data-uid")}"][name="error"]`);
+
+    let property = "rid";
+    let value = element.value;
+
+    if(uid == myUid){
+        showDialog({
+            title: "You are Editing Yourself",
+            description: "You are currently changing your role to " + roles.find(r => r.rid == value).name + ". Are you sure that you want to continue with this edit?",
+            icon: "content_copy",
+            buttons: [
+                {
+                    text: "Change Role",
+                    class: "button-main",
+                    background: "error-bg",
+                    onclick: () => {
+    
+                        let url = `/api/identity/users/${uid}/role`;
+                        let data = {uid: uid};
+
+                        data[property] = value;
+
+                        apiPost(url, data, (result) => {
+                            if(result.success){
+                                element.classList.remove("input-error");
+                                showError(error_span, "");
+                            }
+                            else{
+                                element.classList.add("input-error");
+                                showError(error_span, result.message);
+                            }
+                        });
+    
+                        hideDialog();
+    
+                        
+                    }
+                },
+                {
+                    text: "Cancel",
+                    class: "button-alternate",
+                    onclick: () => {
+                        hideDialog();
+                    }
+                }
+            ]
+        })
+        return;
+    }
+
+    let url = `/api/identity/users/${uid}/role`;
+    let data = {uid: uid};
+
+    data[property] = value;
+
+    apiPost(url, data, (result) => {
+        if(result.success){
+            element.classList.remove("input-error");
+            showError(error_span, "");
+        }
+        else{
+            element.classList.add("input-error");
+            showError(error_span, result.message);
+        }
+    });
+}
+
+function editSelectedUsersRole(element){
+    let value = element.value;
+
+    if(selectedUsers.length == 0) return;
+
+    let role = roles.find(r => r.rid == value);
+
+    showDialog({
+        title: "Editing " + selectedUsers.length + " User" + (selectedUsers.length == 1 ? "" : "s") + " Role",
+        description: "All selected users will receive " + role.name + " immediately. Are you sure that you want to continue with this mass edit?",
+        icon: "content_copy",
+        buttons: [
+            {
+                text: "Change Role" + (selectedUsers.length == 1 ? "" : "s"),
+                class: "button-main",
+                background: "success-bg",
+                onclick: () => {
+
+                    hideDialog();
+
+                    selectedUsers.forEach((uid) => {
+                        let user_item = document.querySelector(`div.user-item[data-uid="${uid}"]`);
+                        let select = user_item.querySelector("select[name='role']");
+                        select.value = value;
+                        editUserRole(select);
+                    });
+
+                   
+
+                    
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    })
+
+    
+}
 
 function getRoles(){
     let url = "/api/identity/roles";
@@ -122,6 +326,19 @@ function getRoles(){
     apiGet(url, (result) => {
         if(result.success){
             roles = result.data;
+
+            let select = document.getElementById("selected-users-role-select");
+            select.innerHTML = "<option value='' disabled>Select a Role</option>";
+
+            roles.forEach((role) => {
+                let option = document.createElement("option");
+                option.value = role.rid;
+                option.innerHTML = role.name;
+
+                select.appendChild(option);
+            });
+
+            select.value = "";
         }
     
     });

@@ -50,6 +50,69 @@ router.get("/users", async (req, res) => {
         res.send(result);
     })
 });
+
+router.post("/users/:uid/role", async (req, res) => {
+    // expecting rid in body, not OK if null
+
+    if(!(await db.checkAccess(req.session.role, "other_users"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    if(!req.params.uid){
+        res.status(400).send({message: "Missing uid"});
+        return;
+    }
+    if(!req.body.rid){
+        res.status(400).send({message: "Missing rid"});
+        return;
+    }
+
+    // we need to see if the user giving the role has permission greater or equal to the role they have
+    try{
+        let userPermission = req.session.role.permission;
+        let givingRole = await db.getRole(req.body.rid);
+        if(userPermission <= givingRole.data[0].permission){
+            res.status(403).send({message: "Cannot set role higher than or equal to your own"});
+            return;
+        }
+    }catch(e){
+        // if role doesn't exist for some reason (probably invalid input)
+        res.status(400).send({message: "Invalid rid"});
+        return;
+    }
+    
+
+    let uid = req.body.uid;
+    let rid = req.body.rid;
+
+    db.setUserRole(uid, rid).then((result) => {
+        res.send(result);
+    });
+});
+
+router.post("/users/:uid/delete", async (req, res) => {
+
+    // expecting uid in body, not OK if null
+
+    if(!(await db.checkAccess(req.session.role, "other_users_remove"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    if(!req.params.uid){
+        res.status(400).send({message: "Missing uid"});
+        return;
+    }
+
+    let uid = req.params.uid;
+
+    db.deleteIdentity_uid(uid).then((result) => {
+        res.send(result);
+    });
+
+});
+
 router.get("/find/:uid", async (req, res) => {
     if(!(await db.checkAccess(req.session.role, "other_users"))){
         res.status(403).send({success:false, message: "Access denied"});
@@ -159,10 +222,20 @@ router.post("/roles", async (req, res) => {
 router.post("/roles/:rid/delete", async (req, res) => {
     
     // have to do some damage control to change roles of users with this role
+
+
         if(!(await db.checkAccess(req.session.role, "other_roles_remove"))){
             res.status(403).send({message: "Access denied"});
             return;
         }
+
+        let usersWithRole = await db.getUsersWithRole(req.params.rid);
+
+        if(usersWithRole.data.length > 0){
+            res.status(400).send({message: "Cannot delete role with assigned users"});
+            return;
+        }
+    
     
         db.deleteRole(req.params.rid).then((result) => {
             res.send(result);

@@ -21,6 +21,16 @@ function resolve(about, origValue, newValue, access){
     }
 }
 
+function showError(element, message){
+    if(!message){
+        element.classList.add("no-display");
+        element.innerHTML = "";
+    }else{
+        element.classList.remove("no-display");
+        element.innerHTML = message;
+    }
+}
+
 function resolve_user(element){
     let uid = element.getAttribute("data-value");
 

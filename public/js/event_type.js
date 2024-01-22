@@ -31,16 +31,6 @@ function createEventType(){
     })
 }
 
-function showError(element, message){
-    if(!message){
-        element.classList.add("no-display");
-        element.innerHTML = "";
-    }else{
-        element.classList.remove("no-display");
-        element.innerHTML = message;
-    }
-}
-
 function editEventType(element){
 
     let error_span = document.querySelector(`span[data-etyid="${element.getAttribute("data-etyid")}"][name="error"]`);

@@ -21,5 +21,6 @@ module.exports = (useDb) => {
     router.use("/event", require('./event.js')(db));
     router.use("/identity", require('./identity.js')(db));
     router.use("/global", require('./global.js')(db));
+    router.use("/song", require('./song.js')(db));
     return router;
 }

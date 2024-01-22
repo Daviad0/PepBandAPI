@@ -16,9 +16,17 @@ router.get("/:soid", (req, res) => {
     })
 });
 
-router.post("/create", (req, res) => {
-    // maybe change this to be all one
-    db.setSong(null, null, null, null, null, null, null).then((result) => {
+router.post("/create", async (req, res) => {
+    // expecting name in body, OK if null
+
+    if(!(await db.checkAccess(req.session.role, "songs"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    let name = req.body.name;
+
+    db.setSong(null, name, null, null, null, 0, null).then((result) => {
         let soid = result.data.recordset[0].soid;
 
         db.getSong(soid).then((result) => {
@@ -27,22 +35,48 @@ router.post("/create", (req, res) => {
     });
 });
 
-router.post("/:soid/delete", (req, res) => {
+router.post("/:soid/delete", async (req, res) => {
     // expecting soid in body, not OK if null
 
-    var soid = req.body.soid;
+    if(!(await db.checkAccess(req.session.role, "songs_remove"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    var soid = req.params.soid;
     if(!soid){
         res.status(400).send({message: "soid property required to delete song"});
         return;
     }
 
     db.deleteSong(soid).then((result) => {
-        res.send(result.data);
+        res.send(result);
     });
 
 });
 
-router.post("/", (req, res) => {
+router.get("/:soid/usage", async (req, res) => {
+    // expecting soid in body, not OK if null
+
+    if(!(await db.checkAccess(req.session.role, "songs"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    var soid = req.params.soid;
+    if(!soid){
+        res.status(400).send({message: "soid property required to get song usage"});
+        return;
+    }
+
+    db.getSongUsage(soid).then((result) => {
+        res.send(result);
+    });
+
+
+});
+
+router.post("/", async (req, res) => {
     // expecting soid in body, not OK if null
     // expecting name in body, OK if null
     // expecting friendly_name in body, OK if null
@@ -50,6 +84,11 @@ router.post("/", (req, res) => {
     // expecting modification in body, OK if null
     // expecting duration in body, OK if null
     // expecting source in body, OK if null
+
+    if(!(await db.checkAccess(req.session.role, "songs"))){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
 
     var soid = req.body.soid;
     if(!soid){
@@ -72,7 +111,7 @@ router.post("/", (req, res) => {
     if(!source) source = null;
 
     db.setSong(soid, name, friendly_name, modification, artist, duration, source).then((result) => {
-        res.send(result.data);
+        res.send(result);
     });
 
 });

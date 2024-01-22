@@ -62,7 +62,7 @@
     </div>
     <div class="flex apart">
         <div class="flex center">
-            <button data-rid="<%= role.rid %>" onclick="deleteRole(this)" class="button-alternate"><span class="button-text">Remove</span></button>
+            <button data-rid="<%= role.rid %>" <%= role.user_count > 0 ? 'disabled' : '' %> onclick="deleteRole(this)" class="button-alternate"><span class="button-text">Remove</span></button>
         </div>
     </div>
 </div>

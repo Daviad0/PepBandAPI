@@ -37,16 +37,8 @@ function updateSongView(song){
     // maybe not needed depending on how we make the song page... keep for now...
     document.getElementById("song-list").innerHTML += html;
 
-}
+    updateDurations();
 
-function showError(element, message){
-    if(!message){
-        element.classList.add("no-display");
-        element.innerHTML = "";
-    }else{
-        element.classList.remove("no-display");
-        element.innerHTML = message;
-    }
 }
 
 function editSong(element){
@@ -64,7 +56,7 @@ function editSong(element){
     let value = element.value;
     let property = element.getAttribute("name");
 
-    let url = "/api/song";
+    let url = "/api/song/";
     let data = {soid: soid};
     data[property] = value;
     if(applicableSong){ // system is not fully decided yet.. not a permanent implement
@@ -108,15 +100,150 @@ function deleteSong(element){
     });
 }
 
+function updateDurations(){
+
+    let durationElements = document.querySelectorAll(`input[name="duration"]`);
+
+    for(let i = 0; i < durationElements.length; i++){
+        let durationElement = durationElements[i];
+        let soid = durationElement.getAttribute("data-soid");
+        let duration = durationElement.value;
+
+        let minutes = Math.floor(duration / 60);
+        let seconds = duration % 60;
+
+        document.querySelector(`input[data-soid="${soid}"][name="duration-minute"]`).value = minutes;
+        document.querySelector(`input[data-soid="${soid}"][name="duration-second"]`).value = seconds;
+    }
+
+}
+
+setTimeout(() => {
+    updateDurations();
+}, 500);
+
+
+
+function editSongDuration(element){
+    let soid = element.getAttribute("data-soid");
+    let error_span = document.querySelector(`span[data-soid="${soid}"][name="error"]`);
+
+    let minutes = document.querySelector(`input[data-soid="${soid}"][name="duration-minute"]`).value;
+    let seconds = document.querySelector(`input[data-soid="${soid}"][name="duration-second"]`).value;
+
+    if(minutes == ""){
+        minutes = 0;
+    }
+    if(seconds == ""){
+        seconds = 0;
+    }
+
+    let totalTime = parseInt(minutes) * 60 + parseInt(seconds);
+
+    document.querySelector(`input[data-soid="${soid}"][name="duration"]`).value = totalTime;
+    
+    editSong(document.querySelector(`input[data-soid="${soid}"][name="duration"]`));
+}
+
 function createSong(){
     let url = "/api/song/create";
-    let data = {};
+
+    let songName = document.getElementById("song-create-name").value;
+
+    document.getElementById("song-create").setAttribute("disabled", "disabled");
+
+    if(songName == ""){
+        document.getElementById("song-create-name").classList.add("input-error");
+        return;
+    }
+
+    document.getElementById("song-create-name").value = "";
+    
+    let data = {name: songName};
 
     apiPost(url, data, (result) => {
         if(result.success){
             updateSongView(result.data[0]);
+            document.getElementById("song-create").removeAttribute("disabled");
         }else{
-            
+            document.getElementById("song-create-name").classList.add("input-error");
+            document.getElementById("song-create").removeAttribute("disabled");
         }
     });
+}
+
+let songUsage = {};
+
+function customSongUsageResolve(element){
+
+    let soid = element.getAttribute("data-soid");
+
+    let error_span = document.querySelector(`span[data-soid="${soid}"][name="error"]`);
+
+    let url = "/api/song/" + soid + "/usage";
+
+    apiGet(url, (result) => {
+        if(result.success){
+            songUsage[soid] = result.data;
+            showError(error_span, null);
+
+
+            element.classList.add("no-display");
+            document.querySelector(`div.song-usage-details[data-soid="${soid}"]`).classList.remove("no-display");
+
+            let select = document.querySelector(`select[data-soid="${soid}"][name="usage"]`);
+
+            editSongUsageView(select);
+
+        }else{
+            showError(error_span, "Error getting song usage");
+        }
+    })
+
+}
+
+function editSongUsageView(element){
+    let soid = element.getAttribute("data-soid");
+
+    let usage = songUsage[soid];
+
+    if(!usage) return;
+
+    let timespan = document.querySelector(`select[data-soid="${soid}"][name="usage"]`).value;
+
+    var count = 0;
+    var eventCount = 0;
+    for(let i = 0; i < usage.length; i += 1){
+        // usage[i].used has a datetime that we can parse
+
+        var specificUsage = usage[i];
+        if(timespan == "any"){
+            count += specificUsage.count;
+            eventCount += 1;
+        }else{
+            // time between now and usage[i].used must be less than timespan
+            let now = new Date();
+            let used = new Date(specificUsage.used);
+
+            let diff = now - used;
+
+            let hours = diff / (1000 * 60 * 60);
+
+            if(timespan < 0){
+                if(hours < Math.abs(timespan)){
+                    count += specificUsage.count;
+                    eventCount += 1;
+                }
+            }else{
+                if(hours > timespan){
+                    count += specificUsage.count;
+                    eventCount += 1;
+                }
+            }
+
+        }
+
+    }
+
+    document.querySelector(`span.song-usage[data-soid="${soid}"]`).innerHTML = `Song has been used <strong>${count}</strong> times for <strong>${eventCount}</strong> events.`;
 }

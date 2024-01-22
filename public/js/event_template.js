@@ -90,16 +90,6 @@ function editTemplate(element){
     })
 }
 
-function showError(element, message){
-    if(!message){
-        element.classList.add("no-display");
-        element.innerHTML = "";
-    }else{
-        element.classList.remove("no-display");
-        element.innerHTML = message;
-    }
-}
-
 function addSegmentToView(segment){
     let html = segment_template;
 

@@ -72,16 +72,6 @@ function createConfig(){
     })
 }
 
-function showError(element, message){
-    if(!message){
-        element.classList.add("no-display");
-        element.innerHTML = "";
-    }else{
-        element.classList.remove("no-display");
-        element.innerHTML = message;
-    }
-}
-
 function editConfig(element){
 
     let error_span = document.querySelector(`span[data-uniq_name="${element.getAttribute("data-uniq_name")}"][name="error"]`);
@@ -120,22 +110,49 @@ function deleteConfig(element){
     let uniq_name = element.getAttribute("data-uniq_name");
     let error_span = document.querySelector(`span[data-uniq_name="${element.getAttribute("data-uniq_name")}"][name="error"]`);
 
-    let url = `/api/global/config/${uniq_name}/delete`;
-    let data = {};
+    showDialog({
+        title: "Remove Critical Configuration",
+        description: "You are attempting to remove configuration from this website that could impact users' ability to use this application. Please confirm that you want to remove this configuration.",
+        icon: "destruction",
+        buttons: [
+            {
+                text: "Remove Configuration",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
 
-    apiPost(url, data, (result) => {
-        if(result.success){
+                    let url = `/api/global/config/${uniq_name}/delete`;
+                    let data = {};
 
-            // remove the element from the DOM (div with class config-item and data-uniq_name of uniq_name)
-            let config_item = document.querySelector(`div[data-uniq_name="${uniq_name}"]`);
-            config_item.remove();
-        }else{
-            if(!result.message){
-                showError(error_span, "An unexpected error occurred while deleting the configuration!");
-            }else{
-                showError(error_span, result.message);
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+
+                            // remove the element from the DOM (div with class config-item and data-uniq_name of uniq_name)
+                            let config_item = document.querySelector(`div[data-uniq_name="${uniq_name}"]`);
+                            config_item.remove();
+                        }else{
+                            if(!result.message){
+                                showError(error_span, "An unexpected error occurred while deleting the configuration!");
+                            }else{
+                                showError(error_span, result.message);
+                            }
+                            
+                        }
+                    })
+
+                    hideDialog();
+                    
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
             }
-            
-        }
+        ]
     })
+
+    
 }

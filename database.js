@@ -158,7 +158,7 @@ class Database {
 
     getIdentity_uid(uid){
 
-        return this.query("SELECT (uid, full_name, rid, last_seen, mtu_based, email) FROM identity_management WHERE uid = " + uid)
+        return this.query("SELECT uid, full_name, rid, last_seen, mtu_based, email FROM identity_management WHERE uid = " + uid)
     }
 
     getIdentityGroups(uid){
@@ -177,6 +177,14 @@ class Database {
         // identity_management has an rid that's common with identity_management_roles
 
         return this.query("SELECT * FROM identity_management_roles INNER JOIN identity_management ON identity_management_roles.rid = identity_management.rid WHERE identity_management.uid = " + uid)
+    }
+
+    deleteIdentity_uid(uid){
+        return this.edit("DELETE FROM identity_management WHERE uid = " + uid)
+    }
+
+    deleteIdentity_mtusso(mtu_id){
+        return this.edit("DELETE FROM identity_management WHERE mtu_id = '" + mtu_id + "'")
     }
 
 
@@ -212,9 +220,28 @@ class Database {
         }
     }
 
+    async setUserRole(uid, rid){
+        let existing_user = await this.getIdentity_uid(uid)
+
+        if(existing_user.success && existing_user.data.length > 0){
+            var user = existing_user.data[0]
+
+            if(rid == null) rid = user.rid
+
+            return this.edit("UPDATE identity_management SET rid = " + rid + " WHERE uid = " + uid)
+        }else{
+            return this.edit("INSERT INTO identity_management (uid, rid) VALUES (" + uid + ", " + rid + ")")
+        }
+    }
+
     async update_user_information(mtu_uid, full_name, email){
         full_name = sanitizer.sanitize(full_name);
         email = sanitizer.sanitize(email);
+
+
+        
+
+
 
         let query = "UPDATE identity_management SET full_name = '" + full_name + "', email = '" + email + "' WHERE mtu_uid = '" + mtu_uid + "'";
 
@@ -419,17 +446,21 @@ class Database {
         return this.query("SELECT * FROM song_usage WHERE soid = " + soid)
     }
 
-    async setSongUsage(soid, eid){
+    getSongUsage_instance(soid, eid){
+        return this.query("SELECT * FROM song_usage WHERE soid = " + soid + " AND eid = " + eid)
+    }
+
+    async setSongUsage(soid, eid, count){
         let existing_song_usage = await this.getSongUsage(soid)
 
         if(existing_song_usage.success && existing_song_usage.data.length > 0){
             var song_usage = existing_song_usage.data[0]
 
-            if(eid == null) eid = song_usage.eid
+            if(count == null) count = song_usage.count
 
-            return this.edit("UPDATE song_usage SET last_used = CURRENT_TIMESTAMP WHERE soid = " + soid + " AND eid = " + eid)
+            return this.edit("UPDATE song_usage SET count = " + count + ", used = CURRENT_TIMESTAMP WHERE soid = " + soid + " AND eid = " + eid)
         }else{
-            return this.edit("INSERT INTO song_usage (soid, eid, last_used) OUTPUT Inserted.suid VALUES (" + soid + ", " + eid + ", CURRENT_TIMESTAMP)")
+            return this.edit("INSERT INTO song_usage (soid, eid, count, last_used) OUTPUT Inserted.suid VALUES (" + soid + ", " + eid + ", " + count + ", CURRENT_TIMESTAMP)")
         }
 
     }
