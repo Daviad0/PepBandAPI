@@ -26,8 +26,35 @@
                     <div class="message message-warning">
                         <span class="small message-content">Removing songs can cause problems for both events and event templates.</span>
                     </div>
+
+                    <div class="flex center wrap spacing">
+                        <span class="small">Filter by...</span>
+                        <div class="flex center wrap">
+                            <div class="song-detail-item">
+                                <div class="flex apart">
+                                    <span class="tiny song-detail-tag">Song Name</span>
+                                </div>
+                                <div class="flex apart">
+                                    <input type="text" class="input small" onchange="updateUserList()" placeholder="Song" name="name" id="song-search-name" />
+                                </div>
+                            </div>
+                            <div class="song-detail-item">
+                                <div class="flex apart">
+                                    <span class="tiny song-detail-tag">Song Type</span>
+                                </div>
+                                <div class="flex apart">
+                                    <select onchange="updateUserList()" class="input small" name="age" id="song-search-category">
+                                        <option value="any">Any</option>
+                                        <option value="regular">Regular</option>
+                                        <option value="quick">Quickie</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
-                    <div class="flex center">
+                    <div class="flex center spacing">
                         <span class="small spacing">Song Name</span>
                         <input type="text" class="input small" placeholder="New Song Name" name="name" id="song-create-name" />
                         <button class="button-main" onclick="createSong()" id="song-create"><span class="button-text">Create Song</span></button>
