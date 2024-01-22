@@ -33,11 +33,12 @@ function updateSongView(song){
     html = html.replaceAll("DEFAULT_DURATION", song.duration);
     html = html.replaceAll("DEFAULT_SOURCE", song.source);
     html = html.replaceAll("DEFAULT_UPDATED", song.updated);
+    html = html.replaceAll("DEFAULT_CATEGORY", song.category);
 
     // maybe not needed depending on how we make the song page... keep for now...
     document.getElementById("song-list").innerHTML += html;
 
-    updateDurations();
+    updateNonAutomatic();
 
 }
 
@@ -100,7 +101,7 @@ function deleteSong(element){
     });
 }
 
-function updateDurations(){
+function updateNonAutomatic(){
 
     let durationElements = document.querySelectorAll(`input[name="duration"]`);
 
@@ -116,10 +117,19 @@ function updateDurations(){
         document.querySelector(`input[data-soid="${soid}"][name="duration-second"]`).value = seconds;
     }
 
+    let categorySelect = document.querySelectorAll(`select[name="category"]`);
+
+    for(let i = 0; i < categorySelect.length; i++){
+        let origvalue = categorySelect[i].getAttribute("data-origvalue");
+        let soid = categorySelect[i].getAttribute("data-soid");
+
+        categorySelect[i].value = origvalue;
+    
+    }
 }
 
 setTimeout(() => {
-    updateDurations();
+    updateNonAutomatic();
 }, 500);
 
 
@@ -172,6 +182,29 @@ function createSong(){
     });
 }
 
+function cloneSong(element){
+    let soid = element.getAttribute("data-soid");
+    let error_span = document.querySelector(`span[data-soid="${soid}"][name="error"]`);
+
+    let url = "/api/song/" + soid + "/clone";
+    let data = {soid: soid};
+
+    apiPost(url, data, (result) => {
+        if(result.success){
+            updateSongView(result.data[0]);
+            showError(error_span, null);
+            updateNonAutomatic();
+        }else{
+            if(result.message){
+                showError(error_span, result.message);
+            }
+            else{
+                showError(error_span, "Error cloning song");
+            }
+        }
+    });
+}
+
 let songUsage = {};
 
 function customSongUsageResolve(element){
@@ -189,6 +222,7 @@ function customSongUsageResolve(element){
 
 
             element.classList.add("no-display");
+            document.querySelector(`div.song-usage-details-button[data-soid="${soid}"]`).classList.add("no-display");
             document.querySelector(`div.song-usage-details[data-soid="${soid}"]`).classList.remove("no-display");
 
             let select = document.querySelector(`select[data-soid="${soid}"][name="usage"]`);
@@ -245,5 +279,5 @@ function editSongUsageView(element){
 
     }
 
-    document.querySelector(`span.song-usage[data-soid="${soid}"]`).innerHTML = `Song has been used <strong>${count}</strong> times for <strong>${eventCount}</strong> events.`;
+    document.querySelector(`span.song-usage[data-soid="${soid}"]`).innerHTML = `Song has been used <strong class="tag-text main-bg">${count} time${count != 1 ? "s" : ""}</strong> over <strong>${eventCount}</strong> event${eventCount != 1 ? "s" : ""}.`;
 }

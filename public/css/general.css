@@ -157,6 +157,9 @@ a .logo:hover{
 .start{
     align-items: start;
 }
+.end{
+    align-items: end;
+}
 .wrap{
     flex-wrap: wrap;
 

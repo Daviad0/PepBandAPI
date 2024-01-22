@@ -419,7 +419,7 @@ class Database {
         return this.query("SELECT * FROM songs WHERE soid = " + soid)
     }
 
-    async setSong(soid, name, friendly_name, modification, artist, duration, source){
+    async setSong(soid, name, friendly_name, modification, artist, duration, source, category){
         let existing_song = await this.getSong(soid)
 
         if(existing_song.success && existing_song.data.length > 0){
@@ -431,10 +431,11 @@ class Database {
             if(artist == null) artist = song.artist
             if(duration == null) duration = song.duration
             if(source == null) source = song.source
+            if(category == null) category = song.category
 
-            return this.edit("UPDATE songs SET name = '" + name + "', friendly_name = '" + friendly_name + "', modification = '" + modification + "', artist = '" + artist + "', duration = '" + duration + "', source = '" + source + "', updated = CURRENT_TIMESTAMP WHERE soid = " + soid)
+            return this.edit("UPDATE songs SET name = '" + name + "', friendly_name = '" + friendly_name + "', modification = '" + modification + "', artist = '" + artist + "', duration = '" + duration + "', source = '" + source + "', category = '" + category + "', updated = CURRENT_TIMESTAMP WHERE soid = " + soid)
         }else{
-            return this.edit("INSERT INTO songs (name, friendly_name, modification, artist, duration, source, updated) OUTPUT Inserted.soid VALUES ('" + name + "', '" + friendly_name + "', '" + modification + "', '" + artist + "', '" + duration + "', '" + source + "', CURRENT_TIMESTAMP)")
+            return this.edit("INSERT INTO songs (name, updated) OUTPUT Inserted.soid VALUES ('" + name + "', CURRENT_TIMESTAMP)")
         }
     }
 
