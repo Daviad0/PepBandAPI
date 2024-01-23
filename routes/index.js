@@ -29,9 +29,23 @@ router.use((req, res, next) =>
     next();
 });
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
     console.log(req.session.user);
-    res.render("index", {user: req.session.user, role: req.session.role});
+
+    var config = (await db.getConfig()).data;
+
+    // config for images is prefixed with index_image_#
+    var images = [];
+
+    config = config.filter(c => c.uniq_name.startsWith("index_image_"));
+
+    for(var i = 0; i < config.length; i++){
+        images.push(config[i].value);
+    }
+
+
+
+    res.render("index", {user: req.session.user, role: req.session.role, images: images});
 });
 
 router.get("/events", async (req, res) => {
