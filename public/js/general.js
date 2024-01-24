@@ -118,6 +118,7 @@ function log_out_click(){
 /**
  * 
  * @param {object} properties
+ * @param {string} properties.type
  * @param {string} properties.title
  * @param {string} properties.description
  * @param {string} properties.icon
@@ -133,29 +134,51 @@ function showDialog(properties){
 
     let dialog_buttons = document.getElementById("dialog-buttons");
 
-    let title = properties.title;
-    let description = properties.description;
-    let icon = properties.icon;
-    let buttons = properties.buttons;
+    let dialog_type = properties.type;
+    if(dialog_type == undefined){
+        dialog_type = "buttons";
+    }
 
-    dialog_title.innerHTML = title;
-    dialog_description.innerHTML = description;
-    dialog_icon.innerHTML = icon;
+    var optionDivs = document.querySelectorAll('dialog-option');
+    for(let i = 0; i < optionDivs.length; i += 1){
+        optionDivs[i].classList.add("no-display");
+    }
 
-    dialog_buttons.innerHTML = "";
-    buttons.forEach((button) => {
-        // expecting text, class, and onclick
-        // background may be defined 
-        let button_element = document.createElement("button");
-        button_element.innerHTML = button.text;
-        button_element.classList.add(button.class);
-        button_element.classList.add("dialog-button");
-        if(button.background){
-            button_element.classList.add(button.background);
-        }
-        button_element.onclick = button.onclick;
-        dialog_buttons.appendChild(button_element);
-    });
+    let selectedOptionDiv = document.querySelector(`.dialog-option[data-dialogtype="${dialog_type}"]`);
+    selectedOptionDiv.classList.remove("no-display");
+
+    switch(dialog_type){
+        case "buttons": 
+            
+
+            let title = properties.title;
+            let description = properties.description;
+            let icon = properties.icon;
+            let buttons = properties.buttons;
+        
+            dialog_title.innerHTML = title;
+            dialog_description.innerHTML = description;
+            dialog_icon.innerHTML = icon;
+        
+            dialog_buttons.innerHTML = "";
+            buttons.forEach((button) => {
+                // expecting text, class, and onclick
+                // background may be defined 
+                let button_element = document.createElement("button");
+                button_element.innerHTML = button.text;
+                button_element.classList.add(button.class);
+                button_element.classList.add("dialog-button");
+                if(button.background){
+                    button_element.classList.add(button.background);
+                }
+                button_element.onclick = button.onclick;
+                dialog_buttons.appendChild(button_element);
+            });
+    }
+    
+
+
+
     
     dialog_component.classList.remove("dialog-hide");
     dialog_component.classList.add("dialog-show");
