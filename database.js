@@ -19,18 +19,23 @@ class Database {
 
         this.configCache = [];
 
-        mssql.connect(`Server=${this.link},${this.port};Initial Catalog=${this.name};Persist Security Info=False;User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;`)
+        //  Server=${this.link},${this.port};Initial Catalog=${this.name};Persist Security Info=False;User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+        //  Data Source=${this.link},${this.port};Network Library=DBMSSOCN;Initial Catalog=${this.name};User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+        mssql.connect(`Data Source=${this.link},${this.port};Network Library=DBMSSOCN;Initial Catalog=${this.name};User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;`)
 
         setTimeout(() => {
             var required_config = process.env.REQUIRED_CONFIG.split(",")
             var default_values = process.env.REQUIRED_CONFIG_DEFAULT.split(",")
 
             for (var i = 0; i < required_config.length; i++) {
-                var j = i;
+                // ensure that this_config will persist through the loop so that the correct value is used
+                let j = i;
+                let this_config_key = required_config[i];
+                let this_config_value = default_values[i];
                 this.getConfigProperty_uniq_name(required_config[i]).then((result) => {
                     if (result.data.length == 0) {
                         console.log("Creating required config " + result.uniq_name)
-                        this.setConfig(required_config[j], required_config[j], default_values[j], -1, "string");
+                        this.setConfig(this_config_key, this_config_key, this_config_value, -1, "string");
                     }
                 });
                 
@@ -435,7 +440,7 @@ class Database {
 
             return this.edit("UPDATE songs SET name = '" + name + "', friendly_name = '" + friendly_name + "', modification = '" + modification + "', artist = '" + artist + "', duration = '" + duration + "', source = '" + source + "', category = '" + category + "', updated = CURRENT_TIMESTAMP WHERE soid = " + soid)
         }else{
-            return this.edit("INSERT INTO songs (name, updated) OUTPUT Inserted.soid VALUES ('" + name + "', CURRENT_TIMESTAMP)")
+            return this.edit("INSERT INTO songs (name, duration, updated) OUTPUT Inserted.soid VALUES ('" + name + "', 0, CURRENT_TIMESTAMP)")
         }
     }
 

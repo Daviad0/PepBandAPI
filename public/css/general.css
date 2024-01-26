@@ -314,6 +314,32 @@ button:disabled{
     
 }
 
+.dialog-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
+.dialog-header span{
+    text-align: left;
+}
+
+.dialog-icon-flex{
+    margin-right:20px;
+}
+
+@media screen and (max-width: 600px) {
+    .dialog-header{
+        flex-direction: column;
+        align-items: center;
+    }
+    .dialog-header span {
+        text-align: center;
+    }
+    .dialog-icon-flex{
+        margin-right:0px;
+    }
+}
 
 
 .dialog-box{
@@ -332,9 +358,7 @@ button:disabled{
     margin: 10px 0px;
 }
 
-.dialog-icon-flex{
-    margin-right:20px;
-}
+
 
 .dialog-icon-dot{
     width: 60px;
@@ -361,6 +385,27 @@ button:disabled{
 }
 
 .dialog-hidden{
+    display: none;
+}
+
+.dialog-detail-item{
+    margin: 5px 10px;
+}
+
+.dialog-details{
+    flex-wrap: wrap;
+}
+
+.dialog-detail-value{
+    font-weight: bold;
+}
+
+.dialog-detail-tag{
+    margin-left:5px;
+    margin-bottom: 2px;
+}
+
+.no-display{
     display: none;
 }
 

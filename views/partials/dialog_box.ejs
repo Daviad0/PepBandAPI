@@ -1,7 +1,32 @@
 <div class="dialog-parent dialog-hidden" id="dialog-component">
     <div class="dialog-box floating-box">
-        <div class="dialog-option" data-dialogtype="buttons">
-            <div class="flex center start">
+        <div class="dialog-option no-display" data-dialogtype="buttons">
+            <div class="dialog-header">
+                <div class="dialog-icon-flex">
+                    <div class="dialog-icon-dot info-bg flex center">
+                        <span class="material-symbols-rounded" id="dialog-icon">cancel</span>
+                    </div>
+                </div>
+                
+                <div class="dialog-information">
+                    <div>
+                        <span class="large" id="dialog-title">Title</span>
+                    </div>
+                    <div>
+                        <span class="small dialog-text-content" id="dialog-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum </span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex apart" id="dialog-button-parent">
+                <div></div>
+                <div class="flex center dialog-buttons wrap" id="dialog-buttons">
+                    <button class="button-main dialog-button">Confirm</button>
+                    <button class="button-main dialog-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="dialog-option no-display" data-dialogtype="input">
+            <div class="dialog-header">
                 <div class="dialog-icon-flex">
                     <div class="dialog-icon-dot info-bg flex center">
                         <span class="material-symbols-rounded" id="dialog-icon">cancel</span>
@@ -17,13 +42,27 @@
                     </div>
                 </div>
             </div>
-            <div class="flex apart" id="dialog-button-parent">
+            <div class="flex center" id="dialog-input-parent">
+                <div class="dialog-buttons wrap" id="dialog-inputs">
+                    <div class="dialog-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny dialog-detail-tag">Input Name</span>
+                        </div>
+                        <div class="flex apart">
+                            <input type="text " class="input dialog-detail-value" placeholder="Act 1"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex apart">
                 <div></div>
-                <div class="flex center dialog-buttons wrap" id="dialog-buttons">
-                    <button class="button-main dialog-button">Confirm</button>
+                <div class="flex center dialog-buttons wrap">
+                    <button class="button-main dialog-button">Done</button>
                     <button class="button-main dialog-button">Cancel</button>
                 </div>
             </div>
+            
         </div>
         
     </div>

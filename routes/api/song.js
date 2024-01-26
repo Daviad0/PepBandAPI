@@ -29,6 +29,8 @@ router.post("/create", async (req, res) => {
     db.setSong(null, name, null, null, null, 0, null, null).then((result) => {
         let soid = result.data.recordset[0].soid;
 
+        
+
         db.getSong(soid).then((result) => {
             res.send(result);
         });

@@ -23,12 +23,6 @@ router.get("/authenticate", (req, res) => {
     res.redirect("/account/authenticate");
 })
 
-router.use((req, res, next) => 
-{
-    // eventually get common-set of management or header functions hereq
-    next();
-});
-
 router.get("/", async (req, res) => {
     console.log(req.session.user);
 
@@ -45,7 +39,12 @@ router.get("/", async (req, res) => {
 
 
 
-    res.render("index", {user: req.session.user, role: req.session.role, images: images});
+    try{
+        res.render("index", {user: req.session.user, role: req.session.role, images: images});
+    }catch(err){
+        console.log(err);
+    }
+    
 });
 
 router.get("/events", async (req, res) => {
@@ -202,12 +201,12 @@ router.get("/songs", async (req, res) => {
 
 // WARNING: this route must be last
 
-router.get("*", (req, res) => {
-    res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
-        code: 404,
-        message: "Page not found"
-    }});
-});
+// router.get("*", (req, res) => {
+//     res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+//         code: 404,
+//         message: "Page not found"
+//     }});
+// });
 
 
 

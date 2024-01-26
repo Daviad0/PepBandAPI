@@ -114,6 +114,7 @@ function log_out_click(){
 
 
 
+let current_dialog_data = {};
 
 /**
  * 
@@ -127,19 +128,14 @@ function log_out_click(){
 function showDialog(properties){ 
 
 
-    let dialog_component = document.getElementById("dialog-component");
-    let dialog_title = document.getElementById("dialog-title");
-    let dialog_description = document.getElementById("dialog-description");
-    let dialog_icon = document.getElementById("dialog-icon");
-
-    let dialog_buttons = document.getElementById("dialog-buttons");
+    current_dialog_data = {};
 
     let dialog_type = properties.type;
     if(dialog_type == undefined){
         dialog_type = "buttons";
     }
 
-    var optionDivs = document.querySelectorAll('dialog-option');
+    var optionDivs = document.querySelectorAll('.dialog-option');
     for(let i = 0; i < optionDivs.length; i += 1){
         optionDivs[i].classList.add("no-display");
     }
@@ -147,13 +143,23 @@ function showDialog(properties){
     let selectedOptionDiv = document.querySelector(`.dialog-option[data-dialogtype="${dialog_type}"]`);
     selectedOptionDiv.classList.remove("no-display");
 
+    let dialog_component = document.getElementById("dialog-component");
+    let dialog_title = selectedOptionDiv.querySelector("#dialog-title");
+    let dialog_description = selectedOptionDiv.querySelector("#dialog-description");
+    let dialog_icon = selectedOptionDiv.querySelector("#dialog-icon");
+
+    let title = "";
+    let description = "";
+    let icon = "";
+
     switch(dialog_type){
         case "buttons": 
             
+            let dialog_buttons = selectedOptionDiv.querySelector("#dialog-buttons");
 
-            let title = properties.title;
-            let description = properties.description;
-            let icon = properties.icon;
+            title = properties.title;
+            description = properties.description;
+            icon = properties.icon;
             let buttons = properties.buttons;
         
             dialog_title.innerHTML = title;
@@ -174,6 +180,36 @@ function showDialog(properties){
                 button_element.onclick = button.onclick;
                 dialog_buttons.appendChild(button_element);
             });
+            break;
+        case "inputs":
+            let dialog_inputs = selectedOptionDiv.querySelector("#dialog-inputs");
+
+            title = properties.title;
+            description = properties.description;
+            icon = properties.icon;
+            let inputs = properties.inputs;
+
+            dialog_title.innerHTML = title;
+            dialog_description.innerHTML = description;
+            dialog_icon.innerHTML = icon;
+
+            dialog_inputs.innerHTML = "";
+            inputs.forEach((input) => {
+                // expecting text, class, and onclick
+                // background may be defined 
+                let input_element = `
+                <div class="dialog-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny dialog-detail-tag">Input Name</span>
+                    </div>
+                    <div class="flex apart">
+                        <input type="text " class="input dialog-detail-value" placeholder="Act 1"/>
+                    </div>
+                </div>
+                `;
+                dialog_inputs.appendChild(input_element);
+            });
+            break;
     }
     
 
