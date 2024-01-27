@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 const session = require('express-session');
 dotenv.config();
 
+console.log("ENV: ");
+console.log(process.env)
+
 // session initialization
 app.use( session({
     secret            : process.env.SESSION_SECRET,

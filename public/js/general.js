@@ -237,3 +237,23 @@ function hideDialog(){
         dialog_component.classList.add("dialog-hidden");
     }, 600);
 }
+
+function dialog_getSongs(){
+    let url = "/api/song/list";
+    let dialog_songs = document.getElementById("dialog-song-parent");
+    apiGet(url, (result) => {
+        if(result.success){
+            let songs = result.data;
+            let song_select = document.getElementById("song-select");
+            song_select.innerHTML = "";
+            songs.forEach((song) => {
+                let option = document.createElement("option");
+                option.value = song.soid;
+                option.innerHTML = song.name;
+                song_select.appendChild(option);
+            })
+        }else{
+            console.log(result);
+        }
+    })
+}

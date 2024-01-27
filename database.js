@@ -1,4 +1,4 @@
-const mssql = require('mssql')
+const postgres = require('postgres');
 const sanitizer = require('sanitizer');
 
 class DBQuery {
@@ -19,41 +19,325 @@ class Database {
 
         this.configCache = [];
 
+        this.sql = postgres({
+            host: this.link,
+            port: this.port,
+            database: this.name,
+            username: this.username,
+            password: this.password
+        });
+
         //  Server=${this.link},${this.port};Initial Catalog=${this.name};Persist Security Info=False;User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
         //  Data Source=${this.link},${this.port};Network Library=DBMSSOCN;Initial Catalog=${this.name};User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
-        mssql.connect(`Data Source=${this.link},${this.port};Network Library=DBMSSOCN;Initial Catalog=${this.name};User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;`)
+        //mssql.connect(`Data Source=${this.link},${this.port};Network Library=DBMSSOCN;Initial Catalog=${this.name};User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;`)
 
-        setTimeout(() => {
-            var required_config = process.env.REQUIRED_CONFIG.split(",")
-            var default_values = process.env.REQUIRED_CONFIG_DEFAULT.split(",")
+        // setTimeout(() => {
+        //     var required_config = process.env.REQUIRED_CONFIG.split(",")
+        //     var default_values = process.env.REQUIRED_CONFIG_DEFAULT.split(",")
 
-            for (var i = 0; i < required_config.length; i++) {
-                // ensure that this_config will persist through the loop so that the correct value is used
-                let j = i;
-                let this_config_key = required_config[i];
-                let this_config_value = default_values[i];
-                this.getConfigProperty_uniq_name(required_config[i]).then((result) => {
-                    if (result.data.length == 0) {
-                        console.log("Creating required config " + result.uniq_name)
-                        this.setConfig(this_config_key, this_config_key, this_config_value, -1, "string");
-                    }
-                });
+        //     for (var i = 0; i < required_config.length; i++) {
+        //         // ensure that this_config will persist through the loop so that the correct value is used
+        //         let j = i;
+        //         let this_config_key = required_config[i];
+        //         let this_config_value = default_values[i];
+        //         this.getConfigProperty_uniq_name(required_config[i]).then((result) => {
+        //             if (result.data.length == 0) {
+        //                 console.log("Creating required config " + result.uniq_name)
+        //                 this.setConfig(this_config_key, this_config_key, this_config_value, -1, "string");
+        //             }
+        //         });
                 
-            }
-        },5000);
+        //     }
+        // },5000);
+
+        this.verifySchema();
 
     }
 
+    async verifySchema(){
+        /*
+
+            ### Config
+
+            * cid (primary) - int
+            * name - string
+            * value - string
+            * updated - datetime
+            * uid - string
+            * type - string
+            * uniq_name - string
+
+        */
+
+        // make sure to use POSTGRES syntax for this
+
+        // create config table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS config (cid int IDENTITY(1,1) PRIMARY KEY, name varchar(255), value varchar(MAX), updated datetime, uid int, type varchar(255), uniq_name varchar(255))")
+        
+
+        /*
+
+            ### Identity Management
+
+            * uid (primary) - int
+            * full_name - string
+            * rid - int
+            * last_seen - datetime
+            * mtu_based - bool
+            * mtu_id - string
+            * mtu_uid - string
+            * email - string
+
+        */
+
+        // create identity_management table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS identity_management (uid int IDENTITY(1000000,1) PRIMARY KEY, full_name varchar(255), rid int, last_seen datetime, mtu_based bit, mtu_id varchar(255), mtu_uid varchar(255), email varchar(255))")
+
+        /*
+
+            ### Identity Holds
+
+            * fuid (primary) - int
+            * mtu_id - string
+            * rid - int
+            * created - datetime
+            * by_uid - int
+            * reason - string
+            * expires - datetime
+
+        */
+
+        // create identity_management_holds table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS identity_management_holds (fuid int IDENTITY(1,1) PRIMARY KEY, mtu_id varchar(255), rid int, created datetime, by_uid int, reason varchar(MAX), expires datetime)")
+
+        /*
+
+            ### Alternate Authentication
+
+            * uid (primary) - int
+            * email - string
+            * pwhash - string
+            * pwsalt - string
+            * pwiter - int
+            
+        */
+
+        // create alternate_authentication table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS alternate_authentication (uid int PRIMARY KEY, email varchar(255), pwhash varchar(MAX), pwsalt varchar(MAX), pwiter int)")
+
+        /*
+
+            ### Identity Management Groups
+
+            * uid (primary) - int
+            * gid (primary) - int
+            * updated - datetime
+
+        */
+
+        // create identity_management_groups table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS identity_management_groups (uid int, gid int, updated datetime)")
+
+        /*
+
+            ### Identity Management Splits
+
+            * uid (primary) - int
+            * sid (primary) - int
+            * updated - datetime
+
+        */
+
+        // create identity_management_splits table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS identity_management_splits (uid int, sid int, updated datetime)")
+
+        /*
+
+            ### Identity Management Roles
+
+            * rid (primary) - int
+            * name - string
+            * permission - int
+            * updated - datetime
+            * description - string
+
+        */
+
+        // create identity_management_roles table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS identity_management_roles (rid int IDENTITY(1,1) PRIMARY KEY, name varchar(255), permission int, updated datetime, description varchar(MAX))")
+
+        /*
+
+            ### Event Types
+
+            * etyid (primary) - int
+            * name - string
+            * icon - string
+            * color - string
+            * extra_data - string
+            * updated - datetime
+
+        */
+
+        // create event_types table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS event_types (etyid int IDENTITY(1,1) PRIMARY KEY, name varchar(255), icon varchar(255), color varchar(255), extra_data varchar(MAX), updated datetime)")
+
+        /*
+
+            ### Event Templates
+
+            * etid (primary) - int
+            * etyid - int
+            * name - string
+            * data - string
+            * updated - datetime
+
+        */
+
+        // create event_templates table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS event_templates (etid int IDENTITY(1,1) PRIMARY KEY, etyid int, name varchar(255), data varchar(MAX), updated datetime)")
+
+        /*
+        
+            ### Event Splits
+
+            * eid (primary) - int
+            * sid (primary) - int
+            * updated - datetime
+
+        */
+
+        // create event_splits table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS event_splits (eid int, sid int, updated datetime)")
+
+        /*
+        
+            ### Event Participation Exceptions
+
+            * eid (primary) - int
+            * uid (primary) - int
+            * override - int
+
+        */
+
+        // create event_participation_overrides table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS event_participation_overrides (eid int, uid int, override int)")
+
+        /*
+
+            ### Events
+
+            * eid (primary) - int
+            * etyid - int
+            * etid_used - int
+            * string - name
+            * begin - datetime
+            * end - datetime
+            * open - boolean
+            * show - boolean
+            * data - string
+            * updated - datetime
+            * location - string
+            * description - string
+
+        */
+        
+        // create events table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS events (eid int IDENTITY(1,1) PRIMARY KEY, etyid int, etid_used int, name varchar(255), begin datetime, end datetime, open bit, show bit, data varchar(MAX), updated datetime, location varchar(MAX), description varchar(MAX))")
+
+        /*
+
+            ### Groups
+
+            * gid (primary) - int
+            * name - string
+            * icon - string
+            * description - string
+            * uid_primary - int
+            * extra_data - string
+
+        */
+
+        // create groups table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS groups (gid int IDENTITY(1,1) PRIMARY KEY, name varchar(255), icon varchar(255), description varchar(MAX), uid_primary int, extra_data varchar(MAX))")
+
+        /*
+
+            ### Splits
+
+            * sid (primary) - int
+            * gid - int
+            * name - string
+            * icon - string
+            * updated - datetime
+            * uid_primary - int
+            * extra_data - string
+            
+        */
+
+        // create splits table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS splits (sid int IDENTITY(1,1) PRIMARY KEY, gid int, name varchar(255), icon varchar(255), updated datetime, uid_primary int, extra_data varchar(MAX))")
+
+        /*
+
+            ### Announcements
+
+            * aid (primary) - int
+            * name - string
+            * content - string
+            * icon - string
+            * uid - int
+            * published - datetime
+            * until - datetime
+
+        */
+
+        // create announcements table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS announcements (aid int IDENTITY(1,1) PRIMARY KEY, name varchar(255), content varchar(MAX), icon varchar(255), uid int, published datetime, until datetime)")
+
+        /*
+
+            ### Songs
+
+            * soid (primary) - int
+            * name - string
+            * friendly_name - string (for forms of abbreviation)
+            * modification - string
+            * artist - string
+            * updated - datetime
+            * duration - int
+            * source - string
+            * category - string
+
+        */
+
+        // create songs table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS songs (soid int IDENTITY(1,1) PRIMARY KEY, name varchar(255), friendly_name varchar(255), modification varchar(MAX), artist varchar(255), updated datetime, duration int, source varchar(MAX), category varchar(MAX))")
+
+        /*
+
+            ### Song Usage
+
+            * soid (primary) - int
+            * eid (primary) - int
+            * count - int
+            * used - datetime
+            
+        */
+
+        // create song_usage table if it doesn't exist
+        await this.query("CREATE TABLE IF NOT EXISTS song_usage (soid int, eid int, count int, used datetime)")
+    }
+
     query(query) {
-        return new Promise((resolve, reject) => {
-            mssql.query(query, function (err, result) {
-                if (err) {
-                    resolve(new DBQuery(null, false))
-                } else {
-                    console.log(result)
-                    resolve(new DBQuery(result.recordset, true))
-                }
-            })
+        return new Promise(async (resolve, reject) => {
+
+            try{
+                let result = await this.sql`${query}`;
+                resolve(new DBQuery(result, true))
+            }catch(e){
+                resolve(new DBQuery(null, false))
+            }
         })
     }
 
@@ -61,7 +345,7 @@ class Database {
         return new Promise((resolve, reject) => {
             mssql.query(query, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    console.log("DBERROR: " + err)
                     resolve(new DBQuery(null, false))
                 } else {
                     resolve(new DBQuery(result, true))
