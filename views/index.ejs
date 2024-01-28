@@ -7,20 +7,17 @@
     <script src="/js/index.js"></script>
   </head>
   <body>
-    <%- include('./partials/header.ejs'); %>
+    <%- include('./partials/alt_header.ejs'); %>
 
-    <script>
-      var imageStructure = `<%- JSON.stringify(images) %>`;
-
-      var images = JSON.parse(imageStructure)
-
-    </script>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
-          <object class="design" data="/svg/spawl.svg" onload="svgLoaded(this)" type="image/svg+xml">
-            <span class="large">Cannot Load</span>
-          </object>
-            
+          <%- include('./partials/sprawl.ejs', {images: images}); %>
+          <div class="grayportion">
+
+          </div>
+          <div class="largelogo">
+            <img src="/images/pepband.png" alt="Pep Band Logo" />
+          </div>
         </div>
         
     </div>

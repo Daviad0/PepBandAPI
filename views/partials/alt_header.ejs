@@ -1,0 +1,13 @@
+<%- include('./dialog_box.ejs') %>
+
+
+<nav class="flex center">
+    
+    <% if(user) { %>
+        <div class="account-dot flex center">
+            <span class="material-symbols-rounded role-icon">
+                <%= role ? role.icon : "music_note" %>
+            </span>
+        </div>
+    <% } %>
+</nav>
