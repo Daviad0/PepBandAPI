@@ -58,7 +58,12 @@
     width: 50px;
 }
 
-
+.song-slot{
+    cursor: pointer;
+}
+.song-slot:hover{
+    cursor: pointer;
+}
 
 .song-expand{
     height: auto;

@@ -11,16 +11,6 @@ Song slot should look like it's going into the page
     height: 100px;
 }
 
-.song-slot-empty{
-    background-color: rgba(128, 128, 128, 0.5);
-    
-}
-
-.song-slot-filled{
-    box-shadow: 0px 0px 3px rgba(0,0,0,0.5);
-
-}
-
 .slot-list{
     margin:10px;
     border: 1px dashed rgba(0,0,0,0.5);

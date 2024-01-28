@@ -175,7 +175,7 @@ router.post("/roles/create", async (req, res) => {
     }
 
     db.setRole(null, req.body.name, null, null).then((result) => {
-        let rid = result.data.recordset[0].rid;
+        let rid = result.data[0].rid;
         // we also want to get the role we just created to send back (with rid)
         db.getRole(rid).then((result) => {
             res.send(result);

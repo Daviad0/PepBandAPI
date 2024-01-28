@@ -110,6 +110,26 @@ function addSegmentToView(segment){
     document.getElementById("segment-list").scrollTop = topPos;
 }
 
+function initializeSlots(){
+    // only to be called once, when the page is loaded
+
+    dataStructure.segments.forEach((segment) => {
+        // loop through each songIndex to see if there is a default
+
+        segment.defaults.forEach((defaultSong) => {
+            var element = document.querySelector(`div.song-slot[data-segid="${segment.segid}"][data-slotindex="${defaultSong.slotIndex}"]`);
+            if(element){
+                switchSlotToFilled(element, defaultSong);
+            }
+        }); 
+    });
+}
+
+setTimeout(() => {
+    initializeSlots();
+
+}, 500);
+
 function addSlot(element){
     let segid = element.getAttribute("data-segid");
     let segment = dataStructure.segments.find((element) => element.segid == segid);
@@ -128,6 +148,14 @@ function addSlot(element){
     generatedElement.classList.add("slot-appear");
     
 
+    if(segment.defaults.find(d => d.slotIndex == segment.slots)){
+        // replace slot-empty with slot-filled
+
+        let defaultSong = segment.defaults.find(d => d.slotIndex == segment.slots);
+
+        switchSlotToFilled(generatedElement, defaultSong);
+    }
+
 
     // div with slot-list name and segid attribute
     // append new div to slot-list div
@@ -143,6 +171,23 @@ function addSlot(element){
 
     
 }
+
+function switchSlotToFilled(element, defaultSong, isAfterInitialize){
+    element.classList.remove("slot-empty");
+    element.classList.add("slot-filled");
+
+    element.querySelector("div.song-slot-empty").classList.add("no-display");
+    element.querySelector("div.song-slot-details").classList.remove("no-display");
+
+    element.querySelector("span[name='name']").innerHTML = defaultSong.soid_backup;
+
+    if(isAfterInitialize){
+        changeSaveButtonState(false);
+    }
+   
+}
+
+
 
 function createSegment(){
     let newSegment = {
@@ -243,6 +288,44 @@ function changeSlots(element, value){
     }else{
         // add new empty divs
     }
+}
+
+function slotTriggerChoose(element){
+
+    let segid = element.getAttribute("data-segid");
+    let slotIndex = element.getAttribute("data-slotindex");
+
+    let segment = dataStructure.segments.find((element) => element.segid == segid);
+
+
+    showDialog({
+        title: "Add Default Song to " + segment.name,
+        type: "song",
+        icon: "tune",
+        multiple: false,
+        onchoose: () => {
+        	// here, current_dialog_data has a selected property
+
+            let song = current_dialog_data.selected[0];
+
+            let defaultSong = {
+                slotIndex: slotIndex,
+                soid_backup: song.soid_backup,
+                soid: song.soid,
+                type: "song"
+            };
+
+            segment.defaults.push(defaultSong);
+
+            switchSlotToFilled(element, defaultSong, true);
+
+        	hideDialog();
+        },
+        extra: {
+            segid: segid,
+            slotIndex: slotIndex
+        }
+    });
 }
 
 

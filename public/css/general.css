@@ -27,7 +27,12 @@ span{
 .spacing{
     margin: 10px;
 }
-
+.spacing-y{
+    margin: 10px 0px;
+}
+.spacing-x{
+    margin: 0px 10px;
+}
 
 .header{
     position: fixed;
@@ -404,6 +409,24 @@ button:disabled{
     margin-left:5px;
     margin-bottom: 2px;
 }
+
+.dialog-song-parent{
+    width: 70vw;
+}
+
+.dialog-song{
+    transition: 0.5s ease all;
+    width: 200px;
+    border: 2px solid transparent;
+}
+
+.dialog-song:hover{
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.7);
+    cursor: pointer;
+}
+
+
+
 
 .no-display{
     display: none;

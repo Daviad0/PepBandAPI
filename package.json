@@ -16,6 +16,8 @@
     "express-session": "^1.17.3",
     "mssql": "^10.0.1",
     "mysql": "^2.18.1",
+    "node-postgres": "^0.6.2",
+    "pg": "^8.11.3",
     "postgres": "^3.4.3",
     "sanitize": "^2.1.2",
     "sanitizer": "^0.1.3"

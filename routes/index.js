@@ -168,7 +168,7 @@ router.get("/event/template/:etid", async (req, res) => {
 
     if(etid == "create"){
         db.setEventTemplate(null, null, null, null).then((result) => {
-            let etid = result.data.recordset[0].etid;
+            let etid = result.data[0].etid;
         
             res.redirect("/event/template/" + etid);
         });

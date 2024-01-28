@@ -117,6 +117,20 @@ function log_out_click(){
 let current_dialog_data = {};
 
 /**
+ * "selected" property will contain selected songs in this format:
+ * 
+ * { soid: 1, soid_backup: "Song Name" }
+ * 
+ * "songs" property will contain all songs gotten from db
+ * 
+ * "multiple" property will be true if multiple songs can be selected
+ * 
+ * "onchoose" property will be a function that is called when the dialog is closed
+ * 
+ * "extra" property will be an object that is passed to the onchoose function
+ */
+
+/**
  * 
  * @param {object} properties
  * @param {string} properties.type
@@ -203,12 +217,59 @@ function showDialog(properties){
                         <span class="tiny dialog-detail-tag">Input Name</span>
                     </div>
                     <div class="flex apart">
-                        <input type="text " class="input dialog-detail-value" placeholder="Act 1"/>
+                        <input type="text" class="input dialog-detail-value" placeholder="Act 1"/>
                     </div>
                 </div>
                 `;
                 dialog_inputs.appendChild(input_element);
             });
+            break;
+        case "song":
+
+            let dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
+            dialog_buttons_static.innerHTML = "";
+            title = properties.title;
+            icon = properties.icon;
+            current_dialog_data["multiple"] = properties.multiple || false;
+            current_dialog_data["selected"] = [];
+            current_dialog_data["onchoose"] = properties.onchoose || (() => {});
+            current_dialog_data["extra"] = properties.extra || {};
+            let preselectedButtons = [
+                {
+                    text: "Cancel",
+                    class: "button-alternate",
+                    onclick: () => {
+                        hideDialog();
+                    }
+                },
+                {
+                    text: "Select",
+                    class: "button-main",
+                    onclick: () => {
+                        current_dialog_data["onchoose"](current_dialog_data["selected"]);
+                    }
+                }
+            ]
+
+            preselectedButtons.forEach((button) => {
+                // expecting text, class, and onclick
+                // background may be defined 
+                let button_element = document.createElement("button");
+                if(button.text == "Select"){
+                    button_element.setAttribute("disabled", "disabled");
+                    button_element.setAttribute("id", "dialog-song-select");
+                }
+                button_element.innerHTML = button.text;
+                button_element.classList.add(button.class);
+                button_element.classList.add("dialog-button");
+                if(button.background){
+                    button_element.classList.add(button.background);
+                }
+                button_element.onclick = button.onclick;
+                dialog_buttons_static.appendChild(button_element);
+            });
+
+            dialog_getSongs();
             break;
     }
     
@@ -238,19 +299,84 @@ function hideDialog(){
     }, 600);
 }
 
+function dialog_song_toggleSelected(element){
+    let soid = element.getAttribute("data-soid");
+
+    if(current_dialog_data["selected"].find(s => s.soid == soid)){
+        // remove from selected
+
+        let index = current_dialog_data["selected"].findIndex(s => s.soid == soid);
+        current_dialog_data["selected"].splice(index, 1);
+
+        element.classList.remove("dialog-song-selected");
+
+        if(current_dialog_data["selected"].length == 0){
+            document.getElementById("dialog-song-select").setAttribute("disabled", "disabled");
+        }
+        return;
+    }
+
+    if(!current_dialog_data["multiple"]){
+        // only one song can be selected
+        let selected = document.querySelectorAll(".dialog-song-selected");
+        selected.forEach((element) => {
+            element.classList.remove("dialog-song-selected");
+        })
+        current_dialog_data["selected"] = [];
+    }
+
+    let song = {
+        soid: soid,
+        soid_backup: element.querySelector('strong[name="name"]').innerHTML
+    }
+    current_dialog_data["selected"].push(song);
+
+    element.classList.add("dialog-song-selected");
+
+    document.getElementById("dialog-song-select").removeAttribute("disabled");
+}
+
 function dialog_getSongs(){
     let url = "/api/song/list";
     let dialog_songs = document.getElementById("dialog-song-parent");
+    let categoryMappings = {
+        "regular": "graphic_eq",
+        "quick": "speed",
+        "null": "help"
+    }
     apiGet(url, (result) => {
         if(result.success){
             let songs = result.data;
-            let song_select = document.getElementById("song-select");
-            song_select.innerHTML = "";
+            current_dialog_data["songs"] = songs;
+            dialog_songs.innerHTML = "";
             songs.forEach((song) => {
-                let option = document.createElement("option");
-                option.value = song.soid;
-                option.innerHTML = song.name;
-                song_select.appendChild(option);
+                let option = document.createElement("div");
+                option.classList.add("floating-box");
+                option.classList.add("dialog-song");
+
+                option.setAttribute("data-soid", song.soid);
+                option.onclick = () => {
+                    dialog_song_toggleSelected(option);
+                }
+
+                option.innerHTML = `
+                <div class="flex apart">
+                    <span class="medium material-symbols-rounded">${categoryMappings[song.category]}</span>
+                    <div class="fill">
+                        <span class="small"><strong name="name">${song.name}</strong></span>
+                        <span class="tiny"><i>${song.modification}</i></span>
+                    </div>
+                
+                </div>
+                
+                
+
+
+                `
+
+
+
+                dialog_songs.appendChild(option);
             })
         }else{
             console.log(result);

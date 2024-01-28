@@ -19,7 +19,7 @@ router.get("/type/:etyid", (req, res) => {
 router.post("/type/create", (req, res) => {
     // maybe change this to be all one
     db.setEventType(null, null, null, null, null).then((result) => {
-        let etyid = result.data.recordset[0].etyid;
+        let etyid = result.data[0].etyid;
 
         db.getEventType(etyid).then((result) => {
             res.send(result);
@@ -69,7 +69,7 @@ router.post("/type/delete", (req, res) => {
     }
 
     db.deleteEventType(etyid).then((result) => {
-        res.send(result.data);
+        res.send(result);
     });
 
 });
@@ -93,7 +93,7 @@ router.get("/template/:etid", (req, res) => {
 router.post("/template/create", (req, res) => {
     // maybe change this to be all one
     db.setEventTemplate(null, null, null, null).then((result) => {
-        let etid = result.data.recordset[0].etid;
+        let etid = result.data[0].etid;
 
         db.getEventTemplate(etid).then((result) => {
             res.send(result);
@@ -137,7 +137,7 @@ router.post("/template/clone", (req, res) => {
     }
 
     db.setEventTemplate(null,null,null,null).then(async (result) => {
-        let etid = result.data.recordset[0].etid;
+        let etid = result.data[0].etid;
 
         
 

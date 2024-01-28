@@ -1,8 +1,12 @@
-<div class="song-slot slot-empty flex center">
-    <div>
+<div class="song-slot slot-empty flex center" data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onclick="slotTriggerChoose(this)">
+    <div class="song-slot-empty">
         <span class="medium slot-empty-content">Slot Empty <%= slotIndex %></span>
-        <span class="small slot-empty-content"><%= segment.segid %></span>
+        <span class="small slot-empty-content">Click to Fill</span>
 
+    </div>
+    <div class="song-slot-details no-display">
+        <span class="medium" name="name"></span>
+        <span class="small" name="modification">Testing</span>
     </div>
     
 </div>

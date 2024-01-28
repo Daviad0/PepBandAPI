@@ -27,7 +27,7 @@ router.post("/create", async (req, res) => {
     let name = req.body.name;
 
     db.setSong(null, name, null, null, null, 0, null, null).then((result) => {
-        let soid = result.data.recordset[0].soid;
+        let soid = result.data[0].soid;
 
         
 
@@ -57,7 +57,7 @@ router.post("/:soid/clone", async (req, res) => {
 
     db.setSong(null, name, null, null, null, 0, null, null).then((result) => {
 
-        let newSoid = result.data.recordset[0].soid;
+        let newSoid = result.data[0].soid;
 
         db.setSong(newSoid, name, oldSong.data[0].friendly_name, oldSong.data[0].modification, oldSong.data[0].artist, oldSong.data[0].duration, oldSong.data[0].source, oldSong.data[0].category).then((result) => {
             db.getSong(newSoid).then((result) => {
