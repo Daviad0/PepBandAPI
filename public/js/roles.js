@@ -6,6 +6,7 @@ function updateRoleView(selected_role){
     html = html.replaceAll("DEFAULT_NAME", selected_role.name);
     html = html.replaceAll("DEFAULT_PERMISSION", selected_role.permission);
     html = html.replaceAll("DEFAULT_DESCRIPTION", selected_role.description);
+    html = html.replaceAll("DEFAULT_ICON", selected_role.icon);
     html = html.replaceAll("DEFAULT_USER_COUNT", 0);
 
     document.getElementById("role-list").innerHTML += html;
@@ -114,5 +115,62 @@ function setConfig_defaultRole(element){
         }else{
             element.classList.add("input-error");
         }
+    });
+}
+
+function imageChoose(element){
+    let rid = element.getAttribute("data-rid");
+
+    showDialog({
+        title: "Choose Image for Role",
+        description: "Image",
+        type: "image",
+        icon: "delete",
+        onchoose: () => {
+        	// here, current_dialog_data has a selected property
+
+            let image_viewer = document.querySelector("img[data-rid='" + rid + "'][name='icon_image']");
+            image_viewer.removeAttribute("hidden");
+            image_viewer.src = current_dialog_data.selected;
+            let icon_viewer = document.querySelector("span[data-rid='" + rid + "'][name='icon_icon']");
+            icon_viewer.classList.add("no-display");
+
+            let hidden_image_value = document.querySelector("input[data-rid='" + rid + "'][name='icon']");
+            hidden_image_value.value = current_dialog_data.selected;
+            // trigger change event for hidden_icon_value
+            hidden_icon_value.dispatchEvent(new Event("change"));
+
+        	hideDialog();
+        },
+        extra: {}
+    });
+
+}
+
+function iconChoose(element){
+    let rid = element.getAttribute("data-rid");
+
+    showDialog({
+        title: "Choose Icon for Event Type",
+        description: "Icon",
+        type: "icon",
+        icon: "delete",
+        onchoose: () => {
+        	// here, current_dialog_data has a selected property
+
+            let image_viewer = document.querySelector("img[data-rid='" + rid + "'][name='icon_image']");
+            image_viewer.classList.add("no-display");
+            let icon_viewer = document.querySelector("span[data-rid='" + rid + "'][name='icon_icon']");
+            icon_viewer.removeAttribute("hidden");
+            icon_viewer.innerHTML = current_dialog_data.selected;
+
+            let hidden_icon_value = document.querySelector("input[data-rid='" + rid + "'][name='icon']");
+            hidden_icon_value.value = current_dialog_data.selected;
+            // trigger change event for hidden_icon_value
+            hidden_icon_value.dispatchEvent(new Event("change"));
+
+        	hideDialog();
+        },
+        extra: {}
     });
 }

@@ -271,6 +271,55 @@ function showDialog(properties){
 
             dialog_getSongs();
             break;
+        case "icon":
+
+            let dialog_buttons_static_icon = selectedOptionDiv.querySelector("#dialog-buttons");
+            dialog_buttons_static_icon.innerHTML = "";
+            title = properties.title;
+            icon = properties.icon;
+
+            let dialog_icon_input = selectedOptionDiv.querySelector("#dialog-icon-input");
+            dialog_icon_input.value = "";
+            current_dialog_data["onchoose"] = properties.onchoose || (() => {});
+            current_dialog_data["selected"] = null;
+            current_dialog_data["extra"] = properties.extra || {};
+            let preselectedButtonsIcons = [
+                {
+                    text: "Cancel",
+                    class: "button-alternate",
+                    onclick: () => {
+                        hideDialog();
+                    }
+                },
+                {
+                    text: "Select",
+                    class: "button-main",
+                    onclick: () => {
+                        current_dialog_data["onchoose"](current_dialog_data["selected"]);
+                    }
+                }
+            ]
+
+            preselectedButtonsIcons.forEach((button) => {
+                // expecting text, class, and onclick
+                // background may be defined 
+                let button_element = document.createElement("button");
+                if(button.text == "Select"){
+                    button_element.setAttribute("disabled", "disabled");
+                    button_element.setAttribute("id", "dialog-icon-select");
+                }
+                button_element.innerHTML = button.text;
+                button_element.classList.add(button.class);
+                button_element.classList.add("dialog-button");
+                if(button.background){
+                    button_element.classList.add(button.background);
+                }
+                button_element.onclick = button.onclick;
+                dialog_buttons_static_icon.appendChild(button_element);
+            });
+
+            
+            break;
     }
     
 
@@ -297,6 +346,21 @@ function hideDialog(){
     setTimeout(() => {
         dialog_component.classList.add("dialog-hidden");
     }, 600);
+}
+
+function dialog_icon_changeIcon(element){
+    let icon = element.value;
+    let icon_preview = document.getElementById("dialog-icon-preview");
+    icon_preview.innerHTML = icon;
+    current_dialog_data["selected"] = icon;
+
+    if(icon == ""){
+        document.getElementById("dialog-icon-select").setAttribute("disabled", "disabled");
+        return;
+    }
+
+    document.getElementById("dialog-icon-select").removeAttribute("disabled");
+
 }
 
 function dialog_song_toggleSelected(element){

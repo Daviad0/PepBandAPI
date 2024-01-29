@@ -46,6 +46,24 @@
                 <input data-rid="<%= role.rid %>" onchange="editRole(this)" name="permission" type="number" class="input role-detail-value permission-input" placeholder="Role Name" value="<%= role.permission %>"/>
             </div>
         </div>
+        <div>
+            <div class="role-detail-item flex center">
+                <div class="flex center icon-container">
+                    <span class="material-symbols-rounded icon" data-rid="<%= role.rid %>" <%= role.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= role.icon %></span>
+                    <img class="icon<%= role.icon.startsWith("IMAGE:") ? "" : " no-display" %>" data-rid="<%= role.rid %>" name="icon_image"  src="<%= role.icon %>"/>
+                </div>
+                <div class="flex apart">
+                    <span class="tiny role-detail-tag">Visible Icon</span>
+                </div>
+                <div class="flex apart">
+                    <input data-rid="<%= role.rid %>" onchange="editRole(this)" hidden disabled name="icon" type="text" class="input role-detail-value" placeholder="Icon" value="<%= role.icon %>"/>
+                </div>
+            </div>
+            <div class="flex center">
+                <button data-rid="<%= role.rid %>" onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
+                <button data-rid="<%= role.rid %>" onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Choose Image</span></button>
+            </div>
+        </div>
     </div>
     <div class="flex center">
         <div class="role-detail-item">

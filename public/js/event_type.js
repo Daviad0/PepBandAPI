@@ -74,3 +74,60 @@ function deleteEventType(element){
         }
     })
 }
+
+function imageChoose(element){
+    let etyid = element.getAttribute("data-etyid");
+
+    showDialog({
+        title: "Choose Image for Event Type",
+        description: "Image",
+        type: "image",
+        icon: "delete",
+        onchoose: () => {
+        	// here, current_dialog_data has a selected property
+
+            let image_viewer = document.querySelector("img[data-etyid='" + etyid + "'][name='icon_image']");
+            image_viewer.removeAttribute("hidden");
+            image_viewer.src = current_dialog_data.selected;
+            let icon_viewer = document.querySelector("span[data-etyid='" + etyid + "'][name='icon_icon']");
+            icon_viewer.classList.add("no-display");
+
+            let hidden_image_value = document.querySelector("input[data-etyid='" + etyid + "'][name='icon']");
+            hidden_image_value.value = current_dialog_data.selected;
+            // trigger change event for hidden_icon_value
+            hidden_icon_value.dispatchEvent(new Event("change"));
+
+        	hideDialog();
+        },
+        extra: {}
+    });
+
+}
+
+function iconChoose(element){
+    let etyid = element.getAttribute("data-etyid");
+
+    showDialog({
+        title: "Choose Icon for Event Type",
+        description: "Icon",
+        type: "icon",
+        icon: "delete",
+        onchoose: () => {
+        	// here, current_dialog_data has a selected property
+
+            let image_viewer = document.querySelector("img[data-etyid='" + etyid + "'][name='icon_image']");
+            image_viewer.classList.add("no-display");
+            let icon_viewer = document.querySelector("span[data-etyid='" + etyid + "'][name='icon_icon']");
+            icon_viewer.removeAttribute("hidden");
+            icon_viewer.innerHTML = current_dialog_data.selected;
+
+            let hidden_icon_value = document.querySelector("input[data-etyid='" + etyid + "'][name='icon']");
+            hidden_icon_value.value = current_dialog_data.selected;
+            // trigger change event for hidden_icon_value
+            hidden_icon_value.dispatchEvent(new Event("change"));
+
+        	hideDialog();
+        },
+        extra: {}
+    });
+}

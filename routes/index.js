@@ -31,12 +31,23 @@ router.get("/", async (req, res) => {
     // config for images is prefixed with index_image_#
     var images = [];
 
-    config = config.filter(c => c.uniq_name.startsWith("index_image_"));
+    config = config.find(c => c.uniq_name.startsWith("index_images"));
 
-    for(var i = 0; i < config.length; i++){
-        images.push(config[i].value);
+    if(config){
+        var cImages = config.value.split(" ");
+        for(var i = 0; i < cImages.length; i++){
+            images.push(cImages[i]);
+        }
     }
 
+    // shuffle images around 
+
+    for(var i = 0; i < images.length; i++){
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = images[i];
+        images[i] = images[j];
+        images[j] = temp;
+    }
 
 
     try{
@@ -74,7 +85,7 @@ router.get("/roles", async (req, res) => {
     if(!(await db.checkAccess(req.session.role, "other_roles"))){
         res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
             code: 403,
-            message: "Access denied"
+            message: "Access denied" + (req.session.user ? "" : " (are you signed in?)")
         }});
         return;
     }
@@ -89,7 +100,7 @@ router.get("/users", async (req, res) => {
     if(!(await db.checkAccess(req.session.role, "other_users"))){
         res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
             code: 403,
-            message: "You do not have the proper permissions for this page!"
+            message: "Access denied" + (req.session.user ? "" : " (are you signed in?)")
         }});
         return;
     }
@@ -107,7 +118,7 @@ router.get("/event/create", async (req, res) => {
         // if(!(await db.checkAccess(req.session.role, "event_create"))){
         //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
         //         code: 403,
-        //         message: "Access denied"
+        //         message: "Access denied"  + (req.session.user ? "" : " (are you signed in?)")
         //     }});
         //     return;
         // }
@@ -125,7 +136,7 @@ router.get("/event/types", async (req, res) => {
     // if(!(await db.checkAccess(req.session.role, "event_types_edit"))){
         //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
         //         code: 403,
-        //         message: "Access denied"
+        //         message: "Access denied"  + (req.session.user ? "" : " (are you signed in?)")
         //     }});
         //     return;
         // }
@@ -142,7 +153,7 @@ router.get("/event/templates", async (req, res) => {
     // if(!(await db.checkAccess(req.session.role, "event_templates_edit"))){
         //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
         //         code: 403,
-        //         message: "Access denied"
+        //         message: "Access denied"  + (req.session.user ? "" : " (are you signed in?)")
         //     }});
         //     return;
         // }
@@ -159,7 +170,7 @@ router.get("/event/template/:etid", async (req, res) => {
     // if(!(await db.checkAccess(req.session.role, "event_templates_edit"))){
         //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
         //         code: 403,
-        //         message: "Access denied"
+        //         message: "Access denied"  + (req.session.user ? "" : " (are you signed in?)")
         //     }});
         //     return;
         // }

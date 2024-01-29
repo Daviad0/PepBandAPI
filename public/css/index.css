@@ -37,11 +37,22 @@
     width: 50%;
     max-width: 400px;
     z-index: 2;
+    transition: 0.5s ease all;
 }
 
 .largelogo img{
     width: 100%;
-    
+    transition: 0.5s ease all;
+}
+
+.largelogo:hover{
+    filter: drop-shadow(0px 0px 20px rgba(255, 206, 0, 0.6));
+    -webkit-filter: drop-shadow(0px 0px 20px rgba(255, 206, 0, 0.6));
+}
+
+.largelogo:hover img{
+    transform: scale(1.1);
+    cursor:pointer;
 }
 
 @keyframes fadeInFromTop {
@@ -59,3 +70,53 @@
     }
 }
 
+
+.header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height:50px;
+    box-shadow: none;
+}
+.header .content{
+    margin-left:0px;
+}
+
+.header .option{
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 10px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.5s ease all;
+    text-decoration: none;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.header .option:hover{
+    background-color: rgba(0,0,0,0.8);
+}
+
+.header .account-dot{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    border: 4px solid #ffcd00;
+    margin-left:20px;
+    border-radius: 50%;
+    transform: translate(20%, -20%);
+    box-shadow: 4px 2px 5px rgba(0,0,0,0.5);
+    transition: 0.5s ease all;
+}
+
+.header .account-dot:hover{
+    transform: translate(15%, -15%) scale(1.1);
+    box-shadow: 8px 4px 5px rgba(0,0,0,0.5);
+    cursor: pointer;
+
+}

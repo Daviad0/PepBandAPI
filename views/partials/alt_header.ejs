@@ -1,8 +1,24 @@
 <%- include('./dialog_box.ejs') %>
 
 
-<nav class="flex center">
-    
+<nav class="header flex center">
+    <div class="fill flex apart">
+        <div class="content flex center">
+            <a href="/events" class="option">Events</a>
+        </div>
+        <div class="content flex center">
+            
+            
+            
+            <% if(user) { %>
+                <a onclick="log_out_click()" class="option">Log Out</a>
+                <div style="width:65px;height:10px"></div>
+                
+            <% } else { %>
+                <a onclick="sign_in_click()" class="option">Sign In</a>
+            <% } %>
+        </div>
+    </div>
     <% if(user) { %>
         <div class="account-dot flex center">
             <span class="material-symbols-rounded role-icon">
