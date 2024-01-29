@@ -37,6 +37,7 @@ app.use((req, res, next) => {
             if(result.data.length == 0) {
                 req.session.role = null;
                 next();
+                return;
             }
             req.session.role = result.data[0];
             next();
