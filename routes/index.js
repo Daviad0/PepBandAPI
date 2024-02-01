@@ -124,8 +124,9 @@ router.get("/event/create", async (req, res) => {
         // }
     
         var event_types = (await db.getEventTypes()).data;
+        var event_templates = (await db.getEventTemplates()).data;
 
-        res.render("event_create", {user: req.session.user, role: req.session.role, eventTypes: event_types});
+        res.render("event_create", {user: req.session.user, role: req.session.role, eventTypes: event_types, eventTemplates: event_templates});
     
 });
 
@@ -144,6 +145,10 @@ router.get("/event/types", async (req, res) => {
     var event_types = (await db.getEventTypes()).data;
 
     res.render("event_types", {user: req.session.user, role: req.session.role, eventTypes: event_types});
+});
+
+router.get("/event/template", async (req, res) => {
+    res.redirect("/event/templates");
 });
 
 router.get("/event/templates", async (req, res) => {
@@ -177,15 +182,24 @@ router.get("/event/template/:etid", async (req, res) => {
 
     var etid = req.params.etid;
 
+    if(etid == ""){
+        res.redirect("/event/templates");
+        return;
+    }
+
     if(etid == "create"){
         db.setEventTemplate(null, null, null, null).then((result) => {
             let etid = result.data[0].etid;
+            db.setEventTemplate(etid, null, "New Event Template", `{"segments": []}`).then((result) => {
+                res.redirect("/event/template/" + etid);
+            });
         
-            res.redirect("/event/template/" + etid);
+            
         });
         return;
     }
 
+    var event_types = (await db.getEventTypes()).data;
     var event_template = (await db.getEventTemplate(req.params.etid)).data;
 
     if(event_template.length == 0){
@@ -197,8 +211,13 @@ router.get("/event/template/:etid", async (req, res) => {
     }
 
     event_template = event_template[0];
+    try{
+        let formatted = JSON.parse(event_template.data);
+    }catch(e){
+        event_template.data = "{}";
+    }
 
-    res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template});
+    res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template, eventTypes: event_types});
 });
 
 router.get("/songs", async (req, res) => {

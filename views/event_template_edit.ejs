@@ -47,6 +47,19 @@
                                 <input name="name" onchange="editTemplate(this)" class="large input" value="<%= eventTemplate.name %>" type="text" placeholder="Event Template Name" id="event-template-name" />
                             </div>
                         </div>
+                        <div class="config-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny event-management-detail-tag">For Event Type</span>
+                            </div>
+                            <div class="flex apart">
+                                <select data-origvalue="<%= eventTemplate.etyid %>" onchange="editTemplate(this)" name="etyid" class="input select-from-none large" id="event-template-type">
+                                    <option value="" disabled selected>Select your template</option>
+                                    <% eventTypes.forEach(function(eventType) { %>
+                                        <option value="<%= eventType.etyid %>"><%= eventType.name == "" ? "Unnamed Type": eventType.name %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
                         
                         
                     </div>

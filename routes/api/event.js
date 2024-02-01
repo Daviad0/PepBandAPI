@@ -12,7 +12,7 @@ router.get("/type/list", (req, res) => {
 
 router.get("/type/:etyid", (req, res) => {
     db.getEventType(req.params.etyid).then((result) => {
-        res.send(result.data);
+        res.send(result);
     })
 });
 
@@ -86,7 +86,7 @@ router.get("/template/list", (req, res) => {
 
 router.get("/template/:etid", (req, res) => {
     db.getEventTemplate(req.params.etid).then((result) => {
-        res.send(result.data);
+        res.send(result);
     })
 });
 

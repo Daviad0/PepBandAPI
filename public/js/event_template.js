@@ -113,6 +113,11 @@ function addSegmentToView(segment){
 function initializeSlots(){
     // only to be called once, when the page is loaded
 
+    let orig_value = document.getElementById("event-template-type").dataset.origvalue;
+    if(orig_value != "" && orig_value != null){
+        document.getElementById("event-template-type").value = orig_value;
+    }
+
     dataStructure.segments.forEach((segment) => {
         // loop through each songIndex to see if there is a default
 
