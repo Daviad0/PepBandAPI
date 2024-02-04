@@ -49,7 +49,7 @@
                             <span class="tiny dialog-detail-tag">Input Name</span>
                         </div>
                         <div class="flex apart">
-                            <input type="text " class="input dialog-detail-value" placeholder="Act 1"/>
+                            <input type="text" class="input dialog-detail-value" placeholder="Act 1"/>
                         </div>
                     </div>
                 </div>
@@ -76,6 +76,37 @@
                 <div class="dialog-information">
                     <div class="flex apart">
                         <span class="large" id="dialog-title">Title</span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="flex center">
+                <div class="dialog-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny dialog-detail-tag">Song Name</span>
+                    </div>
+                    <div class="flex apart">
+                        <input type="text" class="input dialog-detail-value" onchange="dialog_song_changeSearch()" id="dialog-song-search-name" placeholder="8675309"/>
+                    </div>
+                </div>
+                <div class="dialog-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny dialog-detail-tag">Artist</span>
+                    </div>
+                    <div class="flex apart">
+                        <input type="text" class="input dialog-detail-value" onchange="dialog_song_changeSearch()" id="dialog-song-search-artist" placeholder="John Doe"/>
+                    </div>
+                </div>
+                <div class="dialog-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny dialog-detail-tag">Category</span>
+                    </div>
+                    <div class="flex apart">
+                        <select class="input dialog-detail-value" onchange="dialog_song_changeSearch()" id="dialog-song-search-category">
+                            <option value="regular">Regular</option>
+                            <option value="quick">Quickie</option>
+                            <option value="any" selected>Any</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -107,7 +138,15 @@
                 </div>
             </div>
             <div class="flex center wrap dialog-song-parent" id="dialog-icon-parent">
-                <input onchange="dialog_icon_changeIcon(this)" type="text" class="input dialog-detail-value" id="dialog-icon-input" placeholder="Icon Name"/>
+                <div class="dialog-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny dialog-detail-tag">Icon Name</span>
+                    </div>
+                    <div class="flex apart">
+                        <input onchange="dialog_icon_changeIcon(this)" type="text" class="input dialog-detail-value" id="dialog-icon-input" placeholder="Icon Name"/>
+                    </div>
+                </div>
+                
                 <span class="material-symbols-rounded large" id="dialog-icon-preview">bolt</span>
             </div>
 

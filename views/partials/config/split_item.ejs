@@ -1,0 +1,92 @@
+<!-- 
+
+   "split" parameter is passed into this file:
+
+    - sid
+    - gid
+    - name
+    - description
+    - icon
+    - user_count (custom variable from db)
+    - updated
+    - extra_data
+    - uid_primary
+
+-->
+
+<div class="split-view floating-box" data-sid="<%= split.sid %>">
+    <div class="flex apart">
+        <div class="flex center">
+            <span class="tiny">Split ID: </span>
+            <span class="tiny split-detail-value split-main-info"><%= split.sid %></span>
+        </div>
+        
+    </div>
+    <% if(split.user_count > 0) { %>
+        <div class="message message-error message-in-box">
+            <span class="small message-content"><%= split.user_count %> <% if(split.user_count > 1) { %>users currently are in<% } else { %>user currently is in<% } %> this split!</span>
+        </div>
+    <% } %>
+    <div class="flex center split-details">
+        <div class="split-detail-item">
+            <div class="flex apart">
+                <span class="tiny split-detail-tag">Split Name</span>
+            </div>
+            <div class="flex apart">
+                <input data-sid="<%= split.sid %>" onchange="editsplit(this)" name="name" type="text" class="input split-detail-value" placeholder="Split Name" value="<%= split.name %>"/>
+            </div>
+        </div>
+        <div>
+            <div class="split-detail-item flex center">
+                <div class="flex center icon-container">
+                    <span class="material-symbols-rounded icon" data-sid="<%= split.sid %>" <%= split.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= split.icon %></span>
+                    <img class="icon<%= split.icon.startsWith("IMAGE:") ? "" : " no-display" %>" data-sid="<%= split.sid %>" name="icon_image"  src="<%= split.icon %>"/>
+                </div>
+                <div class="flex apart">
+                    <span class="tiny split-detail-tag">Split Icon</span>
+                </div>
+                <div class="flex apart">
+                    <input data-sid="<%= split.sid %>" onchange="editsplit(this)" hidden disabled name="icon" type="text" class="input split-detail-value" placeholder="Icon" value="<%= split.icon %>"/>
+                </div>
+            </div>
+            <div class="flex center">
+                <button data-sid="<%= split.sid %>" onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
+                <button data-sid="<%= split.sid %>" onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Choose Image</span></button>
+            </div>
+        </div>
+    </div>
+    <div class="split-detail-item">
+        <div class="flex apart">
+            <span class="tiny split-detail-tag">Split Contact</span>
+        </div>
+        <div class="flex apart">
+            <input data-sid="<%= split.sid %>" onchange="editsplit(this)" name="uid_primary" type="number" class="input split-detail-value" placeholder="123456" value="<%= split.uid_primary %>"/>
+        </div>
+    </div>
+    <div class="split-detail-item">
+        <div class="flex apart">
+            <span class="tiny split-detail-tag">Applicable Group</span>
+        </div>
+        <div class="flex apart">
+            <input data-sid="<%= split.sid %>" onchange="editsplit(this)" name="gid" type="number" class="input split-detail-value" placeholder="123456" value="<%= split.gid %>"/>
+        </div>
+    </div>
+    <div class="flex center">
+        <div class="split-detail-item">
+            <div class="flex apart">
+                <span class="tiny split-detail-tag">Description</span>
+            </div>
+            <div class="flex apart">
+                <textarea data-sid="<%= split.sid %>" onchange="editsplit(this)" name="description" class="input small split-detail-value"><%= split.description %></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="flex center">
+        <span class="small no-display error error-message" name="error" data-sid="<%= split.sid %>"></span>
+    </div>
+    <div class="flex apart">
+        <div class="flex center">
+            <button data-sid="<%= split.sid %>" <%= split.user_count > 0 ? 'disabled' : '' %> onclick="deletesplit(this)" class="button-alternate"><span class="button-text">Remove</span></button>
+        </div>
+    </div>
+</div>

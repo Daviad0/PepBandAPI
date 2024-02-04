@@ -41,10 +41,59 @@ function updateEventTemplate(element){
         if(result.success){
             eventTemplate = result.data[0];
 
-            document.getElementById("event-template-preview").innerHTML = eventTemplate.name;
+            //document.getElementById("event-template-preview").innerHTML = eventTemplate.name;
 
             updateTemplateWarning(eventType == null ? false : eventType.etyid != eventTemplate.etyid);
         }
     });
 }
 
+function submitEventForCreation(){
+    let error_span = document.getElementById("event-create-error");
+    let etid = eventTemplate == null ? null : eventTemplate.etid; // this is OK if null
+    let etyid = eventType == null ? null : eventType.etyid;
+    let name = document.querySelector("input[name='name']").value;
+    let description = document.querySelector("textarea[name='description']").value;
+
+    let start_date = document.querySelector("input[name='start_date']").valueAsDate;
+    let start_time = document.querySelector("input[name='start_time']").value;
+
+    // format as proper date string
+    // convert to Date
+    start = new Date(Date.parse(start_date));
+    start.setHours(start_time.split(":")[0]);
+    start.setMinutes(start_time.split(":")[1]);
+    start.setSeconds(0);
+    
+    let end_date = document.querySelector("input[name='end_date']").valueAsDate;
+    let end_time = document.querySelector("input[name='end_time']").value;
+    // format as proper date string
+    // convert to Date
+    end = new Date(Date.parse(end_date));
+    end.setHours(end_time.split(":")[0]);
+    end.setMinutes(end_time.split(":")[1]);
+    end.setSeconds(0);
+
+    showError(error_span, null);
+    if(name == "" || etyid == null || etid == null || start == "Invalid Date" || end == "Invalid Date"){
+        showError(error_span, "Please fill out all fields");
+        return;
+    }
+    
+
+    let url = "/api/event/create";
+    let data = {
+        etid: etid,
+        name: name,
+        start: start.toISOString(),
+        end: end.toISOString(),
+        etyid: etyid
+    };
+
+    apiPost(url, data, (result) => {
+        if(result.success){
+            //window.location.href = "/event/" + result.data[0].eid;
+            window.location.href = "/events"
+        }
+    });
+}

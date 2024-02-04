@@ -400,6 +400,25 @@ function dialog_song_toggleSelected(element){
     document.getElementById("dialog-song-select").removeAttribute("disabled");
 }
 
+function dialog_song_changeSearch(){
+    let name = document.getElementById("dialog-song-search-name").value;
+    let artist = document.getElementById("dialog-song-search-artist").value;
+    let category = document.getElementById("dialog-song-search-category").value;
+
+    let songs = current_dialog_data["songs"];
+    // hide songs that don't match the filter
+    for(let i = 0; i < songs.length; i += 1){
+        let song = songs[i];
+        let songElement = document.querySelector(`.dialog-song[data-soid="${song.soid}"]`);
+        if(song.name.toLowerCase().includes(name.toLowerCase()) && song.artist.toLowerCase().includes(artist.toLowerCase()) && (category == "any" || song.category == category)){
+            songElement.classList.remove("no-display");
+        }else{
+            songElement.classList.add("no-display");
+        }
+    
+    }
+}
+
 function dialog_getSongs(){
     let url = "/api/song/list";
     let dialog_songs = document.getElementById("dialog-song-parent");

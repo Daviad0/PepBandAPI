@@ -207,34 +207,72 @@ router.get("/:eid/overrides", (req, res) => {
     });
 });
 
+/*
+   Since events are so major, this will have a creation page that passes in the initial parameters
+*/
 router.post("/create", (req, res) => {
 
     // expecting etid_used in body, OK if null
-    // expecting concurrency in body, OK if null
+    // expecting name in body, not OK if null or ""
+    // expecting description in body, OK if null, turn to ""
+    // expecting start in body, not OK if null or ""
+    // expecting end in body, not OK if null or ""
+    // expecting show in body, OK if null, turn to 0
+    // expecting etyid in body, not OK if null
 
     var etid_used = req.body.etid_used;
+    var name = req.body.name;
+    var description = req.body.description;
+    var start = req.body.start;
+    var end = req.body.end;
+    var show = req.body.show;
+    var etyid = req.body.etyid;
+
     if(!etid_used) etid_used = null;
-
-    var concurrency = req.body.concurrency;
-    if(!concurrency) concurrency = null;
-
-    // if concurrency is provided, check if it already exists
-    if(concurrency){
-        db.getEvent_concurrency(concurrency).then((result) => {
-            if(result.data.length > 0){
-                res.status(400).send({message: "Concurrency already exists"});
-                return;
-            }else{
-                db.createEvent(etid_used).then((result) => {
-                    res.send(result.data);
-                })
-            }
-        })
-    }else{
-        db.createEvent(etid_used).then((result) => {
-            res.send(result.data);
-        })
+    if(!name){
+        res.status(400).send({message: "name property required to create event"});
+        return;
     }
+    if(!description) description = "";
+    if(!start){
+        res.status(400).send({message: "start property required to create event"});
+        return;
+    }
+    if(!end){
+        res.status(400).send({message: "end property required to create event"});
+        return;
+    }
+    if(!show) show = 0;
+    if(!etyid){
+        res.status(400).send({message: "etyid property required to create event"});
+        return;
+    }
+
+
+    db.createEvent(etid_used).then((result) => {
+        let eid = result.data[0].eid;
+        db.updateEvent(eid, etyid, etid_used, name, start, end, show, null, "", null, description).then((result) => {
+            res.send(result);
+        });
+    });
+
+    // // if concurrency is provided, check if it already exists
+    // if(concurrency){
+    //     db.getEvent_concurrency(concurrency).then((result) => {
+    //         if(result.data.length > 0){
+    //             res.status(400).send({message: "Concurrency already exists"});
+    //             return;
+    //         }else{
+    //             db.createEvent(etid_used).then((result) => {
+    //                 res.send(result.data);
+    //             })
+    //         }
+    //     })
+    // }else{
+    //     db.createEvent(etid_used).then((result) => {
+    //         res.send(result.data);
+    //     })
+    // }
 
     
 

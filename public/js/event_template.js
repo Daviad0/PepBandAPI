@@ -143,8 +143,8 @@ function addSlot(element){
 
     let html = slot_template;
 
-    html = html.replace("DEFAULT_SEGID", segment.segid);
-    html = html.replace("DEFAULT_SLOTINDEX", segment.slots);
+    html = html.replaceAll("DEFAULT_SEGID", segment.segid);
+    html = html.replaceAll("DEFAULT_SLOTINDEX", segment.slots);
 
     let generatedElement = document.createElement("div");
     generatedElement.innerHTML = html;

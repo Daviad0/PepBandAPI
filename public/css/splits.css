@@ -1,57 +1,45 @@
-
-.form{
-    margin:10px;
-    border: 1px dashed rgba(0,0,0,0.5);
-    padding:10px;
-    border-radius: 8px;
-}
-
-.form .section{
-    margin: 10px 0px;
-}
-
-.event-create-detail-item{
+.split-detail-item{
     margin: 10px;
 }
 
-.event-create-details{
+.split-details{
     flex-wrap: wrap;
 }
 
-.event-create-detail-value{
+.split-detail-value{
     font-weight: bold;
     resize: none;
 }
 
-.event-create-item{
+.split-item{
     padding: 15px 0px;
     border-bottom: 1px dashed #ccc;
 
 }
 
-.event-create-main-info{
+.split-main-info{
     margin: 5px;
 }
 
-.event-create-detail-tag{
+.split-detail-tag{
     margin-left:5px;
     margin-bottom: 2px;
 }
 
-.event-create-list{
+.split-list{
     height: 100%;
     overflow-y: auto;
     flex-wrap: wrap;
 }
-.event-create-header{
+.split-header{
     margin-bottom: 20px;
 
 }
-.event-create-footer{
+.split-footer{
     margin-top: 20px;
 }
 
-.event-create-vertical-flex{
+.split-vertical-flex{
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -73,18 +61,4 @@
 .message-in-box{
     margin: 5px 10px;
     margin-top:10px;
-}
-
-.textarea{
-    width: 100%;
-    height: 200px;
-    resize: none;
-}
-
-.icon-preview{
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    border: 2px solid transparent;
-    margin: 0px 5px;
 }

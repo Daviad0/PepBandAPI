@@ -11,7 +11,7 @@
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
             <span class="large">Create Event</span>
-            <form>
+            <div class="form">
                 <div class="flex apart">
                     <div class="event-create-detail-item">
                         <div class="flex apart">
@@ -27,8 +27,8 @@
                             <span class="tiny event-create-detail-tag">Event Start</span>
                         </div>
                         <div class="flex center">
-                            <input type="time" class="input" placeholder="Start Date" name="start_date" />
-                            <input type="date" class="input" placeholder="Start Time" name="start_time" />
+                            <input type="time" class="input" placeholder="Start Date" name="start_time" />
+                            <input type="date" class="input" placeholder="Start Time" name="start_date" />
                         </div>
                     </div>
                     <div class="event-create-detail-item">
@@ -36,8 +36,8 @@
                             <span class="tiny event-create-detail-tag">Event End</span>
                         </div>
                         <div class="flex center">
-                            <input type="time" class="input" placeholder="End Date" name="end_date" />
-                            <input type="date" class="input" placeholder="End Time" name="end_time" />
+                            <input type="time" class="input" placeholder="End Date" name="end_time" />
+                            <input type="date" class="input" placeholder="End Time" name="end_date" />
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,17 @@
                             
                         </div>
                     </div>
-                    
+                    <div class="event-create-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny event-create-detail-tag">Show</span>
+                        </div>
+                        <div class="flex apart">
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="show"/>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="event-template-warning" class="no-display">
@@ -93,7 +103,16 @@
                         <span class="small message-content">The event template you selected does not match the selected event type. This won't stop the event from being created, but the data may not be similar to other events.</span>
                     </div>
                 </div>
-            </form>
+
+                <div class="flex center spacing">
+                    <span class="small no-display error error-message" name="error" id="event-create-error"></span>
+                </div>
+
+                <div class="flex center">
+                    <button class="button-main" onclick="submitEventForCreation()"><span class="button-text">Create Event</span></button>
+                </div>
+
+            </div>
         </div>
         
     </div>

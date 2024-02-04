@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Groups - Manage</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/groups.css" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs'); %>
+    <% let default_group_item_data_0 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
+    <% let default_group_item_data_1 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
+    <% let default_group_item_data_plural = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
+    
+    <script>
+        let group_item_template_0 = `<%- include('./partials/config/group_item.ejs', {group: default_group_item_data_0}) %>`;
+        let group_item_template_1 = `<%- include('./partials/config/group_item.ejs', {group: default_group_item_data_1}) %>`;
+        let group_item_template_plural = `<%- include('./partials/config/group_item.ejs', {group: default_group_item_data_plural}) %>`;
+    </script>
+    
+    <script src="/js/groups.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="group-vertical-flex">
+                <div class="group-header">
+                    <div class="flex center">
+                        <span class="large spacing">Group Management</span>
+                    </div>
+                    
+        
+                    <span class="small spacing">Manage all of the groups that a user can be a part of! These groups can be for certain subsections of the pep band, or can just be for silly reasons.</span>
+                    <div class="message message-warning">
+                        <span class="small message-content">Any changes made to your group that downgrade its "permission power" are permanent. Exercise caution when changing your group's permission power.</span>
+                    </div>
+                    <div class="flex center">
+                        <span class="small spacing">Group Name</span>
+                        <input type="text" class="input small" placeholder="New Group Name" name="name" id="group-create-name" />
+                        <button class="button-main" onclick="createGroup()" id="group-create"><span class="button-text">Create Group</span></button>
+                    </div>
+                    
+                    
+                    
+                </div>
+                <div id="group-list" class="flex center start group-list">
+                    <%- include('./partials/config/all_groups.ejs', {groups: groups}); %>
+                </div>
+            </div>
+            
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

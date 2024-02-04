@@ -23,15 +23,12 @@ router.get("/authenticate", (req, res) => {
     res.redirect("/account/authenticate");
 })
 
-router.get("/", async (req, res) => {
-    console.log(req.session.user);
+async function generateImagesList(config_name){
+    var images = [];
 
     var config = (await db.getConfig()).data;
 
-    // config for images is prefixed with index_image_#
-    var images = [];
-
-    config = config.find(c => c.uniq_name.startsWith("index_images"));
+    config = config.find(c => c.uniq_name.startsWith(config_name));
 
     if(config){
         var cImages = config.value.split(" ");
@@ -49,6 +46,17 @@ router.get("/", async (req, res) => {
         images[j] = temp;
     }
 
+    return images;
+}
+
+router.get("/", async (req, res) => {
+    console.log(req.session.user);
+
+    
+
+    // config for images is prefixed with index_image_#
+    var images = await await generateImagesList("index_images");
+
 
     try{
         res.render("index", {user: req.session.user, role: req.session.role, images: images});
@@ -60,19 +68,22 @@ router.get("/", async (req, res) => {
 
 router.get("/events", async (req, res) => {
 
+    var images = await generateImagesList("corner_images");
     var events = (await db.getEvents()).data;
 
-    res.render("events", {user: req.session.user, role: req.session.role, events: events});
+    res.render("events", {user: req.session.user, role: req.session.role, events: events, images: images});
 });
 
 router.get("/config", async (req, res) => {
+    var images = await generateImagesList("corner_images");
     var config = (await db.getConfig()).data;
 
-    res.render("config", {user: req.session.user, role: req.session.role, config: config});
+    res.render("config", {user: req.session.user, role: req.session.role, config: config, images: images});
     
 });
 
 router.get("/roles", async (req, res) => {
+    var images = await generateImagesList("corner_images");
     var roles = (await db.getRoles()).data;
     var default_role = (await db.getConfigProperty_uniq_name("registered_default_rid_mtu"));
     if(default_role.data.length == 0){
@@ -90,11 +101,12 @@ router.get("/roles", async (req, res) => {
         return;
     }
 
-    res.render("roles_edit", {user: req.session.user, role: req.session.role, roles: roles, default_role: default_role});
+    res.render("roles_edit", {user: req.session.user, role: req.session.role, roles: roles, default_role: default_role, images: images});
 
 });
 
 router.get("/users", async (req, res) => {
+    var images = await generateImagesList("corner_images");
     var roles = (await db.getRoles()).data;
 
     if(!(await db.checkAccess(req.session.role, "other_users"))){
@@ -108,11 +120,12 @@ router.get("/users", async (req, res) => {
     // permissions to reflect on the front-end ONLY
     let permissions = await permissionsRequest(req, ["other_roles_assign", "other_users"]);
 
-    res.render("users", {user: req.session.user, role: req.session.role, permissions: permissions, roles: roles});
+    res.render("users", {user: req.session.user, role: req.session.role, permissions: permissions, roles: roles, images: images});
 
 });
 
 router.get("/event/create", async (req, res) => {
+    var images = await generateImagesList("corner_images");
         // access control for later :)
 
         // if(!(await db.checkAccess(req.session.role, "event_create"))){
@@ -126,12 +139,13 @@ router.get("/event/create", async (req, res) => {
         var event_types = (await db.getEventTypes()).data;
         var event_templates = (await db.getEventTemplates()).data;
 
-        res.render("event_create", {user: req.session.user, role: req.session.role, eventTypes: event_types, eventTemplates: event_templates});
+        res.render("event_create", {user: req.session.user, role: req.session.role, eventTypes: event_types, eventTemplates: event_templates, images: images});
     
 });
 
 router.get("/event/types", async (req, res) => {
 
+    var images = await generateImagesList("corner_images");
     // access control for later :)
 
     // if(!(await db.checkAccess(req.session.role, "event_types_edit"))){
@@ -144,7 +158,7 @@ router.get("/event/types", async (req, res) => {
 
     var event_types = (await db.getEventTypes()).data;
 
-    res.render("event_types", {user: req.session.user, role: req.session.role, eventTypes: event_types});
+    res.render("event_types", {user: req.session.user, role: req.session.role, eventTypes: event_types, images: images});
 });
 
 router.get("/event/template", async (req, res) => {
@@ -153,6 +167,7 @@ router.get("/event/template", async (req, res) => {
 
 router.get("/event/templates", async (req, res) => {
     
+    var images = await generateImagesList("corner_images");
     // access control for later :)
 
     // if(!(await db.checkAccess(req.session.role, "event_templates_edit"))){
@@ -165,11 +180,12 @@ router.get("/event/templates", async (req, res) => {
 
     var event_templates = (await db.getEventTemplates()).data;
 
-    res.render("event_templates", {user: req.session.user, role: req.session.role, eventTemplates: event_templates});
+    res.render("event_templates", {user: req.session.user, role: req.session.role, eventTemplates: event_templates, images: images});
 });
 
 router.get("/event/template/:etid", async (req, res) => {
         
+    var images = await generateImagesList("corner_images");
     // access control for later :)
 
     // if(!(await db.checkAccess(req.session.role, "event_templates_edit"))){
@@ -217,14 +233,29 @@ router.get("/event/template/:etid", async (req, res) => {
         event_template.data = "{}";
     }
 
-    res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template, eventTypes: event_types});
+    res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template, eventTypes: event_types, images: images});
 });
 
 router.get("/songs", async (req, res) => {
+    var images = await generateImagesList("corner_images");
     var songs = (await db.getSongs()).data;
 
-    res.render("songs", {user: req.session.user, role: req.session.role, songs: songs});
+    res.render("songs", {user: req.session.user, role: req.session.role, songs: songs, images: images});
 
+});
+
+router.get("/splits/edit", async (req, res) => {
+    var images = await generateImagesList("corner_images");
+    var splits = (await db.getSplits()).data;
+
+    res.render("splits_edit", {user: req.session.user, role: req.session.role, splits: splits, images: images});
+});
+
+router.get("/groups/edit", async (req, res) => {
+    var images = await generateImagesList("corner_images");
+    var groups = (await db.getGroups()).data;
+
+    res.render("groups_edit", {user: req.session.user, role: req.session.role, groups: groups, images: images});
 });
 
 

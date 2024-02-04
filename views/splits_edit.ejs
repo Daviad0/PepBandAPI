@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Splits - Manage</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/splits.css" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs'); %>
+    <% let default_split_item_data_0 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
+    <% let default_split_item_data_1 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
+    <% let default_split_item_data_plural = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
+    
+    <script>
+        let split_item_template_0 = `<%- include('./partials/config/split_item.ejs', {split: default_split_item_data_0}) %>`;
+        let split_item_template_1 = `<%- include('./partials/config/split_item.ejs', {split: default_split_item_data_1}) %>`;
+        let split_item_template_plural = `<%- include('./partials/config/split_item.ejs', {split: default_split_item_data_plural}) %>`;
+    </script>
+    
+    <script src="/js/splits.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="split-vertical-flex">
+                <div class="split-header">
+                    <div class="flex center">
+                        <span class="large spacing">Split Management</span>
+                    </div>
+                    
+        
+                    <span class="small spacing">Manage all of the splits that a user can be a part of! These splits can be for certain subsections of the pep band, or can just be for silly reasons.</span>
+                    <div class="message message-warning">
+                        <span class="small message-content">Any changes made to your split that downgrade its "permission power" are permanent. Exercise caution when changing your split's permission power.</span>
+                    </div>
+                    <div class="flex center">
+                        <span class="small spacing">Split Name</span>
+                        <input type="text" class="input small" placeholder="New Split Name" name="name" id="split-create-name" />
+                        <button class="button-main" onclick="createSplit()" id="split-create"><span class="button-text">Create Split</span></button>
+                    </div>
+                    
+                    
+                    
+                </div>
+                <div id="split-list" class="flex center start split-list">
+                    <%- include('./partials/config/all_splits.ejs', {splits: splits}); %>
+                </div>
+            </div>
+            
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>
