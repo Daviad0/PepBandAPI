@@ -169,7 +169,10 @@
        id="rect27636"
        style="stroke:none;fill:url(#pattern27633)"
        d="M 6.0585938 3203.3008 L 6.0585938 3612.7657 L 393.66407 3508.9063 L 6.0585938 3203.3008 z "
-       transform="matrix(0.26458333,0,0,0.26458333,-404.079,-65.815968)" /><path
+       transform="matrix(0.26458333,0,0,0.26458333,-404.079,-65.815968)"
+       inkscape:export-filename="corner.svg"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" /><path
        id="rect27628"
        style="stroke:none;fill:url(#pattern27625)"
        d="M 406.28321 3531.254 L 5.6621094 3638.2852 L 6.513672 3995.0293 L 406.28321 3531.254 z "

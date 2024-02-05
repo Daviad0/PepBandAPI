@@ -11,6 +11,20 @@ Song slot should look like it's going into the page
     height: 100px;
 }
 
+.song-slot-name{
+    margin-bottom: 20px;
+}
+
+.song-slot-details{
+    position:relative;
+}
+
+.song-slot-options{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
 .slot-list{
     margin:10px;
     border: 1px dashed rgba(0,0,0,0.5);

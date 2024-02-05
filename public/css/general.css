@@ -230,6 +230,13 @@ button:disabled{
     margin: 0px 5px;
 }
 
+.button-tiny{
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: 0.5s ease all;
+    margin: 0px 3px;
+}
+
 .button-alternate{
     padding: 8px 16px;
     border-radius: 8px;
@@ -296,6 +303,10 @@ button:disabled{
     background-color: rgba(0,0,0,0.5);
     z-index: 100;
     
+}
+
+.dialog-song-container{
+    height: 60vh;
 }
 
 .dialog-show{

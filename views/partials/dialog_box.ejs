@@ -80,39 +80,42 @@
                 </div>
 
             </div>
-            <div class="flex center">
-                <div class="dialog-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny dialog-detail-tag">Song Name</span>
+            <div class="dialog-song-container">
+                <div class="flex center">
+                    <div class="dialog-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny dialog-detail-tag">Song Name</span>
+                        </div>
+                        <div class="flex apart">
+                            <input type="text" class="input dialog-detail-value" onchange="dialog_song_changeSearch()" id="dialog-song-search-name" placeholder="8675309"/>
+                        </div>
                     </div>
-                    <div class="flex apart">
-                        <input type="text" class="input dialog-detail-value" onchange="dialog_song_changeSearch()" id="dialog-song-search-name" placeholder="8675309"/>
+                    <div class="dialog-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny dialog-detail-tag">Artist</span>
+                        </div>
+                        <div class="flex apart">
+                            <input type="text" class="input dialog-detail-value" onchange="dialog_song_changeSearch()" id="dialog-song-search-artist" placeholder="John Doe"/>
+                        </div>
+                    </div>
+                    <div class="dialog-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny dialog-detail-tag">Category</span>
+                        </div>
+                        <div class="flex apart">
+                            <select class="input dialog-detail-value" onchange="dialog_song_changeSearch()" id="dialog-song-search-category">
+                                <option value="regular">Regular</option>
+                                <option value="quick">Quickie</option>
+                                <option value="any" selected>Any</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div class="dialog-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny dialog-detail-tag">Artist</span>
-                    </div>
-                    <div class="flex apart">
-                        <input type="text" class="input dialog-detail-value" onchange="dialog_song_changeSearch()" id="dialog-song-search-artist" placeholder="John Doe"/>
-                    </div>
-                </div>
-                <div class="dialog-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny dialog-detail-tag">Category</span>
-                    </div>
-                    <div class="flex apart">
-                        <select class="input dialog-detail-value" onchange="dialog_song_changeSearch()" id="dialog-song-search-category">
-                            <option value="regular">Regular</option>
-                            <option value="quick">Quickie</option>
-                            <option value="any" selected>Any</option>
-                        </select>
-                    </div>
+                <div class="flex center wrap dialog-song-parent" id="dialog-song-parent">
+                    
                 </div>
             </div>
-            <div class="flex center wrap dialog-song-parent" id="dialog-song-parent">
-                
-            </div>
+            
 
             <div class="flex apart" id="dialog-button-parent">
                 <div></div>

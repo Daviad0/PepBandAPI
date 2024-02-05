@@ -4,9 +4,26 @@
         <span class="small slot-empty-content">Click to Fill</span>
 
     </div>
-    <div class="song-slot-details no-display">
-        <span class="medium" name="name"></span>
-        <span class="small" name="modification">Testing</span>
+    <div class="song-slot-details no-display fill">
+        <div class="flex center fill">
+            <div class="song-slot-name">
+                <span class="medium" name="name"></span>
+                <span class="small" name="modification">Modification</span>
+                <span class="small" name="artist">By Artist</span>
+                <div class="no-display" name="api-error">
+                    <span class="small tag-text warning-bg">Error Finding Song</span>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="song-slot-options">
+            <div class="flex center">
+                <button class="button-tiny error-bg flex center" onclick="removeFilledSlot" data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>"><span class="button-text tiny material-symbols-rounded">cancel</span></button>
+                <button class="button-tiny info-bg flex center" data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>"><span class="button-text tiny material-symbols-rounded">undo</span></button>
+            </div>
+
+        </div>
     </div>
     
 </div>

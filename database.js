@@ -593,13 +593,13 @@ class Database {
     }
 
     createEvent(etid_used){
-        return this.edit("INSERT INTO events (etid_used) VALUES (" + etid_used + ")")
+        return this.edit("INSERT INTO events (etid_used) VALUES (" + etid_used + ") RETURNING *")
     }
 
     async updateEvent(eid, etyid, etid_used, name, begin, end, show, open, data, location, description){
         // each of the parameters should contain the original values if not being changed
 
-        let existing_event = (await this.getEvent(eid))[0]
+        let existing_event = (await this.getEvent(eid)).data[0]
 
         if(etyid == null) etyid = existing_event.etyid
         if(etid_used == null) etid_used = existing_event.etid_used
@@ -726,7 +726,7 @@ class Database {
 
             return this.edit("UPDATE songs SET name = '" + name + "', friendly_name = '" + friendly_name + "', modification = '" + modification + "', artist = '" + artist + "', duration = '" + duration + "', source = '" + source + "', category = '" + category + "', updated = CURRENT_TIMESTAMP WHERE soid = " + soid)
         }else{
-            return this.edit("INSERT INTO songs (name, friendly_name, modification, artist, duration, source, category, updated) VALUES ('', '', '', '', 0, '', '', CURRENT_TIMESTAMP) RETURNING *")
+            return this.edit("INSERT INTO songs (name, friendly_name, modification, artist, duration, source, category, updated) VALUES ('" + name + "', '', '', '', 0, '', 'regular', CURRENT_TIMESTAMP) RETURNING *")
         }
     }
 

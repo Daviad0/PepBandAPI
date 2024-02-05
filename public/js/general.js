@@ -230,6 +230,10 @@ function showDialog(properties){
             dialog_buttons_static.innerHTML = "";
             title = properties.title;
             icon = properties.icon;
+
+            dialog_title.innerHTML = title;
+            dialog_icon.innerHTML = icon;
+
             current_dialog_data["multiple"] = properties.multiple || false;
             current_dialog_data["selected"] = [];
             current_dialog_data["onchoose"] = properties.onchoose || (() => {});
@@ -409,7 +413,13 @@ function dialog_song_changeSearch(){
     // hide songs that don't match the filter
     for(let i = 0; i < songs.length; i += 1){
         let song = songs[i];
+
+        if(song.artist == null) song.artist = "";
+        if(song.name == null) song.name = "";
         let songElement = document.querySelector(`.dialog-song[data-soid="${song.soid}"]`);
+
+
+
         if(song.name.toLowerCase().includes(name.toLowerCase()) && song.artist.toLowerCase().includes(artist.toLowerCase()) && (category == "any" || song.category == category)){
             songElement.classList.remove("no-display");
         }else{
@@ -443,11 +453,18 @@ function dialog_getSongs(){
                 }
 
                 option.innerHTML = `
-                <div class="flex apart">
-                    <span class="medium material-symbols-rounded">${categoryMappings[song.category]}</span>
+                <div class="flex center">
+                    
                     <div class="fill">
-                        <span class="small"><strong name="name">${song.name}</strong></span>
-                        <span class="tiny"><i>${song.modification}</i></span>
+                        <div class="flex apart">
+                            <span class="small"><strong name="name">${song.name}</strong></span>
+                            <span class="medium material-symbols-rounded">${categoryMappings[song.category]}</span>
+                        </div>
+                        <div class="spacing">
+                            <span class="tiny">By ${song.artist == null ? "Unknown" : song.artist}</span>
+                            <span class="tiny"><i>${song.modification == null ? "No Modification" : song.modification}</i></span>
+                        </div>
+                        
                     </div>
                 
                 </div>
