@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Event Template Edit</title>
+    <title>Event Edit</title>
     <%- include('./partials/links.ejs'); %>
     <link rel="stylesheet" href="/css/event_management.css" />
   </head>
@@ -33,13 +33,11 @@
         <div class="mainbody">
             <div class="event-management-vertical-flex">
                 <div class="event-management-header">
-                    <div class="flex center spacing wrap">
+                    <div class="flex center spacing">
                         <button onclick="window.location = '/event/templates'" class="button-alternate"><span class="button-text">See All Templates</span></button>
-                        <button onclick="deleteEventTemplate()" class="button-main error-bg"><span class="button-text">Delete Event Template</span></button>
-                        <button onclick="cloneEventTemplate()" class="button-main"><span class="button-text">Duplicate Event Template</span></button>
                     </div>
                     
-                    <div class="flex center wrap">
+                    <div class="flex center">
                         <span class="large spacing">Manage</span>
                         <div class="config-detail-item">
                             <div class="flex apart">
@@ -76,9 +74,9 @@
                     </div>
 
                     <div class="flex center spacing">
-                        
+                        <button onclick="deleteEventTemplate()" class="button-main error-bg"><span class="button-text">Delete Event Template</span></button>
+                        <button onclick="cloneEventTemplate()" class="button-main"><span class="button-text">Duplicate Event Template</span></button>
                         <button onclick="saveTemplateStructure()" class="button-main success-bg" disabled id="save-event-template"><span class="button-text">Save Template Structure</span></button>
-                        <button onclick="createSegment()" class="button-main"><span class="button-text">Add Segment</span></button>
                     </div>
                     <div>
                         <span class="small no-display error error-message" name="error"></span>
@@ -87,6 +85,9 @@
                 </div>
 
                 <div class="event-management-list">
+                    <div class="flex center spacing">
+                        <button onclick="createSegment()" class="button-main"><span class="button-text">Add Segment</span></button>
+                    </div>
     
                     <div id="segment-list">
                         <% templateData.segments.forEach((segment) => { %>

@@ -1,11 +1,15 @@
-<div class="song-slot slot-empty flex center" data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onclick="slotTriggerChoose(this)">
+<div class="song-slot slot-empty flex center" data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>">
     <div class="song-slot-empty">
-        <span class="medium slot-empty-content">Slot Empty <%= slotIndex %></span>
-        <span class="small slot-empty-content">Click to Fill</span>
+        <span class="medium slot-empty-content" name="slot-empty">No Set Default</span>
+        <div class="flex center spacing">
+            <button data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onclick="slotTriggerChoose(this, 'song')" class="button-tiny slot-empty-button flex center"><span class="button-text tiny material-symbols-rounded">music_note</span></button>
+            <button data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onclick="slotTriggerChoose(this, 'break')" class="button-tiny slot-empty-button flex center"><span class="button-text tiny material-symbols-rounded">snooze</span></button>
+            <button data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onclick="removeSlot(this, event)" class="button-tiny slot-empty-button-remove flex center"><span class="button-text tiny material-symbols-rounded">remove</span></button>
+        </div>
 
     </div>
     <div class="song-slot-details no-display fill">
-        <div class="flex center fill">
+        <div class="flex center fill song-slot-details-category" name="song">
             <div class="song-slot-name">
                 <span class="medium" name="name"></span>
                 <span class="small" name="modification">Modification</span>
@@ -16,11 +20,39 @@
             </div>
             
         </div>
+        <div class="flex center fill song-slot-details-category" name="break">
+            <div class="song-slot-name">
+                <div class="event-management-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny event-management-detail-tag">Break Name</span>
+                    </div>
+                    <div class="flex apart">
+                        <input data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onchange="editFilledSlot(this)" name="name" type="text" class="input event-type-detail-value small input-small" placeholder="Name"/>
+                    </div>
+                </div>
+                <div class="event-management-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny event-management-detail-tag">Break Length (seconds)</span>
+                    </div>
+                    <div class="flex apart">
+                        <input data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onchange="editFilledSlot(this)" name="time" type="number" class="input event-type-detail-value small input-small" placeholder="#"/>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
         
+        <div class="song-slot-icon">
+            <div class="flex center">
+                <span class="medium material-symbols-rounded" name="icon">music_note</span>
+            </div>
+
+        </div>
         <div class="song-slot-options">
             <div class="flex center">
-                <button class="button-tiny error-bg flex center" onclick="removeFilledSlot" data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>"><span class="button-text tiny material-symbols-rounded">cancel</span></button>
-                <button class="button-tiny info-bg flex center" data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>"><span class="button-text tiny material-symbols-rounded">undo</span></button>
+                <button class="button-tiny error-bg flex center" onclick="removeFilledSlot(this, event)" data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>"><span class="button-text tiny material-symbols-rounded">cancel</span></button>
+                <button class="button-tiny gray-bg flex center" onclick="removeSlot(this, event)" data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>"><span class="button-text tiny material-symbols-rounded">remove</span></button>
             </div>
 
         </div>

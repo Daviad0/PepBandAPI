@@ -266,6 +266,13 @@ button:disabled{
     cursor: not-allowed;
 }
 
+.input-small{
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: 0.5s ease all;
+    margin: 0px 5px;
+    width: 100px;
+}
 
 .message{
     padding: 10px;

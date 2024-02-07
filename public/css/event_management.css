@@ -7,8 +7,8 @@ Song slot should look like it's going into the page
     padding: 5px;
     margin: 10px;
     transition: 0.5s ease all;
-    width: 200px;
-    height: 100px;
+    width: 250px;
+    height: 150px;
 }
 
 .song-slot-name{
@@ -23,6 +23,11 @@ Song slot should look like it's going into the page
     position: absolute;
     bottom: 5px;
     right: 5px;
+}
+.song-slot-icon{
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
 }
 
 .slot-list{
