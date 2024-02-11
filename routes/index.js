@@ -161,6 +161,35 @@ router.get("/event/types", async (req, res) => {
     res.render("event_types", {user: req.session.user, role: req.session.role, eventTypes: event_types, images: images});
 });
 
+router.get("/event/:eid/edit", async (req, res) => {
+    var images = await generateImagesList("corner_images");
+    // access control for later :)
+
+    // if(!(await db.checkAccess(req.session.role, "event_edit"))){
+        //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+        //         code: 403,
+        //         message: "Access denied"  + (req.session.user ? "" : " (are you signed in?)")
+        //     }});
+        //     return;
+        // }
+
+    var event = (await db.getEvent(req.params.eid)).data;
+    if(event.length == 0){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Event not found"
+        }});
+        return;
+    }
+
+    event = event[0];
+    var event_types = (await db.getEventTypes()).data;
+    var event_templates = (await db.getEventTemplates()).data;
+
+    res.render("event_edit", {user: req.session.user, role: req.session.role, event: event, eventTypes: event_types, eventTemplates: event_templates, images: images});
+
+});
+
 router.get("/event/template", async (req, res) => {
     res.redirect("/event/templates");
 });

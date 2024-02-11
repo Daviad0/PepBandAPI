@@ -9,18 +9,18 @@
     <!--
         slots can by default be 0 since the user has to manaully add slots for them
     -->
-    <% let default_segment = { segid: "DEFAULT_SEGID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", idealTime: "DEFAULT_IDEALTIME", notifyOnChange: "DEFAULT_NOTIFYONCHANGE", slots: "DEFAULT_SLOTS" } %>
+    <% let default_segment = { segid: "DEFAULT_SEGID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", idealTime: "DEFAULT_IDEALTIME", notifyOnChange: "DEFAULT_NOTIFYONCHANGE", slots: 0 } %>
     <% let default_slot = { slotIndex: "DEFAULT_SLOTINDEX", segment: default_segment, song: "DEFAULT_SONG" } %>
-    <% let templateData = JSON.parse(eventTemplate.data) %>
-    <% if(templateData == null || templateData == {}) { %>
-        <% templateData = {segments: []}; %>
+    <% let eventData = JSON.parse(event.data) %>
+    <% if(eventData == null || eventData == {}) { %>
+        <% eventData = {segments: []}; %>
     <% } %>
     <script>
         let segment_template = `<%- include('./partials/event/segment.ejs', {segment: default_segment}) %>`;
         let slot_template = `<%- include('./partials/event/song_slot.ejs', default_slot) %>`;
         // get template data directly from the server; it needs to be stored for a JSON builder
-        let dataStructure = JSON.stringify(<%- eventTemplate.data %>);
-        let usingEtid = "<%= eventTemplate.etid %>";
+        let dataStructure = JSON.stringify(<%- event.data %>);
+        let usingEid = "<%= event.eid %>";
         dataStructure = JSON.parse(dataStructure);
         if(dataStructure == null || dataStructure == {}) {
             dataStructure = {segments: []};
@@ -28,56 +28,61 @@
     </script>
     
     <%- include('./partials/header.ejs'); %>
-    <script src="/js/event_template.js"></script>
+    <script src="/js/event_edit.js"></script>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
             <div class="event-management-vertical-flex">
                 <div class="event-management-header">
-                    <div class="flex center spacing">
-                        <button onclick="window.location = '/event/templates'" class="button-alternate"><span class="button-text">See All Templates</span></button>
-                    </div>
-                    
-                    <div class="flex center">
-                        <span class="large spacing">Manage</span>
-                        <div class="config-detail-item">
-                            <div class="flex apart">
-                                <span class="tiny event-management-detail-tag">Template Name</span>
-                            </div>
-                            <div class="flex apart">
-                                <input name="name" onchange="editTemplate(this)" class="large input" value="<%= eventTemplate.name %>" type="text" placeholder="Event Template Name" id="event-template-name" />
-                            </div>
-                        </div>
-                        <div class="config-detail-item">
-                            <div class="flex apart">
-                                <span class="tiny event-management-detail-tag">For Event Type</span>
-                            </div>
-                            <div class="flex apart">
-                                <select data-origvalue="<%= eventTemplate.etyid %>" onchange="editTemplate(this)" name="etyid" class="input select-from-none large" id="event-template-type">
-                                    <option value="" disabled selected>Select your template</option>
-                                    <% eventTypes.forEach(function(eventType) { %>
-                                        <option value="<%= eventType.etyid %>"><%= eventType.name == "" ? "Unnamed Type": eventType.name %></option>
-                                    <% }); %>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        
-                    </div>
-                    <div class="flex center spacing">
-                        <span class="small spacing">Event Template ID: </span>
-                        <span class="tiny event-management-detail-value event-management-main-info"><%= eventTemplate.etid %></span>
-
-                    </div>
-                    
-                    <div class="message message-warning">
-                        <span class="small message-content">You have unsaved changes! Press the "Save Event Template" button or use CTRL-S to save!</span>
+                    <div class="flex center spacing wrap">
+                        <button onclick="window.location = '/event/templates'" class="button-alternate"><span class="button-text">See All Events</span></button>
+                        <button onclick="deleteEvent()" class="button-main error-bg"><span class="button-text">Delete Event</span></button>
+                        <button onclick="cloneEvent()" class="button-main"><span class="button-text">Duplicate Event</span></button>
                     </div>
 
-                    <div class="flex center spacing">
-                        <button onclick="deleteEventTemplate()" class="button-main error-bg"><span class="button-text">Delete Event Template</span></button>
-                        <button onclick="cloneEventTemplate()" class="button-main"><span class="button-text">Duplicate Event Template</span></button>
-                        <button onclick="saveTemplateStructure()" class="button-main success-bg" disabled id="save-event-template"><span class="button-text">Save Template Structure</span></button>
+                    <div class="form">
+                        <div class="flex apart">
+                            <div class="event-management-detail-item">
+                                <div class="flex apart">
+                                    <span class="tiny event-management-detail-tag">Event Name</span>
+                                </div>
+                                <div class="flex apart">
+                                    <input name="name" onchange="editEvent(this)" class="input" value="<%= event.name %>" type="text" placeholder="Event Name" id="event-name" />
+                                </div>
+                            </div>
+                            <div class="event-management-detail-item">
+                                <div class="flex apart">
+                                    <span class="tiny event-management-detail-tag">Event Start</span>
+                                </div>
+                                <div class="flex apart">
+                                    <input type="time" class="input" placeholder="Start Date" name="start_time" value="<%= event.start.toISOString().substring(11,16) %>" onchange="editEventTime(this)" />
+                                    <input type="date" class="input" placeholder="Start Time" name="start_date" value="<%= event.start.toISOString().substring(0,10) %>" onchange="editEventTime(this)" />
+                                    <input type="text" hidden class="input" placeholder="Start" name="start" onchange="editEvent(this)" />
+                                </div>
+                            </div>
+                            <div class="event-management-detail-item">
+                                <div class="flex apart">
+                                    <span class="tiny event-management-detail-tag">Event End</span>
+                                </div>
+                                <div class="flex apart">
+                                    <input type="time" class="input" placeholder="Start Date" name="end_time" value="<%= event.ending.toISOString().substring(11,16) %>" onchange="editEventTime(this)" />
+                                    <input type="date" class="input" placeholder="Start Time" name="end_date" value="<%= event.ending.toISOString().substring(0,10) %>" onchange="editEventTime(this)" />
+                                    <input type="text" hidden class="input" placeholder="End" name="ending" onchange="editEvent(this)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event-management-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny event-management-detail-tag">Event Description</span>
+                            </div>
+                            <div class="flex apart">
+                                <textarea class="input textarea small" onchange="editEvent(this)" placeholder="Description" name="description" id="event-description"><%= event.description %></textarea>
+                            </div>
+                        </div>
                     </div>
+                    
+                
+
+                    
                     <div>
                         <span class="small no-display error error-message" name="error"></span>
                     </div>
@@ -85,14 +90,16 @@
                 </div>
 
                 <div class="event-management-list">
-                    <div class="flex center spacing">
-                        <button onclick="createSegment()" class="button-main"><span class="button-text">Add Segment</span></button>
-                    </div>
     
                     <div id="segment-list">
-                        <% templateData.segments.forEach((segment) => { %>
+                        <% eventData.segments.forEach((segment) => { %>
                             <%- include('./partials/event/segment.ejs', {segment: segment}) %>
                         <% }); %>
+                    </div>
+                    <div class="flex center spacing">
+                        
+                        <button onclick="saveEventStructure()" class="button-main success-bg" disabled id="save-event-template"><span class="button-text">Save Template Structure</span></button>
+                        <button onclick="createSegment()" class="button-main"><span class="button-text">Add Segment</span></button>
                     </div>
                 </div>
 

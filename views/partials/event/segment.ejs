@@ -17,7 +17,7 @@
     </div>
     <div class="slot-list">
         <div class="flex center wrap" name="slot-list" data-segid="<%= segment.segid %>">
-            <% for(let s = 0; s < segment.slots; s++) { %>
+            <% for(let s = 0; s < (segment.slots.length == undefined ? segment.slots : segment.slots.length); s++) { %>
                 <!-- Let the javascript do the seeding of the songs. It needs to verify with the database that the information is correct... -->
                 <%- include('./song_slot.ejs', {segment: segment, slotIndex: s}) %>
             <% } %>

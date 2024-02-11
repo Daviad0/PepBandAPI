@@ -301,8 +301,8 @@ router.post("/", (req, res) => {
     var etyid = req.body.etyid;
     var etid_used = req.body.etid_used;
     var name = req.body.name;
-    var begin = req.body.begin;
-    var end = req.body.end;
+    var start = req.body.start;
+    var ending = req.body.ending;
     var show = req.body.show;
     var open = req.body.open;
     var data = req.body.data;
@@ -311,7 +311,7 @@ router.post("/", (req, res) => {
     if(!etyid) etyid = null;
     if(!etid_used) etid_used = null;
     if(!name) name = null;
-    if(!begin) begin = null;
+    if(!start) start = null;
     if(!end) end = null;
     if(!show) show = null;
     if(!open) open = null;
@@ -319,8 +319,8 @@ router.post("/", (req, res) => {
     if(!location) location = null;
     if(!description) description = null;
 
-    db.updateEvent(eid, etyid, etid_used, name, begin, end, show, open, data, location, description).then((result) => {
-        res.send(result.data);
+    db.updateEvent(eid, etyid, etid_used, name, start, ending, show, open, data, location, description).then((result) => {
+        res.send(result);
     })
 
 });
@@ -336,7 +336,7 @@ router.post("/delete", (req, res) => {
     }
     
     db.deleteEvent(eid).then((result) => {
-        res.send(result.data);
+        res.send(result);
     });
 });
 

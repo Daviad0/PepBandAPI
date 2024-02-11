@@ -37,6 +37,12 @@ Song slot should look like it's going into the page
     border-radius: 8px;
 }
 
+.form{
+    margin:10px;
+    border: 1px dashed rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
 
 .event-management-detail-item{
     margin: 5px 10px;
@@ -106,4 +112,10 @@ Song slot should look like it's going into the page
         opacity: 1;
         transform: scale(1);
     }
+}
+
+.textarea{
+    width: 100%;
+    height: 200px;
+    resize: none;
 }
