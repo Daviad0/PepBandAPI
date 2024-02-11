@@ -74,6 +74,8 @@ function submitEventForCreation(){
     end.setMinutes(end_time.split(":")[1]);
     end.setSeconds(0);
 
+    let show = document.querySelector("input[name='show']").checked;
+
     showError(error_span, null);
     if(name == "" || etyid == null || etid == null || start == "Invalid Date" || end == "Invalid Date"){
         showError(error_span, "Please fill out all fields");
@@ -83,11 +85,13 @@ function submitEventForCreation(){
 
     let url = "/api/event/create";
     let data = {
-        etid: etid,
+        etid_used: etid,
         name: name,
+        description: description,
         start: start.toISOString(),
         end: end.toISOString(),
-        etyid: etyid
+        etyid: etyid,
+        show: show
     };
 
     apiPost(url, data, (result) => {

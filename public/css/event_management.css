@@ -116,6 +116,14 @@ Song slot should look like it's going into the page
 
 .textarea{
     width: 100%;
-    height: 200px;
+    height: 100px;
     resize: none;
+}
+
+.icon-preview{
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    margin: 0px 5px;
 }

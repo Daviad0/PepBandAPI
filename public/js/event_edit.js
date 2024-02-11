@@ -158,8 +158,37 @@ function addSegmentToView(segment){
     document.getElementById("segment-list").scrollTop = topPos;
 }
 
+function updateEventTypePreview(element){
+    let etyid = element.value;
+    let url = "/api/event/type/" + etyid;
+    let data = {etyid: etyid};
+
+    if(etyid == ""){
+        return;
+    }
+
+    apiGet(url, (result) => {
+        if(result.success){
+            eventType = result.data[0];
+            document.getElementById("event-type-preview").innerHTML = eventType.icon;
+
+            if(eventType.color == ""){
+                eventType.color = "black";
+            }
+
+            document.getElementById("event-type-preview").style.backgroundColor = eventType.color;
+            document.getElementById("event-type-preview").style.color = "white";
+
+        }
+    });
+}
+
 function initializeSlots(){
     // only to be called once, when the page is loaded
+    let eventTypeInitial = document.getElementById("event-type").dataset.initvalue;
+    document.getElementById("event-type").value = eventTypeInitial;
+    updateEventTypePreview(document.getElementById("event-type"));
+
 
     dataStructure.segments.forEach((segment) => {
         // loop through each songIndex to see if there is a default
@@ -210,6 +239,10 @@ function addSlot(element){
 
     html = html.replaceAll("DEFAULT_SEGID", segment.segid);
     html = html.replaceAll("DEFAULT_SLOTINDEX", segment.slots.length);
+
+    segment.slots.push({
+        type: "empty"
+    });
 
     let generatedElement = document.createElement("div");
     generatedElement.innerHTML = html;

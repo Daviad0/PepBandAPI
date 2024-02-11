@@ -15,11 +15,15 @@
 -->
 
 
-<div class="floating-box flex apart event start">
-    <img class="event-image" src="/images/pepband.png" alt="Event Image">
+<div class="floating-box flex apart event" style="border-top-color: <%= eventType.color %>">
+    <div class="flex center icon-container">
+        <span class="material-symbols-rounded large" data-etyid="<%= eventType.etyid %>" <%= eventType.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= eventType.icon %></span>
+        <img class="icon<%= eventType.icon.startsWith("IMAGE:") ? "" : " no-display event-image" %>" data-etyid="<%= eventType.etyid %>" name="icon_image"  src="<%= eventType.icon %>"/>
+    </div>
+    
     <div class="event-content">
         <div class="flex center">
-            <span class="title event-title"><%= event.eid %></span>
+            <span class="title event-title"><%= event.name %></span>
         </div>
         
     </div>

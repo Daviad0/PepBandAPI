@@ -71,7 +71,9 @@ router.get("/events", async (req, res) => {
     var images = await generateImagesList("corner_images");
     var events = (await db.getEvents()).data;
 
-    res.render("events", {user: req.session.user, role: req.session.role, events: events, images: images});
+    var eventTypes = (await db.getEventTypes()).data;
+
+    res.render("events", {user: req.session.user, role: req.session.role, events: events, images: images, eventTypes: eventTypes});
 });
 
 router.get("/config", async (req, res) => {

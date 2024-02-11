@@ -9,7 +9,7 @@
     <!--
         slots can by default be 0 since the user has to manaully add slots for them
     -->
-    <% let default_segment = { segid: "DEFAULT_SEGID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", idealTime: "DEFAULT_IDEALTIME", notifyOnChange: "DEFAULT_NOTIFYONCHANGE", slots: "DEFAULT_SLOTS" } %>
+    <% let default_segment = { segid: "DEFAULT_SEGID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", idealTime: "DEFAULT_IDEALTIME", notifyOnChange: "DEFAULT_NOTIFYONCHANGE", slots: 0 } %>
     <% let default_slot = { slotIndex: "DEFAULT_SLOTINDEX", segment: default_segment, song: "DEFAULT_SONG" } %>
     <% let templateData = JSON.parse(eventTemplate.data) %>
     <% if(templateData == null || templateData == {}) { %>

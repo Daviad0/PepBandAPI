@@ -7,6 +7,7 @@
   </head>
   <body>
     <%- include('./partials/header.ejs'); %>
+    <% let defaultEventType = { etyid: "DEFAULT_ETID", name: "DEFAULT_NAME", icon: "bolt", color: "#ffffff" } %>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
             <div class="splitpage">
@@ -17,9 +18,13 @@
                     </div>
                     
                     <span class="small spacing">Here are all of the upcoming Pep Band events! You can attend any events as a Michigan Tech student, but fans of the Huskies can attend at a small price!</span>
-                    <div class="flex center">
+                    <div class="flex center wrap">
                         <% events.forEach(function(e){ %>
-                            <%- include('./partials/event/event_basic.ejs', {event: e}); %>
+                            <% let applicableEventType = eventTypes.find(et => et.etyid == e.etyid); %>
+                            <% if(applicableEventType == null) { %>
+                                <% applicableEventType = defaultEventType; %>
+                            <% } %>
+                            <%- include('./partials/event/event_basic.ejs', {event: e, eventType: applicableEventType}); %>
                         <% }); %>
                     </div>
                     

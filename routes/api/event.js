@@ -210,7 +210,7 @@ router.get("/:eid/overrides", (req, res) => {
 /*
    Since events are so major, this will have a creation page that passes in the initial parameters
 */
-router.post("/create", (req, res) => {
+router.post("/create", async (req, res) => {
 
     // expecting etid_used in body, OK if null
     // expecting name in body, not OK if null or ""
@@ -229,6 +229,42 @@ router.post("/create", (req, res) => {
     var etyid = req.body.etyid;
 
     if(!etid_used) etid_used = null;
+
+    var initializeWithData = "";
+    try{
+        if(etid_used != null){
+            let et = (await db.getEventTemplate(etid_used)).data[0];
+            if(et.data){
+                initializeWithData = et.data;
+                var dataStructure = JSON.parse(et.data);
+                // TO CONVERT FROM TEMPLATE TO EVENT...
+                // We need to put the defaults into each slots
+                dataStructure.segments.forEach((segment) => {
+                    let newSlots = [];
+                    for(var i = 0; i < segment.slots; i++){
+
+                        let qualifyingDefault = segment.defaults.find(def => def.slotIndex == i);
+                        if(qualifyingDefault){
+                            qualifyingDefault.slotIndex = undefined;
+                            newSlots.push(qualifyingDefault);
+                        }else{
+                            newSlots.push({
+                                type: "empty"
+                            });
+                        }
+                        
+                    }
+                    segment.slots = newSlots;
+                });
+                initializeWithData = JSON.stringify(dataStructure);
+            }
+        }
+    }catch(e){
+        initializeWithData = "";
+        etid_used = null;
+    }
+    
+
     if(!name){
         res.status(400).send({message: "name property required to create event"});
         return;
@@ -251,7 +287,7 @@ router.post("/create", (req, res) => {
 
     db.createEvent(etid_used).then((result) => {
         let eid = result.data[0].eid;
-        db.updateEvent(eid, etyid, etid_used, name, start, end, show, null, "", null, description).then((result) => {
+        db.updateEvent(eid, etyid, etid_used, name, start, end, show, null, initializeWithData, null, description).then((result) => {
             res.send(result);
         });
     });
@@ -312,7 +348,7 @@ router.post("/", (req, res) => {
     if(!etid_used) etid_used = null;
     if(!name) name = null;
     if(!start) start = null;
-    if(!end) end = null;
+    if(!ending) ending = null;
     if(!show) show = null;
     if(!open) open = null;
     if(!data) data = null;

@@ -34,7 +34,7 @@
             <div class="event-management-vertical-flex">
                 <div class="event-management-header">
                     <div class="flex center spacing wrap">
-                        <button onclick="window.location = '/event/templates'" class="button-alternate"><span class="button-text">See All Events</span></button>
+                        <button onclick="window.location = '/events'" class="button-alternate"><span class="button-text">See All Events</span></button>
                         <button onclick="deleteEvent()" class="button-main error-bg"><span class="button-text">Delete Event</span></button>
                         <button onclick="cloneEvent()" class="button-main"><span class="button-text">Duplicate Event</span></button>
                     </div>
@@ -76,6 +76,38 @@
                             </div>
                             <div class="flex apart">
                                 <textarea class="input textarea small" onchange="editEvent(this)" placeholder="Description" name="description" id="event-description"><%= event.description %></textarea>
+                            </div>
+                        </div>
+                        <div class="flex apart">
+                            
+                            <div class="flex center">
+                                <div class="event-management-detail-item">
+                                    <div class="flex apart">
+                                        <span class="tiny event-management-detail-tag">Event Type</span>
+                                    </div>
+                                    <div class="flex apart">
+                                        <div class="flex center">
+                                            <select onchange="updateEventTypePreview(this)" data-initvalue="<%= event.etyid %>" class="input select-from-none" id="event-type">
+                                                <option value="" disabled selected>Select your type</option>
+                                                <% eventTypes.forEach(function(eventType) { %>
+                                                    <option value="<%= eventType.etyid %>"><%= eventType.name == "" ? "Unnamed Type" : eventType.name %></option>
+                                                <% }); %>
+                                            </select>
+                                            <span class="material-symbols-rounded large icon-preview flex center" id="event-type-preview"></span>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex center">
+                                <div class="event-management-detail-item">
+                                    <div class="flex apart">
+                                        <span class="tiny event-management-detail-tag">Location</span>
+                                    </div>
+                                    <div class="flex apart">
+                                        <input name="location" onchange="editEvent(this)" class="input" value="<%= event.location %>" type="text" placeholder="Location" id="event-location" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

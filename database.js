@@ -619,6 +619,9 @@ class Database {
         description = sanitizer.sanitize(description)
         location = sanitizer.sanitize(location)
 
+        // handle as boolean in Postgres
+        show = show ? "TRUE" : "FALSE"
+
         var tzoffset = (new Date()).getTimezoneOffset() * 60000;
 
         // if start is a date object, convert it to a string
@@ -629,7 +632,7 @@ class Database {
             ending = (new Date(ending - tzoffset)).toISOString().slice(0, -1);
         }
 
-        return this. edit("UPDATE events SET etyid = " + etyid + ", etid_used = " + etid_used + ", name = '" + name + "', start = '" + start + "', ending = '" + ending + "', show = " + show + ", open = " + open + ", data = '" + data + "', updated = CURRENT_TIMESTAMP WHERE eid = " + eid)
+        return this.edit("UPDATE events SET etyid = " + etyid + ", etid_used = " + etid_used + ", name = '" + name + "', location = '" + location + "', description = '" + description + "', start = '" + start + "', ending = '" + ending + "', show = " + show + ", open = " + open + ", data = '" + data + "', updated = CURRENT_TIMESTAMP WHERE eid = " + eid)
     }
 
     deleteEvent(eid){
