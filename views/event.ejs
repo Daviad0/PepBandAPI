@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Events</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/event.css" />
+  </head>
+  <body>
+
+    <% let formattedStart = event.start.toISOString().substring(0,10) + " @ " + event.start.toISOString().substring(11,16)  %>
+    <% let formattedEnd = event.ending.toISOString().substring(0,10) + " @ " + event.ending.toISOString().substring(11,16)  %>
+    <% let relativeState = event.start > new Date() ? "future" : (event.ending > new Date() ? "current" : "past") %>
+
+    <%- include('./partials/header.ejs'); %>
+    <% let defaultEventType = { etyid: "DEFAULT_ETID", name: "DEFAULT_NAME", icon: "bolt", color: "#ffffff" } %>
+    
+    <script>
+        
+        let dataStructure = JSON.stringify(<%- event.data %>);
+        dataStructure = JSON.parse(dataStructure);
+        if(dataStructure == null || dataStructure == {}) {
+            dataStructure = {segments: []};
+        }
+    </script>
+    <script src="/js/event.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="splitpage">
+                <div class="content-left">
+                    <div class="flex center">
+
+                    </div>
+                    <div class="event flex flex-column apart start" style="background: <%= event.color %>;background: <%= event.gradientBackground %>">
+                        <div class="flex apart event-header">
+                            <div class="flex center">
+                                <span class="xlarge material-symbols-rounded"><%= event.icon %></span>
+                                <% if(relativeState == "past"){ %>
+                                    <div class="flex center">
+                                        <span class="small"><i>Event Over</i></span>
+                                    </div>
+                                <% } %>
+                                <% if(relativeState == "current"){ %>
+                                    <div class="flex center">
+                                        <span class="small"><i>Event NOW!</i></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="flex center">
+                                <button class="button-main white-bg" onclick="window.location = '/event/<%= event.eid %>/edit'"><span class="button-text" style="color: <%= event.color %>">Edit Event</span></button>
+                                <button class="button-main white-bg"><span class="button-text" style="color: <%= event.color %>">Hide Event</span></button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex apart">
+                            <div>
+                               
+                                <% if(relativeState == "current"){ %>
+                                    <span class="small">Ending <%= formattedEnd %></span>
+                                <% } else { %>
+                                    <span class="small"><%= formattedStart %></span>
+                                <% } %>
+                                <span class="xlarge<%= relativeState == "past" ? ' event-passed' : '' %>"><%= event.name %></span>
+                            </div>
+                            
+
+                            
+                        </div>
+                    </div>
+
+                    <div class="slot-list spacing-bottom spacing-top">
+                        <span class="small"><%= event.description %></span>
+                    </div>
+
+                    <div class="segment-list">
+                        <% let parsedData = JSON.parse(event.data) %>
+                        <% for(let i = 0; i < parsedData.segments.length; i++) { %>
+                            <% let segment = parsedData.segments[i] %>
+                            <% segment.number = i + 1 %>
+                            <%- include('./partials/event/segment_view.ejs', {segment: segment}) %>
+                        <% } %>
+                    </div>
+                    
+                </div>
+                <div class="content-right">
+                    <% if(user != null) { %>
+                        <div class="user-attending">
+                            <div class="flex center">
+                                <span class="large spacing">You're Attending?</span>
+                            </div>
+                            <div class="spacing floating-box">
+                                <div class="spacing">
+                                    <span class="small">Are you able to attend this event? By signing up, you'll receive set list notifications and announcements!</span>
+                                    <span class="tiny"><i>By default, you're not attending</i></span>
+                                </div>
+                                
+                                <div class="spacing flex center">
+                                    <button class="button-alternate success-bg"><span class="button-text">Yes</span></button>
+                                    <button class="button-alternate"><span class="button-text">Maybe</span></button>
+                                    <button class="button-alternate"><span class="button-text">No</span></button>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                    <% } %>
+                    <div>
+                        <span class="large spacing">Attending Groups</span>
+                        
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

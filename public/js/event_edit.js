@@ -159,6 +159,9 @@ function addSegmentToView(segment){
 }
 
 function updateEventTypePreview(element){
+
+    editEvent(element);
+
     let etyid = element.value;
     let url = "/api/event/type/" + etyid;
     let data = {etyid: etyid};

@@ -76,6 +76,8 @@ router.get("/events", async (req, res) => {
     res.render("events", {user: req.session.user, role: req.session.role, events: events, images: images, eventTypes: eventTypes});
 });
 
+
+
 router.get("/config", async (req, res) => {
     var images = await generateImagesList("corner_images");
     var config = (await db.getConfig()).data;
@@ -188,6 +190,24 @@ router.get("/event/:eid/edit", async (req, res) => {
     var event_types = (await db.getEventTypes()).data;
     var event_templates = (await db.getEventTemplates()).data;
 
+
+    // before we send back data, do a segment data check
+
+    try{
+        let formatted = JSON.parse(event.data);
+        formatted.segments.forEach((segment) => {
+            if(segment.slots == null || segment.slots == undefined){
+                segment.slots = [];
+                segment.error = true;
+            }else{
+                segment.error = undefined;
+            }
+        });
+        event.data = JSON.stringify(formatted);
+    }catch(e){
+        event.data = "{}";
+    }
+
     res.render("event_edit", {user: req.session.user, role: req.session.role, event: event, eventTypes: event_types, eventTemplates: event_templates, images: images});
 
 });
@@ -264,7 +284,87 @@ router.get("/event/template/:etid", async (req, res) => {
         event_template.data = "{}";
     }
 
+
+
     res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template, eventTypes: event_types, images: images});
+});
+
+router.get("/event/:eid", async (req, res) => {
+
+    // check if eid is number
+    if(isNaN(req.params.eid)){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Event not found"
+        }});
+        return;
+    }
+
+    var images = await generateImagesList("corner_images");
+    var event = (await db.getEvent(req.params.eid)).data;
+
+    if(event.length == 0){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Event not found"
+        }});
+        return;
+    }
+
+    
+
+    event = event[0];
+
+    var eventTypes = (await db.getEventTypes()).data;
+
+    var applicableEventType = eventTypes.find(e => e.etyid == event.etyid);
+    if(applicableEventType){
+        event.color = applicableEventType.color;
+        event.icon = applicableEventType.icon;
+        event.eventType = applicableEventType.name;
+    }else{
+        event.color = "black";
+        event.icon = "question_mark";
+        event.eventType = "Unknown";
+    }
+
+    var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
+
+    if(gradientBackground.length > 0){
+        event.gradientBackground = gradientBackground[0].value;
+    }
+    // check if color is in hex format
+    if(event.color.match(/^#[0-9A-F]{6}$/i)){
+        // generate RGBA representation
+        var colorA = "rgba(" + parseInt(event.color.substring(1, 3), 16) + "," + parseInt(event.color.substring(3, 5), 16) + "," + parseInt(event.color.substring(5, 7), 16) + ",0.7)";
+        var colorB = "rgba(" + parseInt(event.color.substring(1, 3), 16) + "," + parseInt(event.color.substring(3, 5), 16) + "," + parseInt(event.color.substring(5, 7), 16) + ",1)";
+
+        event.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+    }else{
+        event.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+    }
+
+    
+
+    // before we send back data, do a segment data check
+
+    try{
+        let formatted = JSON.parse(event.data);
+        formatted.segments.forEach((segment) => {
+            if(segment.slots == null || segment.slots == undefined){
+                segment.slots = [];
+                segment.error = true;
+            }else{
+                segment.error = undefined;
+            }
+        });
+        event.data = JSON.stringify(formatted);
+    }catch(e){
+        event.data = "{}";
+    }
+
+
+    res.render("event", {user: req.session.user, role: req.session.role, event: event, images: images});
 });
 
 router.get("/songs", async (req, res) => {

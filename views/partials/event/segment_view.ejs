@@ -1,0 +1,33 @@
+<div class="segment floating-box" name="segment">
+    <div class="flex apart spacing">
+        <div class="flex center">
+            <span class="small tag-text info-bg"><%= segment.number %></span>
+            <span class="medium"><%= segment.name %></span>
+        </div>
+        
+        <div>
+            <span class="small"><%= segment.slots.length %> total element<%= segment.slots.length != 1 ? 's' : '' %></span>
+        </div>
+    </div>
+    <div class="slot-list">
+
+        <div class="flex center wrap">
+
+            <% if(segment.error != undefined) { %>
+                <div class="flex center">
+                    <span class="small tag-text error-bg">An Error Occurred...</span>
+                </div>
+            <% } %>
+
+            <% for(let s = 0; s < (segment.slots.length == undefined ? segment.slots : segment.slots.length); s++) { %>
+                <% let slot = segment.slots[s]; %>
+                <% if(slot.type == "empty") continue; %>
+                <% slot.slotIndex = s; %>
+                <%- include('./song_slot_view.ejs', {segment: segment, slot: slot}) %>
+            <% } %>
+        </div>
+        
+
+    </div>
+    
+</div>

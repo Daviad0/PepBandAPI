@@ -6,7 +6,10 @@ span{
     display: block;
     text-align: center;
 }
-
+.xlarge{
+    font-size: 36px;
+    font-weight: bold;
+}
 .large{
     font-size: 24px;
     font-weight: bold;
@@ -129,6 +132,12 @@ a .logo:hover{
     width:100%;
 }
 
+.spacing-top{
+    margin-top: 10px;
+}
+.spacing-bottom{
+    margin-bottom: 10px;
+}
 
 .fill{
     width: 100%;
@@ -183,6 +192,10 @@ a .logo:hover{
 .wrap{
     flex-wrap: wrap;
 
+}
+
+.flex-column{
+    flex-direction: column;
 }
 
 .floating-box{

@@ -87,7 +87,7 @@
                                     </div>
                                     <div class="flex apart">
                                         <div class="flex center">
-                                            <select onchange="updateEventTypePreview(this)" data-initvalue="<%= event.etyid %>" class="input select-from-none" id="event-type">
+                                            <select onchange="updateEventTypePreview(this)" name="etyid" data-initvalue="<%= event.etyid %>" class="input select-from-none" id="event-type">
                                                 <option value="" disabled selected>Select your type</option>
                                                 <% eventTypes.forEach(function(eventType) { %>
                                                     <option value="<%= eventType.etyid %>"><%= eventType.name == "" ? "Unnamed Type" : eventType.name %></option>

@@ -67,6 +67,23 @@ select{
     color: #E98C00;
 }
 
+.error-border{
+    border: 2px solid #DB1A1A;
+    border-color: #DB1A1A;
+}
+.success-border{
+    border: 2px solid #00BE35;
+    border-color: #00BE35;
+}
+.info-border{
+    border: 2px solid #1D8BF1;
+    border-color: #1D8BF1;
+}
+.warning-border{
+    border: 2px solid #E98C00;
+    border-color: #E98C00;
+}
+
 .error-bg{
     background-color: #DB1A1A;
     color: white;
@@ -91,6 +108,10 @@ select{
     background-color: #666666;
     color: white;
 
+}
+.white-bg{
+    background-color: white;
+    color: black;
 }
 
 .message-error{

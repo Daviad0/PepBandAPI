@@ -12,7 +12,7 @@ router.get("/list", (req, res) => {
 
 router.get("/:soid", (req, res) => {
     db.getSong(req.params.soid).then((result) => {
-        res.send(result.data);
+        res.send(result);
     })
 });
 

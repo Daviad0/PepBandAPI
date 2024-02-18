@@ -51,3 +51,15 @@ If the screen is smaller than 600px, stack the links on top of each other, inste
 .event-title{
     margin:0;
 }
+
+.event-header{
+    margin-bottom: 5px;
+}
+
+.event-date{
+    margin-top:10px;
+}
+
+.icon-container{
+    margin-top:5px;
+}

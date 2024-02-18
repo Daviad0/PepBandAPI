@@ -1,0 +1,30 @@
+<div class="song-slot slot-filled flex center">
+    <div class="song-slot-details fill">
+        <% if(slot.type == "song"){ %>
+        <div class="flex center fill song-slot-details-category" data-segid="<%= segment.segid %>" data-slotindex="<%= slot.slotIndex %>" name="song">
+            <div class="song-slot-name">
+                <span class="medium" name="name"><%= slot.soid_backup %></span>
+                <span class="small" name="modification"></span>
+                <span class="small" name="artist"></span>
+            </div>
+        </div>
+        <% } if(slot.type == "break") { %>
+        <div class="flex center fill song-slot-details-category" data-segid="<%= segment.segid %>" data-slotindex="<%= slot.slotIndex %>" name="break">
+            <div class="song-slot-name">
+                <span class="medium" name="name"><%= slot.name %></span>
+                <span class="small" name="time"><%= slot.time %>s</span>
+                
+            </div>
+            
+        </div>
+        <% } %>
+        
+        <div class="song-slot-icon">
+            <div class="flex center">
+                <span class="medium material-symbols-rounded" name="icon"><%= slot.type == "song" ? "music_note" : "sleep" %></span>
+            </div>
+
+        </div>
+    </div>
+    
+</div>

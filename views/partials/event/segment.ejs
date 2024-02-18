@@ -8,6 +8,12 @@
                 <input class="medium input" onchange="editSegmentProperty(this)" data-segid="<%= segment.segid %>" value="<%= segment.name %>" name="name" type="text" placeholder="Segment Name" />
             </div>
         </div>
+
+        <% if(segment.error != undefined) { %>
+            <div class="flex center">
+                <span class="small tag-text error-bg">There was an error...</span>
+            </div>
+        <% } %>
         
         <div class="flex center">
             <button onclick="deleteSegment(this)" data-segid="<%= segment.segid %>" class="button-main error-bg flex center"><span class="button-text large material-symbols-rounded">delete</span></button>
@@ -16,6 +22,7 @@
         </div>
     </div>
     <div class="slot-list">
+        
         <div class="flex center wrap" name="slot-list" data-segid="<%= segment.segid %>">
             <% for(let s = 0; s < (segment.slots.length == undefined ? segment.slots : segment.slots.length); s++) { %>
                 <!-- Let the javascript do the seeding of the songs. It needs to verify with the database that the information is correct... -->

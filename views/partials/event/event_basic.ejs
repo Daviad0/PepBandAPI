@@ -15,17 +15,30 @@
 -->
 
 
-<div class="floating-box flex apart event" style="border-top-color: <%= eventType.color %>">
-    <div class="flex center icon-container">
-        <span class="material-symbols-rounded large" data-etyid="<%= eventType.etyid %>" <%= eventType.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= eventType.icon %></span>
-        <img class="icon<%= eventType.icon.startsWith("IMAGE:") ? "" : " no-display event-image" %>" data-etyid="<%= eventType.etyid %>" name="icon_image"  src="<%= eventType.icon %>"/>
-    </div>
-    
-    <div class="event-content">
-        <div class="flex center">
-            <span class="title event-title"><%= event.name %></span>
+<div class="floating-box event" style="border-top-color: <%= eventType.color %>">
+    <div class="flex apart event-header">
+        <div class="flex center icon-container">
+            <span class="material-symbols-rounded large" data-etyid="<%= eventType.etyid %>" <%= eventType.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= eventType.icon %></span>
+            <img class="icon<%= eventType.icon.startsWith("IMAGE:") ? "" : " no-display event-image" %>" data-etyid="<%= eventType.etyid %>" name="icon_image"  src="<%= eventType.icon %>"/>
         </div>
         
+        <div class="event-content">
+            <div class="flex center">
+                <span class="title event-title"><%= event.name %></span>
+            </div>
+            
+            
+        </div>
+    </div>
+    
+    <div></div>
+    <div class="flex center">
+        <span class="tiny event-description"><%= event.description %></span>
+    </div>
+
+    <div class="flex apart event-date">
+        <div></div>
+        <span class="small tag-text info-bg"><%= event.eid %></span>
     </div>
     
 </div>
