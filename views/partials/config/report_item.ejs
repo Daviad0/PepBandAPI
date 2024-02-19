@@ -1,0 +1,26 @@
+<div class="report-item<%= alternate ? ' report-item-alternate' : '' %>">
+    <div class="flex apart">
+        <div class="report-col-1">
+            <span class="medium report-text"><%= song.name %></span>
+            <span class="small report-text"><%= song.artist %></span>
+        </div>
+        <div class="flex center report-col-2">
+            <% for(let i = 0; i < Object.keys(songUsageGroups).length; i++) { %>
+                <% let etyid = Object.keys(songUsageGroups)[i] %>
+                <% let eventType = eventTypes.find(et => et.etyid == etyid) %>
+                <% if(eventType == undefined) { eventType = {name: "Uncategorized", color: "#000000"} } %>
+
+                <% let usages = songUsageGroups[etyid].filter(su => su.soid == song.soid) %>
+                <% let sum = usages.reduce((acc, su) => acc + su.count, 0) %>
+
+                <div class="report-detail-value flex center" style="border-color: <%= eventType.color %>">
+                    <span class="medium" title="<%= eventType.name %>"><%= sum %></span>
+                </div>
+            <% } %>
+        </div>
+        <div class="flex center report-col-3">
+            <span class="medium report-text tag-text info-bg">Total: <%= songSum == undefined ? "0" : songSum %></span>
+        </div>
+    </div>
+
+</div>

@@ -367,6 +367,68 @@ router.get("/event/:eid", async (req, res) => {
     res.render("event", {user: req.session.user, role: req.session.role, event: event, images: images});
 });
 
+router.get("/report/songs", async (req, res) => {
+
+    // start and end date are optional
+    // in the format YYYY-MM-DD
+
+    let start = req.query.start;
+    let end = req.query.end;
+
+    let startBound = new Date(start);
+    let endBound = new Date(end);
+    if(isNaN(startBound.getTime())){
+        startBound = new Date("1970-01-01");
+    }
+    if(isNaN(endBound.getTime())){
+        endBound = new Date("2100-01-01");
+    }
+
+    var images = await generateImagesList("corner_images");
+
+    var songUsages = (await db.getSongUsages()).data;
+    var songs = (await db.getSongs()).data;
+
+    var eventTypes = (await db.getEventTypes()).data;
+    var events = (await db.getEvents()).data;
+
+    var songUsageGroups = {};
+    var songSums = {};
+    songUsageGroups[-1] = [];
+    eventTypes.forEach((eventType) => {
+        songUsageGroups[eventType.etyid] = [];
+    });
+
+    songUsages.forEach((songUsage) => {
+        let eid = songUsage.eid;
+
+        let event = events.find(e => e.eid == eid);
+        if(event){
+            if(new Date(event.start) < startBound || new Date(event.start) > endBound){
+                return;
+            }
+        }
+
+        let soid = songUsage.soid;
+        let count = songUsage.count;
+        // add count and event to proper arrays to send back to frontend
+        if(!songSums[soid]){
+            songSums[soid] = 0;
+        }
+        songSums[soid] += count;
+
+        if(event){
+            songUsageGroups[event.etyid].push(songUsage);
+        }else{
+            songUsageGroups[-1].push(songUsage);
+        }
+    });
+
+    // don't send back events
+    res.render("report_usage", {user: req.session.user, role: req.session.role, songs: songs, songUsageGroups: songUsageGroups, eventTypes: eventTypes, songSums: songSums, images: images, start: start, end: end});
+
+});
+
 router.get("/songs", async (req, res) => {
     var images = await generateImagesList("corner_images");
     var songs = (await db.getSongs()).data;

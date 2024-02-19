@@ -53,6 +53,14 @@
                 <div class="flex center section">
                     <div class="event-create-detail-item">
                         <div class="flex apart">
+                            <span class="tiny event-create-detail-tag">Event Location</span>
+                        </div>
+                        <div class="flex apart">
+                            <input name="location" type="text" class="input event-create-detail-value" placeholder="Location"/>
+                        </div>
+                    </div>
+                    <div class="event-create-detail-item">
+                        <div class="flex apart">
                             <span class="tiny event-create-detail-tag">Event Type</span>
                         </div>
                         <div class="flex apart">
@@ -75,7 +83,7 @@
                         <div class="flex apart">
                             <div class="flex center">
                                 <select onchange="updateEventTemplate(this)" class="input select-from-none">
-                                    <option value="" disabled selected>Select your template</option>
+                                    <option value="-1" selected>No Template</option>
                                     <% eventTemplates.forEach(function(eventTemplate) { %>
                                         <option value="<%= eventTemplate.etid %>"><%= eventTemplate.name == "" ? "Unnamed Template" : eventTemplate.name %></option>
                                     <% }); %>

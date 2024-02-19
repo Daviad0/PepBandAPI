@@ -35,6 +35,13 @@ function updateTemplateWarning(show){
 function updateEventTemplate(element){
     let etid = element.value;
     let url = "/api/event/template/" + etid;
+
+    if(etid == "-1"){
+        eventTemplate = null;
+        updateTemplateWarning(false);
+        return;
+    }
+
     let data = {etid: etid};
 
     apiGet(url, (result) => {
@@ -54,7 +61,7 @@ function submitEventForCreation(){
     let etyid = eventType == null ? null : eventType.etyid;
     let name = document.querySelector("input[name='name']").value;
     let description = document.querySelector("textarea[name='description']").value;
-
+    let location = document.querySelector("input[name='location']").value;
     let start_date = document.querySelector("input[name='start_date']").valueAsDate;
     let start_time = document.querySelector("input[name='start_time']").value;
 
@@ -77,7 +84,7 @@ function submitEventForCreation(){
     let show = document.querySelector("input[name='show']").checked;
 
     showError(error_span, null);
-    if(name == "" || etyid == null || etid == null || start == "Invalid Date" || end == "Invalid Date"){
+    if(name == "" || etyid == null || start == "Invalid Date" || end == "Invalid Date"){
         showError(error_span, "Please fill out all fields");
         return;
     }
@@ -91,7 +98,8 @@ function submitEventForCreation(){
         start: start.toISOString(),
         end: end.toISOString(),
         etyid: etyid,
-        show: show
+        show: show,
+        location: location
     };
 
     apiPost(url, data, (result) => {

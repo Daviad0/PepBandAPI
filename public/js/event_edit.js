@@ -284,7 +284,7 @@ function removeSlot(element, event){
 
     if(!segment) return;
 
-    segment.slots--;
+    segment.slots.splice(slotIndex, 1);
 
     
 

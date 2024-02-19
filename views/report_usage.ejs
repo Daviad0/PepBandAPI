@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Report - Song Usage</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/report.css" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs'); %>
+    <script src="/js/report_usage.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="report-vertical-flex">
+                <div class="report-header">
+                    <div class="flex center">
+                        <span class="large spacing">Song Usage Report</span>
+                    </div>
+                    
+    
+                    <span class="small spacing">See usage of all of the songs performed by the band over a certain time frame.</span>
+                    <div class="message message-warning">
+                        <span class="small message-content">Deleted events, songs, or items will not be visible on this report.</span>
+                    </div>
+
+                    <div class="flex center wrap spacing">
+                        <span class="small">Filter Report</span>
+                        <span class="small material-symbols-rounded" title="Reports are based on the start date of an event">question_mark</span>
+                        <div class="flex center wrap">
+                            <div class="report-detail-item">
+                                <div class="flex apart">
+                                    <span class="tiny report-detail-tag">From</span>
+                                </div>
+                                <div class="flex apart">
+                                    <input type="date" class="input small" placeholder="Start" name="start" id="report-filter-start" value="<%= start %>" />
+                                </div>
+                            </div>
+                            <div class="report-detail-item">
+                                <div class="flex apart">
+                                    <span class="tiny report-detail-tag">Up To</span>
+                                </div>
+                                <div class="flex apart">
+                                    <input type="date" class="input small" placeholder="End" name="start" id="report-filter-end" value="<%= end %>" />
+                                </div>
+                            </div>
+                        </div>
+                        <button class="button-main" onclick="refreshFilter()"><span class="button-text">Filter Report</span></button>
+                    </div>
+                    
+        
+                    <div class="flex apart">
+                        <div class="report-col-1">
+                            <span class="medium report-text">Song</span>
+                        </div>
+                        <div class="flex center report-col-2">
+                            <% for(let i = 0; i < Object.keys(songUsageGroups).length; i++) { %>
+                                <% let etyid = Object.keys(songUsageGroups)[i] %>
+                                <% let eventType = eventTypes.find(et => et.etyid == etyid) %>
+                                <% if(eventType == undefined) { eventType = {name: "Uncategorized", color: "#000000", icon: "question_mark"} } %>
+                                <div class="icon-preview flex center" style="background-color: <%= eventType.color %>" title="<%= eventType.name %>">
+                                    <span class="large material-symbols-rounded"><%= eventType.icon %></span>
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="report-col-3">
+                            <span class="medium">Total</span>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+                <div id="report-list" class="report-list">
+                    <% for (let i = 0; i < songs.length; i++) { %>
+                        <% let songSum = songSums[songs[i].soid] %>
+                        <%- include('./partials/config/report_item.ejs', {song: songs[i], songUsageGroups: songUsageGroups, songSum: songSum, eventTypes: eventTypes, alternate: i % 2 == 1}) %>
+                    <% } %>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

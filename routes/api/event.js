@@ -355,7 +355,34 @@ router.post("/", (req, res) => {
     if(!location) location = null;
     if(!description) description = null;
 
+    
+
     db.updateEvent(eid, etyid, etid_used, name, start, ending, show, open, data, location, description).then((result) => {
+        db.getEvent(eid).then((result) => {
+            // handle data and make songUsage changes
+            let data = result.data[0].data;
+            try{
+                let parsedData = JSON.parse(data);
+                let soidCounts = {};
+                parsedData.segments.forEach(segment => {
+                    segment.slots.forEach(slot => {
+                        if(slot.type == "song"){
+                            if(!soidCounts[slot.soid]){
+                                soidCounts[slot.soid] = 0;
+                            }
+                            soidCounts[slot.soid]++;
+                        }
+                    });
+                });
+
+                Object.keys(soidCounts).forEach(soid => {
+                    db.setSongUsage(soid, eid, soidCounts[soid]);
+                });
+            }catch(e){
+                console.log(e);
+            }
+        });
+        
         res.send(result);
     })
 

@@ -750,6 +750,10 @@ class Database {
         return this.edit("DELETE FROM songs WHERE soid = " + soid)
     }
 
+    getSongUsages(){
+        return this.query("SELECT * FROM song_usage")
+    }
+
     getSongUsage(soid){
         return this.query("SELECT * FROM song_usage WHERE soid = " + soid)
     }
@@ -768,7 +772,7 @@ class Database {
 
             return this.edit("UPDATE song_usage SET count = " + count + ", used = CURRENT_TIMESTAMP WHERE soid = " + soid + " AND eid = " + eid)
         }else{
-            return this.edit("INSERT INTO song_usage (soid, eid, count, last_used) VALUES (" + soid + ", " + eid + ", " + count + ", CURRENT_TIMESTAMP)")
+            return this.edit("INSERT INTO song_usage (soid, eid, count, used) VALUES (" + soid + ", " + eid + ", " + count + ", CURRENT_TIMESTAMP)")
         }
 
     }
