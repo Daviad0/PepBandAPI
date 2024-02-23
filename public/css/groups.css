@@ -1,3 +1,13 @@
+.managers{
+    border: 2px solid rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
+
+.manager{
+    margin: 3px;
+}
+
 .group-detail-item{
     margin: 10px;
 }
