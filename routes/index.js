@@ -289,6 +289,60 @@ router.get("/event/template/:etid", async (req, res) => {
     res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template, eventTypes: event_types, images: images});
 });
 
+router.get("/group/:gid", async (req, res) => {
+    var images = await generateImagesList("corner_images");
+
+    let gid = req.params.gid;
+    if(gid == ""){
+        res.redirect("/groups");
+        return;
+    }
+    // check if gid is number
+    if(isNaN(gid)){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Group not found"
+        }});
+        return;
+    }
+
+    var group = (await db.getGroup(gid)).data;
+
+    if(group.length == 0){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Group not found"
+        }});
+        return;
+    }
+
+    group = group[0];
+
+    let allMembership = (await db.getGroupMembers(gid)).data;
+    let splits = (await db.getSplits(gid)).data;
+
+    var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
+
+    if(gradientBackground.length > 0){
+        group.gradientBackground = gradientBackground[0].value;
+    }
+    // check if color is in hex format
+    if(group.color.match(/^#[0-9A-F]{6}$/i)){
+        // generate RGBA representation
+        var colorA = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",0.7)";
+        var colorB = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",1)";
+
+        group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+    }else{
+        group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+    }
+
+    
+
+    res.render("group", {user: req.session.user, role: req.session.role, group: group, users: allMembership, splits: splits, images: images});
+
+});
+
 router.get("/event/:eid", async (req, res) => {
 
     // check if eid is number

@@ -44,16 +44,14 @@
                                 <input data-soid="<%= song.soid %>" onchange="editSong(this)" value="<%= song.artist %>" type="text" class="input song-detail-value" name="artist" placeholder="Artist"/>
                             </div>
                         </div>
-                        
                         <div class="song-detail-item">
                             <div class="flex apart">
-                                <span class="tiny song-detail-tag">Source</span>
+                                <span class="tiny song-detail-tag">Modification</span>
                             </div>
                             <div class="flex apart">
-                                <input data-soid="<%= song.soid %>" onchange="editSong(this)" value="<%= song.source %>" type="text" class="input song-detail-value" placeholder="Source" name="source"/>
+                                <input data-soid="<%= song.soid %>" onchange="editSong(this)" value="<%= song.modification %>" type="text song-italics" class="input song-detail-value" name="modification" placeholder="Act 1"/>
                             </div>
                         </div>
-                        
                     </div>
                     <div class="song-expand song-expand-hide" data-soid="<%= song.soid %>">
                         <div class="flex apart">
@@ -66,14 +64,7 @@
                                         <input data-soid="<%= song.soid %>" onchange="editSong(this)" value="<%= song.friendly_name %>" type="text" class="input song-detail-value" name="friendly_name" placeholder="Friendly Name"/>
                                     </div>
                                 </div>
-                                <div class="song-detail-item">
-                                    <div class="flex apart">
-                                        <span class="tiny song-detail-tag">Modification</span>
-                                    </div>
-                                    <div class="flex apart">
-                                        <input data-soid="<%= song.soid %>" onchange="editSong(this)" value="<%= song.modification %>" type="text song-italics" class="input song-detail-value" name="modification" placeholder="Act 1"/>
-                                    </div>
-                                </div>
+                                
                                 <div class="song-detail-item">
                                     <div class="flex apart">
                                         <span class="tiny song-detail-tag">Duration</span>

@@ -34,6 +34,8 @@ router.post("/group", async (req, res) => {
     let icon = req.body.icon;
     let description = req.body.description;
     let extra_data = req.body.extra_data;
+    let open = req.body.open;
+    let color = req.body.color;
 
     if(!gid){
         res.status(400).send({message: "gid property required to update group"});
@@ -43,8 +45,10 @@ router.post("/group", async (req, res) => {
     if(!icon) icon = null;
     if(!description) description = null;
     if(!extra_data) extra_data = null;
+    if(!open) open = null;
+    if(!color) color = null;
 
-    db.setGroup(gid, name, icon, description, extra_data).then((result) => {
+    db.setGroup(gid, name, icon, description, open, extra_data, color).then((result) => {
         res.send(result);
     });
 });
@@ -88,14 +92,20 @@ router.post("/group/clone", async (req, res) => {
     let icon = oldGroup.data[0].icon;
     let description = oldGroup.data[0].description;
     let extra_data = oldGroup.data[0].extra_data;
+    let open = oldGroup.data[0].open;
+    let color = oldGroup.data[0].color;
 
-    db.setGroup(null, name, icon, description, extra_data).then((result) => {
+    db.setGroup(null, name, null, null, null, null, null).then((result) => {
 
         let newGid = result.data[0].gid;
 
         db.getGroup(newGid).then((result) => {
             res.send(result);
         });
+
+        db.setGroup(newGid, name, icon, description, open, extra_data, color).then((result) => {
+            
+        })
     });
 
 
@@ -148,8 +158,9 @@ router.post("/split", async (req, res) => {
     let name = req.body.name;
     let gid = req.body.gid;
     let icon = req.body.icon;
-    let uid_primary = req.body.uid_primary;
+    let open = req.body.open;
     let extra_data = req.body.extra_data;
+    let color = req.body.color;
     if(!sid){
         res.status(400).send({message: "sid property required to update split"});
         return;
@@ -157,10 +168,11 @@ router.post("/split", async (req, res) => {
     if(!name) name = null;
     if(!gid) gid = null;
     if(!icon) icon = null;
-    if(!uid_primary) uid_primary = null;
+    if(!open) open = null;
     if(!extra_data) extra_data = null;
+    if(!color) color = null;
 
-    db.setSplit(sid, name, gid, icon, uid_primary, extra_data).then((result) => {
+    db.setSplit(sid, name, gid, icon, open, extra_data, color).then((result) => {
         res.send(result);
     });
 });
@@ -205,16 +217,21 @@ router.post("/split/clone", async (req, res) => {
     let name = oldSplit.data[0].name;
     let gid = oldSplit.data[0].gid;
     let icon = oldSplit.data[0].icon;
-    let uid_primary = oldSplit.data[0].uid_primary;
+    let open = oldSplit.data[0].open;
     let extra_data = oldSplit.data[0].extra_data;
+    let color = oldSplit.data[0].color;
 
-    db.setSplit(null, name, gid, icon, uid_primary, extra_data).then((result) => {
+    db.setSplit(null, name, null, null, null, null, null).then((result) => {
 
         let newSid = result.data[0].sid;
 
         db.getSplit(newSid).then((result) => {
             res.send(result);
         });
+
+        db.setSplit(newSid, name, gid, icon, open, extra_data, color).then((result) => {
+            
+        })
     });
 
 });

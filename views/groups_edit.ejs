@@ -7,9 +7,9 @@
   </head>
   <body>
     <%- include('./partials/header.ejs'); %>
-    <% let default_group_item_data_0 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
-    <% let default_group_item_data_1 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
-    <% let default_group_item_data_plural = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
+    <% let default_group_item_data_0 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", open: "DEFAULT_OPEN", user_count: 0 } %>
+    <% let default_group_item_data_1 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", open: "DEFAULT_OPEN", user_count: 0 } %>
+    <% let default_group_item_data_plural = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", open: "DEFAULT_OPEN", user_count: 0 } %>
     
     <script>
         let group_item_template_0 = `<%- include('./partials/config/group_item.ejs', {group: default_group_item_data_0}) %>`;
@@ -29,7 +29,7 @@
         
                     <span class="small spacing">Manage all of the groups that a user can be a part of! These groups can be for certain subsections of the pep band, or can just be for silly reasons.</span>
                     <div class="message message-warning">
-                        <span class="small message-content">Any changes made to your group that downgrade its "permission power" are permanent. Exercise caution when changing your group's permission power.</span>
+                        <span class="small message-content">Removing a group can remove notifications going to a user!</span>
                     </div>
                     <div class="flex center">
                         <span class="small spacing">Group Name</span>

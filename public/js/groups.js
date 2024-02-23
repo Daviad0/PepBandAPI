@@ -6,7 +6,7 @@ function updateGroupView(selected_group){
     html = html.replaceAll("DEFAULT_NAME", selected_group.name);
     html = html.replaceAll("DEFAULT_ICON", selected_group.icon);
     html = html.replaceAll("DEFAULT_DESCRIPTION", selected_group.description);
-    html = html.replaceAll("DEFAULT_UIDPRIMARY", selected_group.description);
+    html = html.replaceAll("DEFAULT_OPEN", selected_group.open);
 
 
 
@@ -49,6 +49,10 @@ function createGroup(){
     });
 }
 
+function editGroupCheckbox(element){
+    element.value = element.checked ? true : false;
+    editGroup(element);
+}
 
 function editGroup(element){
     let error_span = document.querySelector(`span[data-gid="${element.getAttribute("data-gid")}"][name="error"]`);
