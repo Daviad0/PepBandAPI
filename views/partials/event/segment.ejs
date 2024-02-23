@@ -9,6 +9,18 @@
             </div>
         </div>
 
+        <div>
+            <div class="flex apart">
+                <span class="tiny event-management-detail-tag">Visible</span>
+            </div>
+            <div class="flex apart">
+                <label class="checkbox-container">
+                    <input type="checkbox" data-segid="<%= segment.segid %>" onchange="editSegmentProperty(this)" name="show" checked="<%= segment.show %>"/>
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+
         <% if(segment.error != undefined) { %>
             <div class="flex center">
                 <span class="small tag-text error-bg">There was an error...</span>

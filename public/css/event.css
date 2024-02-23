@@ -4,6 +4,10 @@
     align-items: start;
 }
 
+.left-align{
+    text-align: left;
+}
+
 /*
 
 If the screen is smaller than 600px, stack the links on top of each other, instead of next to each other with width 100%

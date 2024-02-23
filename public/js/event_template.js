@@ -353,6 +353,7 @@ function createSegment(){
         idealTime: 0,
         notifyOnChange: false,
         defaults: [],
+        visible: true,
         segid: generateRandomSegmentId()
     }
 

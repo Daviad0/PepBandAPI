@@ -426,6 +426,7 @@ function createSegment(){
         slots: [],
         idealTime: 0,
         notifyOnChange: false,
+        visible: true,
         segid: generateRandomSegmentId()
     }
 

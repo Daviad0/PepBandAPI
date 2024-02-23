@@ -66,6 +66,23 @@ router.get("/", async (req, res) => {
     
 });
 
+router.get("/login", async (req, res) => {
+    console.log(req.session.user);
+
+    
+
+    // config for images is prefixed with index_image_#
+    var images = await await generateImagesList("index_images");
+
+
+    try{
+        res.render("alternate_login", {user: req.session.user, role: req.session.role, images: images});
+    }catch(err){
+        console.log(err);
+    }
+    
+});
+
 router.get("/events", async (req, res) => {
 
     var images = await generateImagesList("corner_images");

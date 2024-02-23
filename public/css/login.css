@@ -1,0 +1,98 @@
+
+.center-content{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 80%;
+
+    z-index: 5;
+}
+
+.on-background{
+    color: white
+}
+
+.content-heading{
+    margin-bottom: 20px;
+}
+
+.splitpage{
+
+
+
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+
+
+/*
+
+If the screen is smaller than 600px, stack the links on top of each other, instead of next to each other with width 100%
+
+*/
+
+.splitpage .content-left{
+    width: 45%;
+    margin:10px;
+    height: 300px;
+}
+
+.splitpage .content-right{
+    width: 45%;
+    margin:10px;
+    height: 300px;
+}
+
+.form{
+    margin:10px;
+    border: 1px dashed rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
+
+@media screen and (max-width: 1000px) {
+    .splitpage {
+        flex-direction: column;
+    }
+    .splitpage .content-left{
+        width: 100%;
+        margin: 10px 0px;
+    }
+    .splitpage .content-right{
+        width: 100%;
+        margin: 10px 0px;
+    }
+}
+
+
+.login-detail-item{
+    margin: 10px;
+}
+
+.login-details{
+    flex-wrap: wrap;
+}
+
+.login-detail-value{
+    font-weight: bold;
+    resize: none;
+}
+
+.login-item{
+    padding: 15px 0px;
+    border-bottom: 1px dashed #ccc;
+
+}
+
+.login-main-info{
+    margin: 5px;
+}
+
+.login-detail-tag{
+    margin-left:5px;
+    margin-bottom: 2px;
+}

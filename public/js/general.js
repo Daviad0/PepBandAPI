@@ -70,7 +70,8 @@ function sign_in_click(){
                 text: "Manual Sign In",
                 class: "button-main",
                 onclick: () => {
-                    window.location.href = "/account/manual";
+                    // maybe see about getting to /account/manual, but it's probably fine
+                    window.location.href = "/login";
                 }
             },
             {
