@@ -111,6 +111,136 @@ router.post("/group/clone", async (req, res) => {
 
 });
 
+router.post("/group/membership", async (req, res) => {
+
+    // expecting uid in body, not OK if null
+    // expecting gid in body, not OK if null
+    // expecting elevated in body, OK if null
+
+    // if this is for the user requesting to join a group, check for own join permissions and the group is open
+    let uid = req.body.uid;
+    let gid = req.body.gid;
+    let elevated = req.body.elevated;
+
+    if(uid == null){
+
+        if(req.session.user == null){
+            res.status(403).send({message: "Not logged in"});
+            return;
+        }
+
+        uid = req.session.user.uid;
+    }
+    if(gid == null){
+        res.status(400).send({message: "gid property required to join group"});
+        return;
+    }
+
+    if(elevated == null) elevated = false;
+
+    if(uid == req.session.user.uid){
+        // if(!(await db.checkAccess(req.session.role, "groups_join"))){
+        //     res.status(403).send({message: "Access denied"});
+        //     return;
+        // }
+
+        let group = await db.getGroup(gid);
+        if(group.data.length == 0){
+            res.status(404).send({message: "Group not found"});
+            return;
+        }
+        group = group.data[0];
+        if(group.open == 0){
+            res.status(403).send({message: "Group is not open"});
+            return;
+        }
+
+        // elevated is automatically FALSE for the user requesting to join
+        db.setGroupMember(uid, gid, false).then((result) => {
+            res.send(result);
+        });
+
+    }else{
+        
+
+        let group = await db.getGroup(gid);
+        if(group.data.length == 0){
+            res.status(404).send({message: "Group not found"});
+            return;
+        }
+        group = group.data[0];
+
+        // check to make sure the user has elevated permissions to add other users to the group
+        // this can either be through the power permission OR being a manager of the group
+
+        // let currentGroupMembers = await db.getGroupMembers(gid);
+        // let userRecord = currentGroupMembers.data.find(r => r.uid == req.session.user.uid && r.gid == gid);
+        // if(!userRecord || userRecord.elevated == false){
+        //     res.status(403).send({message: "Access denied"});
+        //     return;
+        // }
+
+        // if(!(await db.checkAccess(req.session.role, "other_users_membership"))){
+        //     res.status(403).send({message: "Access denied"});
+        //     return;
+        // }
+
+        db.setGroupMember(uid, gid, elevated).then((result) => {
+            res.send(result);
+        });
+    }
+
+});
+
+router.post("/group/membership/delete", async (req, res) => {
+    // expecting uid in body, not OK if null
+    // expecting gid in body, not OK if null
+
+    // if(!(await db.checkAccess(req.session.role, "other_users_membership"))){
+    //     res.status(403).send({message: "Access denied"});
+    //     return;
+    // }
+
+    let uid = req.body.uid;
+    let gid = req.body.gid;
+
+    if(!uid){
+        res.status(400).send({message: "uid property required to delete group membership"});
+        return;
+    }
+    if(!gid){
+        res.status(400).send({message: "gid property required to delete group membership"});
+        return;
+    }
+
+    db.deleteGroupMember(uid, gid).then((result) => {
+        res.send(result);
+    });
+
+
+});
+
+// this is only for people to leave their own groups!
+router.post("/group/:gid/leave", async (req, res) => {
+    // if(!(await db.checkAccess(req.session.role, "groups_leave"))){
+    //     res.status(403).send({message: "Access denied"});
+    //     return;
+    // }
+
+    if(req.session.user == null){
+        res.status(403).send({message: "Not logged in"});
+        return;
+    }
+
+    var gid = req.params.gid;
+
+    db.deleteGroupMember(req.session.user.uid, gid).then((result) => {
+        res.send(result);
+    });
+
+
+});
+
 router.post("/group/:gid/delete", async (req, res) => {
 
     // check to see if there are any splits that use this group

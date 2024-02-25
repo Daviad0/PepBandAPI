@@ -344,6 +344,9 @@ button:disabled{
 .dialog-song-container{
     height: 60vh;
 }
+.dialog-user-container{
+    height: 60vh;
+}
 
 .dialog-show{
     animation: dialog-blur-in 0.5s ease forwards;
@@ -472,8 +475,23 @@ button:disabled{
     margin-bottom: 2px;
 }
 
+.dialog-user-parent{
+    width: 70vw;
+}
+
 .dialog-song-parent{
     width: 70vw;
+}
+
+.dialog-user{
+    width: 200px;
+    transition: 0.5s ease all;
+    border: 2px solid transparent;
+}
+
+.dialog-user:hover{
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.7);
+    cursor: pointer;
 }
 
 .dialog-song{

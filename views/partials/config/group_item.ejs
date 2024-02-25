@@ -69,11 +69,12 @@
         <div class="flex apart">
             <span class="tiny group-detail-tag">Managers</span>
         </div>
-        <div class="flex center managers wrap">
-            <span class="tiny config-detail-value config-main-info resolve-further manager">User 1</span>
-            <span class="tiny config-detail-value config-main-info resolve-further manager">User 2</span>
-            <span class="tiny config-detail-value config-main-info resolve-further manager">User 3</span>
-            <span class="tiny config-detail-value config-main-info resolve-further manager">User 4</span>
+        <div class="flex center managers wrap" data-gid="<%= group.gid %>">
+            <% for(var i = 0; i < group.managers.length; i++) { %>
+                <span class="tiny config-detail-value config-main-info resolve-further manager" data-uid="<%= group.managers[i].uid %>" data-gid="<%= group.gid %>" onclick="removeManager(this)"><%= group.managers[i].full_name %></span>
+            <% } %>
+            
+            <button class="button-alternate manager-add" onclick="addManager(this)" data-gid="<%= group.gid %>"><span class="button-text">+</span></button>
         </div>
     </div>
     <div class="flex center">

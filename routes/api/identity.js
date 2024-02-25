@@ -1,8 +1,24 @@
 const express = require('express');
 
+var crypto = require('crypto');
+
 const router = express.Router("/api/identity");
 
 var db;
+
+
+function hashPassword(password){
+    let salt = crypto.randomBytes(16).toString('hex');
+    let iterations = 1000;
+    let hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    return {salt: salt, hash: hash, iterations: iterations};
+}
+
+function verifyPassword(password, hash, salt){
+    let verifyHash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    return verifyHash == hash;
+}
+
 
 router.get("/role")
 
@@ -243,6 +259,60 @@ router.post("/roles/:rid/delete", async (req, res) => {
     
 });
 
+router.post("/login", async (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+
+    // mtu_sso is treated as the username
+    let userObject = await db.getIdentity_mtusso(username);
+    if(userObject.data.length == 0){
+        res.status(400).send({message: "Invalid username or password"});
+        return;
+    }
+    userObject = userObject.data[0];
+
+    let alternateAuthUser = await db.getAlternateAuthentication_uid(userObject.uid);
+
+    if(alternateAuthUser.data.length > 0){
+        alternateAuthUser = alternateAuthUser.data[0];
+        if(verifyPassword(password, alternateAuthUser.pwhash, alternateAuthUser.pwsalt)){
+            req.session.user = userObject;
+            db.setAlternateAuthentication_seen(userObject.uid);
+            res.send({success: true, message: "Logged in"});
+            return;
+        }
+    }
+
+    res.status(400).send({message: "Invalid username or password"});
+});
+
+router.post("/register", async (req, res) => {
+    // treat email as username
+    let email = req.body.email;
+    let password = req.body.password;
+    let full_name = req.body.full_name;
+
+    let userObject = await db.getIdentity_mtusso(email);
+    if(userObject.data.length > 0){
+        res.status(400).send({message: "Username already exists"});
+        return;
+    }
+
+    let hashedPassword = hashPassword(password);
+
+    db.createAlternateAuthentication(email, full_name, hashedPassword.hash, hashedPassword.salt, hashedPassword.iterations).then((result) => {
+        var uid = result.data[0].uid;
+        var userObject = db.getIdentity_uid(uid);
+        if(!userObject.success || userObject.data.length == 0){
+            res.status(500).send({message: "Error creating user"});
+            return;
+        }
+        req.session.user = userObject.data[0];
+        
+        res.send(result);
+    });
+
+});
 
 
 module.exports = (useDb) => {

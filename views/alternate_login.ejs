@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/login.css" />
     <link rel="stylesheet" href="/css/index.css" />
     <script src="/js/index.js"></script>
+    <script src="/js/alternate_login.js"></script>
   </head>
   <body>
     <%- include('./partials/alt_header.ejs'); %>
@@ -50,7 +51,10 @@
                             </div>
                         </div>
                         <div class="flex center">
-                            <button class="button-main" onclick="createAccount()"><span class="button-text">Attempt to Login</span></button>
+                            <button class="button-main" onclick="tryLogin()"><span class="button-text">Attempt to Login</span></button>
+                        </div>
+                        <div class="flex center">
+                            <span class="small no-display error error-message" name="error" id="login-error"></span>
                         </div>
                     </div>
                     <div class="content-right floating-box">
@@ -97,9 +101,11 @@
                         </div>
 
                         <div class="flex center">
-                            <button class="button-main" onclick="createAccount()"><span class="button-text">Create Account</span></button>
+                            <button class="button-main" onclick="tryCreate()"><span class="button-text">Create Account</span></button>
                         </div>
-                        
+                        <div class="flex center">
+                            <span class="small no-display error error-message" name="error" id="create-error"></span>
+                        </div>
                         
                     </div>
                 </div>

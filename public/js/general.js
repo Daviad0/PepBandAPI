@@ -167,6 +167,9 @@ function showDialog(properties){
     let description = "";
     let icon = "";
 
+    let dialog_buttons_static = null;
+    let preselectedButtons = [];
+
     switch(dialog_type){
         case "buttons": 
             
@@ -227,7 +230,7 @@ function showDialog(properties){
             break;
         case "song":
 
-            let dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
+            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
             dialog_buttons_static.innerHTML = "";
             title = properties.title;
             icon = properties.icon;
@@ -239,7 +242,7 @@ function showDialog(properties){
             current_dialog_data["selected"] = [];
             current_dialog_data["onchoose"] = properties.onchoose || (() => {});
             current_dialog_data["extra"] = properties.extra || {};
-            let preselectedButtons = [
+            preselectedButtons = [
                 {
                     text: "Cancel",
                     class: "button-alternate",
@@ -275,6 +278,57 @@ function showDialog(properties){
             });
 
             dialog_getSongs();
+            break;
+        case "user":
+
+            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
+            dialog_buttons_static.innerHTML = "";
+            title = properties.title;
+            icon = properties.icon;
+
+            dialog_title.innerHTML = title;
+            dialog_icon.innerHTML = icon;
+
+            current_dialog_data["multiple"] = properties.multiple || false;
+            current_dialog_data["selected"] = [];
+            current_dialog_data["onchoose"] = properties.onchoose || (() => {});
+            current_dialog_data["extra"] = properties.extra || {};
+            preselectedButtons = [
+                {
+                    text: "Cancel",
+                    class: "button-alternate",
+                    onclick: () => {
+                        hideDialog();
+                    }
+                },
+                {
+                    text: "Select",
+                    class: "button-main",
+                    onclick: () => {
+                        current_dialog_data["onchoose"](current_dialog_data["selected"]);
+                    }
+                }
+            ]
+
+            preselectedButtons.forEach((button) => {
+                // expecting text, class, and onclick
+                // background may be defined 
+                let button_element = document.createElement("button");
+                if(button.text == "Select"){
+                    button_element.setAttribute("disabled", "disabled");
+                    button_element.setAttribute("id", "dialog-user-select");
+                }
+                button_element.innerHTML = button.text;
+                button_element.classList.add(button.class);
+                button_element.classList.add("dialog-button");
+                if(button.background){
+                    button_element.classList.add(button.background);
+                }
+                button_element.onclick = button.onclick;
+                dialog_buttons_static.appendChild(button_element);
+            });
+
+            dialog_getUsers();
             break;
         case "icon":
 
@@ -368,6 +422,44 @@ function dialog_icon_changeIcon(element){
 
 }
 
+function dialog_user_toggleSelected(element){
+    let uid = element.getAttribute("data-uid");
+
+    if(current_dialog_data["selected"].find(s => s.uid == uid)){
+        // remove from selected
+
+        let index = current_dialog_data["selected"].findIndex(s => s.uid == uid);
+        current_dialog_data["selected"].splice(index, 1);
+
+        element.classList.remove("dialog-song-selected");
+
+        if(current_dialog_data["selected"].length == 0){
+            document.getElementById("dialog-user-select").setAttribute("disabled", "disabled");
+        }
+        return;
+    }
+
+    if(!current_dialog_data["multiple"]){
+        // only one song can be selected
+        let selected = document.querySelectorAll(".dialog-song-selected");
+        selected.forEach((element) => {
+            element.classList.remove("dialog-user-selected");
+        })
+        current_dialog_data["selected"] = [];
+    }
+
+    let user = {
+        uid: uid,
+        full_name: element.querySelector('strong[name="full_name"]').innerHTML
+    }
+    current_dialog_data["selected"].push(user);
+
+    element.classList.add("dialog-song-selected");
+
+    document.getElementById("dialog-user-select").removeAttribute("disabled");
+
+}
+
 function dialog_song_toggleSelected(element){
     let soid = element.getAttribute("data-soid");
 
@@ -428,6 +520,76 @@ function dialog_song_changeSearch(){
         }
     
     }
+}
+
+function dialog_user_changeSearch(){
+    let username = document.getElementById("dialog-user-search-username").value;
+    let full_name = document.getElementById("dialog-user-search-full_name").value;
+
+    let users = current_dialog_data["users"];
+    // hide songs that don't match the filter
+    for(let i = 0; i < users.length; i += 1){
+        let user = users[i];
+
+        let userElement = document.querySelector(`.dialog-user[data-uid="${user.uid}"]`);
+
+        if(user.mtu_id.toLowerCase().includes(username.toLowerCase()) && (user.full_name.toLowerCase().includes(full_name.toLowerCase()))){
+            userElement.classList.remove("no-display");
+        }else{
+            userElement.classList.add("no-display");
+        }
+    
+    }
+
+}
+
+function dialog_getUsers(){
+    let url = "/api/identity/users";
+    let dialog_users = document.getElementById("dialog-user-parent");
+    apiGet(url, (result) => {
+        if(result.success){
+            let users = result.data;
+            current_dialog_data["users"] = users;
+            dialog_users.innerHTML = "";
+            users.forEach((user) => {
+                let option = document.createElement("div");
+                option.classList.add("floating-box");
+                option.classList.add("dialog-user");
+
+                option.setAttribute("data-uid", user.uid);
+                option.onclick = () => {
+                    dialog_user_toggleSelected(option);
+                }
+
+                option.innerHTML = `
+                <div class="flex center">
+                    
+                    <div class="fill">
+                        <div class="flex apart">
+                            <span class="small"><strong name="full_name">${user.full_name}</strong></span>
+                            <span class="medium material-symbols-rounded" title="${user.mtu_based ? "Internal MTU User" : "External User"}">${user.mtu_based ? "home" : "flight_land"}</span>
+                        </div>
+                        <div class="spacing">
+                            <span class="tiny">By ${user.mtu_id == null ? "Unknown MTU ID" : user.mtu_id}</span>
+                        </div>
+                        
+                    </div>
+                
+                </div>
+                
+                
+
+
+                `
+                dialog_users.appendChild(option);
+
+
+            });
+        }
+        else{
+            dialog_users.innerHTML = "<span class='error'>Error getting users</span>";
+        }
+    });
 }
 
 function dialog_getSongs(){

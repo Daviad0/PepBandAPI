@@ -483,6 +483,7 @@ class Database {
     }
 
 
+
     // returns the direct user
     // ONLY the CAS is allowed to call this function
     async setup_user_cas(mtu_id, mtu_uid, is_mtu){
@@ -512,6 +513,54 @@ class Database {
             } else {
                 return null
             }
+        }
+    }
+
+    async createAlternateAuthentication(email, full_name, pwhash, pwsalt, pwiter){
+        email = sanitizer.sanitize(email)
+
+        // insert into identity_management first returning uid
+        // make mtu_sso and mtu_uid the same as email
+        var result = await this.edit("INSERT INTO identity_management (full_name, mtu_id, mtu_uid, email, mtu_based) VALUES ('" + full_name + "', '" + email + "', '', '" + email + "', 'FALSE') RETURNING uid")
+
+        if(result.success){
+            await this.edit("INSERT INTO alternate_authentication (uid, email, pwhash, pwsalt, pwiter) VALUES (" + result.data[0].uid + ", '" + email + "', '" + pwhash + "', '" + pwsalt + "', " + pwiter + ")")
+            return result;
+        }
+    }
+
+    getAlternateAuthentication_uid(uid){
+        return this.query("SELECT * FROM alternate_authentication WHERE uid = " + uid)
+    }
+
+    getAlternateAuthentication_email(email){
+        email = sanitizer.sanitize(email)
+
+        return this.query("SELECT * FROM alternate_authentication WHERE email = '" + email + "'")
+    }
+
+    async setAlternateAuthentication_seen(uid){
+        let existing_user = await this.getIdentity_uid(uid)
+
+        if(existing_user.success && existing_user.data.length > 0){
+            return this.edit("UPDATE identity_management SET last_seen = CURRENT_TIMESTAMP WHERE uid = " + uid)
+        }
+    }
+
+    async setAlternateAuthentication(uid, email, pwhash, pwsalt, pwiter){
+        let existing_user = await this.getAlternateAuthentication_uid(uid)
+
+        if(existing_user.success && existing_user.data.length > 0){
+            var user = existing_user.data[0]
+
+            if(email == null) email = user.email
+            if(pwhash == null) pwhash = user.pwhash
+            if(pwsalt == null) pwsalt = user.pwsalt
+            if(pwiter == null) pwiter = user.pwiter
+
+            return this.edit("UPDATE alternate_authentication SET email = '" + email + "', pwhash = '" + pwhash + "', pwsalt = '" + pwsalt + "', pwiter = " + pwiter + " WHERE uid = " + uid)
+        }else{
+            return this.edit("INSERT INTO alternate_authentication (uid, email, pwhash, pwsalt, pwiter) VALUES (" + uid + ", '" + email + "', '" + pwhash + "', '" + pwsalt + "', " + pwiter + ")")
         }
     }
 
@@ -863,15 +912,34 @@ class Database {
         return this.query("SELECT * FROM identity_management INNER JOIN identity_management_groups ON identity_management.uid = identity_management_groups.uid WHERE identity_management_groups.gid = " + gid)
     }
 
+    getGroupElevated(gid){
+        // return all users with elevated status for this group (with a join on identity_management by uid ONLY for full_name and uid)
+        return this.query("SELECT identity_management.full_name, identity_management.uid, identity_management_groups.elevated FROM identity_management_groups INNER JOIN identity_management ON identity_management_groups.uid = identity_management.uid WHERE identity_management_groups.gid = " + gid + " AND identity_management_groups.elevated = TRUE")
+    }
+
     getGroupSplits(gid){
         return this.query("SELECT * FROM splits WHERE gid = " + gid)
     }
     
-    setGroupMember(uid, gid, elevated){
+    getGroupMember(uid, gid){
+        return this.query("SELECT * FROM identity_management_groups WHERE uid = " + uid + " AND gid = " + gid)
+    }
 
-        elevated = elevated ? "TRUE" : "FALSE"
+    async setGroupMember(uid, gid, elevated){
 
-        return this.edit("INSERT INTO identity_management_groups (uid, gid, updated, elevated) VALUES (" + uid + ", " + gid + ", CURRENT_TIMESTAMP, '" + elevated + "')");
+        let groupMember = await this.getGroupMember(uid, gid);
+
+        if(groupMember.success && groupMember.data.length > 0){
+            elevated = elevated ? "TRUE" : "FALSE"
+            return this.edit("UPDATE identity_management_groups SET updated = CURRENT_TIMESTAMP, elevated = '" + elevated + "' WHERE uid = " + uid + " AND gid = " + gid)
+        }else{
+            elevated = elevated ? "TRUE" : "FALSE"
+            return this.edit("INSERT INTO identity_management_groups (uid, gid, updated, elevated) VALUES (" + uid + ", " + gid + ", CURRENT_TIMESTAMP, '" + elevated + "')");
+        }
+
+        
+
+        
     }
 
     deleteGroupMember(uid, gid){
@@ -884,6 +952,10 @@ class Database {
 
     getSplitMembers(sid){
         return this.query("SELECT * FROM identity_management INNER JOIN identity_management_splits ON identity_management.uid = identity_management_splits.uid WHERE identity_management_splits.sid = " + sid)
+    }
+
+    getSplitElevated(sid){
+        return this.query("SELECT identity_management.full_name, identity_management_splits.elevated FROM identity_management_splits INNER JOIN identity_management ON identity_management_splits.uid = identity_management.uid WHERE identity_management_splits.sid = " + sid + " AND identity_management_splits.elevated = TRUE")
     }
 
     setSplitMember(uid, sid, elevated){

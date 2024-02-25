@@ -7,9 +7,9 @@
   </head>
   <body>
     <%- include('./partials/header.ejs'); %>
-    <% let default_group_item_data_0 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", open: "DEFAULT_OPEN", user_count: 0 } %>
-    <% let default_group_item_data_1 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", open: "DEFAULT_OPEN", user_count: 0 } %>
-    <% let default_group_item_data_plural = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", open: "DEFAULT_OPEN", user_count: 0 } %>
+    <% let default_group_item_data_0 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", open: "DEFAULT_OPEN", user_count: 0, managers: [] } %>
+    <% let default_group_item_data_1 = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", open: "DEFAULT_OPEN", user_count: 0, managers: [] } %>
+    <% let default_group_item_data_plural = {gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", open: "DEFAULT_OPEN", user_count: 0, managers: [] } %>
     
     <script>
         let group_item_template_0 = `<%- include('./partials/config/group_item.ejs', {group: default_group_item_data_0}) %>`;

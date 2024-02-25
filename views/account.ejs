@@ -3,7 +3,7 @@
   <head>
     <title>My Account</title>
     <%- include('./partials/links.ejs'); %>
-    <link rel="stylesheet" href="/css/events.css" />
+    <link rel="stylesheet" href="/css/account.css" />
   </head>
   <body>
     <%- include('./partials/header.ejs'); %>
@@ -11,11 +11,20 @@
         <div class="mainbody">
             <div class="splitpage">
                 <div class="content-left">
-                    
+                    <div class="floating-box account-sprawl">
+                      <span class="large"><%= user.full_name %></span>
+                      <span class="medium"><%= user.mtu_id %></span>
+                    </div>
                     
                 </div>
                 <div class="content-right">
                     
+                  <span class="large">My Groups and Splits</span>
+                  <div class="flex center wrap">
+                      <% groups.forEach(function(g){ %>
+                          <%- include('./partials/config/group_item_view.ejs', {group: g}); %>
+                      <% }); %>
+                  </div>
                     
                     
                 </div>

@@ -8,6 +8,12 @@
     margin: 3px;
 }
 
+.manager-add{
+    margin: 3px;
+    padding: 5px;
+    border-radius: 8px;
+}
+
 .group-detail-item{
     margin: 10px;
 }

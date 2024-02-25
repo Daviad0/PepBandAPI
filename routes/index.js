@@ -519,9 +519,58 @@ router.get("/groups/edit", async (req, res) => {
     var images = await generateImagesList("corner_images");
     var groups = (await db.getGroups()).data;
 
+    
+
+    for(var i = 0; i < groups.length; i++){
+        var groupManagers = (await db.getGroupElevated(groups[i].gid)).data;
+        groups[i].managers = groupManagers;
+    }
+    
     res.render("groups_edit", {user: req.session.user, role: req.session.role, groups: groups, images: images});
 });
 
+router.get("/account", async (req, res) => {
+    var images = await generateImagesList("corner_images");
+
+    if(!req.session.user){
+        res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 403,
+            message: "Access denied (are you signed in?)"
+        }});
+        return;
+    }
+
+    let uid = req.session.user.uid;
+
+    var user = (await db.getIdentity_uid(uid)).data[0];
+
+    let groups = (await db.getIdentityGroups(uid)).data;
+
+    var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
+    
+    for(var i = 0; i < groups.length; i++){
+        let group = groups[i];
+
+        if(gradientBackground.length > 0){
+            group.gradientBackground = gradientBackground[0].value;
+        }
+        // check if color is in hex format
+        if(group.color.match(/^#[0-9A-F]{6}$/i)){
+            // generate RGBA representation
+            var colorA = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",0.7)";
+            var colorB = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",1)";
+    
+            group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+        }else{
+            group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+        }
+    }
+
+    let splits = (await db.getIdentitySplits(uid)).data;
+
+    res.render("account", {user: req.session.user, role: req.session.role, groups: groups, splits: splits, images: images, userDetails: user});
+
+});
 
 
 // WARNING: this route must be last

@@ -181,3 +181,111 @@ function iconChoose(element){
         extra: {}
     });
 }
+
+function removeManager(element){
+    let uid = element.getAttribute("data-uid");
+    let gid = element.getAttribute("data-gid");
+
+    let full_name = element.innerHTML;
+
+    
+    showDialog({
+        title: "Remove " + full_name + " as Manager?",
+        description: "Would you like to continue removing " + full_name + " as a manager of this group? The user will retain any permissions that they have from their role and will remain in other groups, but will not be able to manage this specific group if they don't already have permissions.",
+        type: "buttons",
+        icon: "delete",
+        buttons: [
+            {
+                text: "Remove User from Group",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+                    
+                    let url = "/api/groups/group/membership/delete";
+                    let data = {uid: uid, gid: gid};
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            let groupManagers = document.querySelector(`.managers[data-gid="${gid}"]`);
+                            let manager = groupManagers.querySelector(`.manager[data-uid="${uid}"]`);
+                            manager.remove();
+                            // add the add button back to the end
+                            let addManagerButton = document.querySelector(`.manager-add[data-gid="${gid}"]`);
+                            groupManagers.appendChild(addManagerButton);
+                        }
+                    });
+
+                    hideDialog();
+
+                }
+            },
+            {
+                text: "Remove User as Manager",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+                   
+                    let url = "/api/groups/group/membership";
+                    let data = {uid: uid, gid: gid, elevated: false};
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            let groupManagers = document.querySelector(`.managers[data-gid="${gid}"]`);
+                            let manager = groupManagers.querySelector(`.manager[data-uid="${uid}"]`);
+                            manager.remove();
+                            // add the add button back to the end
+                            let addManagerButton = document.querySelector(`.manager-add[data-gid="${gid}"]`);
+                            groupManagers.appendChild(addManagerButton);
+                        }
+                    });
+
+                    hideDialog();
+                    
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    });
+}
+
+function addManager(element){
+    let gid = element.getAttribute("data-gid");
+    
+    showDialog({
+        title: "Add Manager to Group",
+        description: "User",
+        type: "user",
+        icon: "person_add",
+        multiple: false,
+        onchoose: () => {
+            let url = "/api/groups/group/membership";
+
+            let groupManagers = document.querySelector(`.managers[data-gid="${gid}"]`);
+            groupManagers.innerHTML += `<span class="tiny config-detail-value config-main-info resolve-further manager" data-uid="${current_dialog_data.selected[0].uid}" data-gid="${gid}" onclick="removeManager(this)">${current_dialog_data.selected[0].full_name}</span>`;
+
+            // swap this last element with the add button
+            let addManagerButton = document.querySelector(`.manager-add[data-gid="${gid}"]`);
+            // remove the original add button and move it to the end
+            addManagerButton.remove();
+            groupManagers.appendChild(addManagerButton);
+
+
+
+            let data = {uid: current_dialog_data.selected[0].uid, gid: gid, elevated: true};
+
+            apiPost(url, data, (result) => {
+                if(result.success){
+                    updateManagerView(gid, result.data[0]);
+                }
+            });
+
+            hideDialog();
+        },
+    })
+}
