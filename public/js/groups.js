@@ -158,7 +158,7 @@ function iconChoose(element){
     let gid = element.getAttribute("data-gid");
 
     showDialog({
-        title: "Choose Icon for Event Type",
+        title: "Choose Icon for Group",
         description: "Icon",
         type: "icon",
         icon: "delete",
@@ -281,7 +281,7 @@ function addManager(element){
 
             apiPost(url, data, (result) => {
                 if(result.success){
-                    updateManagerView(gid, result.data[0]);
+                    
                 }
             });
 

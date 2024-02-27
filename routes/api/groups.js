@@ -367,6 +367,132 @@ router.post("/split/clone", async (req, res) => {
 
 });
 
+router.post("/split/membership", async (req, res) => {
+    
+    // expecting uid in body, not OK if null
+    // expecting sid in body, not OK if null
+    // expecting elevated in body, OK if null
+
+    // if this is for the user requesting to join a split, check for own join permissions and the split is open
+    let uid = req.body.uid;
+    let sid = req.body.sid;
+    let elevated = req.body.elevated;
+
+    if(uid == null){
+
+        if(req.session.user == null){
+            res.status(403).send({message: "Not logged in"});
+            return;
+        }
+
+        uid = req.session.user.uid;
+    }
+    if(sid == null){
+        res.status(400).send({message: "sid property required to join split"});
+        return;
+    }
+
+    if(elevated == null) elevated = false;
+
+    if(uid == req.session.user.uid){
+        // if(!(await db.checkAccess(req.session.role, "splits_join"))){
+        //     res.status(403).send({message: "Access denied"});
+        //     return;
+        // }
+
+        let split = await db.getSplit(sid);
+        if(split.data.length == 0){
+            res.status(404).send({message: "Split not found"});
+            return;
+        }
+        split = split.data[0];
+        if(split.open == 0){
+            res.status(403).send({message: "Split is not open"});
+            return;
+        }
+
+        // elevated is automatically FALSE for the user requesting to join
+        db.setSplitMember(uid, sid, false).then((result) => {
+            res.send(result);
+        });
+
+    }else{
+        
+
+        let split = await db.getSplit(sid);
+        if(split.data.length == 0){
+            res.status(404).send({message: "Split not found"});
+            return;
+        }
+        split = split.data[0];
+
+        // check to make sure the user has elevated permissions to add other users to the split
+        // this can either be through the power permission OR being a manager of the split
+
+        // let currentSplitMembers = await db.getSplitMembers(sid);
+        // let userRecord = currentSplitMembers.data.find(r => r.uid == req.session.user.uid && r.sid == sid);
+        // if(!userRecord || userRecord.elevated == false){
+        //     res.status(403).send({message: "Access denied"});
+        //     return
+        // 
+        // if(!(await db.checkAccess(req.session.role, "other_users_membership"))){
+        //     res.status(403).send({message: "Access denied"});
+        //     return;
+        // 
+        // 
+        db.setSplitMember(uid, sid, elevated).then((result) => {
+            res.send(result);
+        });
+    }
+});
+
+router.post("/split/membership/delete", async (req, res) => {
+    // expecting uid in body, not OK if null
+    // expecting sid in body, not OK if null
+
+    // if(!(await db.checkAccess(req.session.role, "other_users_membership"))){
+    //     res.status(403).send({message: "Access denied"});
+    //     return;
+    // }
+
+    let uid = req.body.uid;
+    let sid = req.body.sid;
+
+    if(!uid){
+        res.status(400).send({message: "uid property required to delete split membership"});
+        return;
+    }
+    if(!sid){
+        res.status(400).send({message: "sid property required to delete split membership"});
+        return;
+    }
+
+    db.deleteSplitMember(uid, sid).then((result) => {
+        res.send(result);
+    });
+
+
+});
+
+// this is only for people to leave their own splits!
+router.post("/split/:sid/leave", async (req, res) => {
+    // if(!(await db.checkAccess(req.session.role, "splits_leave"))){
+    //     res.status(403).send({message: "Access denied"});
+    //     return;
+    // }
+
+    if(req.session.user == null){
+        res.status(403).send({message: "Not logged in"});
+        return;
+    }
+
+    var sid = req.params.sid;
+
+    db.deleteSplitMember(req.session.user.uid, sid).then((result) => {
+        res.send(result);
+    });
+});
+
 router.post("/split/:sid/delete", async (req, res) => {
     // if(!(await db.checkAccess(req.session.role, "splits"))){
     //     res.status(403).send({message: "Access denied"});

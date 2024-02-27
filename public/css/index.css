@@ -10,7 +10,7 @@
 }
 
 .design{
-    width: 100%;
+    width: calc(100vw + 50vh);
     min-height: 100%;
 }
 
@@ -79,6 +79,39 @@
     min-height:50px;
     box-shadow: none;
 }
+
+.header .large{
+    display: unset;
+}
+
+.header .small{
+    display: none;
+}
+
+.header-expand{
+    overflow-y: none;
+    transition: 0.5s ease all;
+}
+
+.header-expand-hide{
+    max-height: 0px;
+}
+
+.header-expand-show{
+    height: 100px;
+}
+
+@media screen and (max-width: 800px) {
+    .header .large{
+        display: none;
+    }
+
+    .header .small{
+        display: unset;
+    }
+    
+}
+
 .header .content{
     margin-left:0px;
 }

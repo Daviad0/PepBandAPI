@@ -66,6 +66,9 @@ select{
 .warning{
     color: #E98C00;
 }
+.white{
+    color: white;
+}
 
 .error-border{
     border: 2px solid #DB1A1A;

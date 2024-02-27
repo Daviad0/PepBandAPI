@@ -1,3 +1,19 @@
+.managers{
+    border: 2px solid rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
+
+.manager{
+    margin: 3px;
+}
+
+.manager-add{
+    margin: 3px;
+    padding: 5px;
+    border-radius: 8px;
+}
+
 .split-detail-item{
     margin: 10px;
 }

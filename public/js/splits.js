@@ -155,6 +155,142 @@ function iconChoose(element){
     let sid = element.getAttribute("data-sid");
 
     showDialog({
+        title: "Choose Icon for Split",
+        description: "Icon",
+        type: "icon",
+        icon: "delete",
+        onchoose: () => {
+        	// here, current_dialog_data has a selected property
+
+            let image_viewer = document.querySelector("img[data-sid='" + sid + "'][name='icon_image']");
+            image_viewer.classList.add("no-display");
+            let icon_viewer = document.querySelector("span[data-sid='" + sid + "'][name='icon_icon']");
+            icon_viewer.removeAttribute("hidden");
+            icon_viewer.innerHTML = current_dialog_data.selected;
+
+            let hidden_icon_value = document.querySelector("input[data-sid='" + sid + "'][name='icon']");
+            hidden_icon_value.value = current_dialog_data.selected;
+            // trigger change event for hidden_icon_value
+            hidden_icon_value.dispatchEvent(new Event("change"));
+
+        	hideDialog();
+        },
+        extra: {}
+    });
+}
+
+function removeManager(element){
+    let uid = element.getAttribute("data-uid");
+    let gid = element.getAttribute("data-gid");
+
+    let full_name = element.innerHTML;
+
+    
+    showDialog({
+        title: "Remove " + full_name + " as Manager?",
+        description: "Would you like to continue removing " + full_name + " as a manager of this group? The user will retain any permissions that they have from their role and will remain in other groups, but will not be able to manage this specific group if they don't already have permissions.",
+        type: "buttons",
+        icon: "delete",
+        buttons: [
+            {
+                text: "Remove User from Group",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+                    
+                    let url = "/api/groups/group/membership/delete";
+                    let data = {uid: uid, gid: gid};
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            let groupManagers = document.querySelector(`.managers[data-gid="${gid}"]`);
+                            let manager = groupManagers.querySelector(`.manager[data-uid="${uid}"]`);
+                            manager.remove();
+                            // add the add button back to the end
+                            let addManagerButton = document.querySelector(`.manager-add[data-gid="${gid}"]`);
+                            groupManagers.appendChild(addManagerButton);
+                        }
+                    });
+
+                    hideDialog();
+
+                }
+            },
+            {
+                text: "Remove User as Manager",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+                   
+                    let url = "/api/groups/group/membership";
+                    let data = {uid: uid, gid: gid, elevated: false};
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            let groupManagers = document.querySelector(`.managers[data-gid="${gid}"]`);
+                            let manager = groupManagers.querySelector(`.manager[data-uid="${uid}"]`);
+                            manager.remove();
+                            // add the add button back to the end
+                            let addManagerButton = document.querySelector(`.manager-add[data-gid="${gid}"]`);
+                            groupManagers.appendChild(addManagerButton);
+                        }
+                    });
+
+                    hideDialog();
+                    
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    });
+}
+
+function addManager(element){
+    let gid = element.getAttribute("data-gid");
+    
+    showDialog({
+        title: "Add Manager to Group",
+        description: "User",
+        type: "user",
+        icon: "person_add",
+        multiple: false,
+        onchoose: () => {
+            let url = "/api/groups/group/membership";
+
+            let groupManagers = document.querySelector(`.managers[data-gid="${gid}"]`);
+            groupManagers.innerHTML += `<span class="tiny config-detail-value config-main-info resolve-further manager" data-uid="${current_dialog_data.selected[0].uid}" data-gid="${gid}" onclick="removeManager(this)">${current_dialog_data.selected[0].full_name}</span>`;
+
+            // swap this last element with the add button
+            let addManagerButton = document.querySelector(`.manager-add[data-gid="${gid}"]`);
+            // remove the original add button and move it to the end
+            addManagerButton.remove();
+            groupManagers.appendChild(addManagerButton);
+
+
+
+            let data = {uid: current_dialog_data.selected[0].uid, gid: gid, elevated: true};
+
+            apiPost(url, data, (result) => {
+                if(result.success){
+                    
+                }
+            });
+
+            hideDialog();
+        },
+    })
+}
+
+function iconChoose(element){
+    let sid = element.getAttribute("data-sid");
+
+    showDialog({
         title: "Choose Icon for Event Type",
         description: "Icon",
         type: "icon",
@@ -177,4 +313,112 @@ function iconChoose(element){
         },
         extra: {}
     });
+}
+
+function removeManager(element){
+    let uid = element.getAttribute("data-uid");
+    let sid = element.getAttribute("data-sid");
+
+    let full_name = element.innerHTML;
+
+    
+    showDialog({
+        title: "Remove " + full_name + " as Manager?",
+        description: "Would you like to continue removing " + full_name + " as a manager of this group? The user will retain any permissions that they have from their role and will remain in other groups, but will not be able to manage this specific group if they don't already have permissions.",
+        type: "buttons",
+        icon: "delete",
+        buttons: [
+            {
+                text: "Remove User from Group",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+                    
+                    let url = "/api/groups/split/membership/delete";
+                    let data = {uid: uid, sid: sid};
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            let splitManagers = document.querySelector(`.managers[data-sid="${sid}"]`);
+                            let manager = splitManagers.querySelector(`.manager[data-uid="${uid}"]`);
+                            manager.remove();
+                            // add the add button back to the end
+                            let addManagerButton = document.querySelector(`.manager-add[data-sid="${sid}"]`);
+                            splitManagers.appendChild(addManagerButton);
+                        }
+                    });
+
+                    hideDialog();
+
+                }
+            },
+            {
+                text: "Remove User as Manager",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+                   
+                    let url = "/api/groups/split/membership";
+                    let data = {uid: uid, sid: sid, elevated: false};
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            let splitManagers = document.querySelector(`.managers[data-sid="${sid}"]`);
+                            let manager = splitManagers.querySelector(`.manager[data-uid="${uid}"]`);
+                            manager.remove();
+                            // add the add button back to the end
+                            let addManagerButton = document.querySelector(`.manager-add[data-sid="${sid}"]`);
+                            splitManagers.appendChild(addManagerButton);
+                        }
+                    });
+
+                    hideDialog();
+                    
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    });
+}
+
+function addManager(element){
+    let sid = element.getAttribute("data-sid");
+    
+    showDialog({
+        title: "Add Manager to Group",
+        description: "User",
+        type: "user",
+        icon: "person_add",
+        multiple: false,
+        onchoose: () => {
+            let url = "/api/groups/split/membership";
+
+            let splitManagers = document.querySelector(`.managers[data-sid="${sid}"]`);
+            splitManagers.innerHTML += `<span class="tiny config-detail-value config-main-info resolve-further manager" data-uid="${current_dialog_data.selected[0].uid}" data-sid="${sid}" onclick="removeManager(this)">${current_dialog_data.selected[0].full_name}</span>`;
+
+            // swap this last element with the add button
+            let addManagerButton = document.querySelector(`.manager-add[data-sid="${sid}"]`);
+            // remove the original add button and move it to the end
+            addManagerButton.remove();
+            splitManagers.appendChild(addManagerButton);
+
+
+
+            let data = {uid: current_dialog_data.selected[0].uid, sid: sid, elevated: true};
+
+            apiPost(url, data, (result) => {
+                if(result.success){
+                    
+                }
+            });
+
+            hideDialog();
+        },
+    })
 }
