@@ -1,6 +1,14 @@
 <div class="group" data-gid="<%= group.gid %>" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
     <div class="flex apart">
-        <span class="large"><%= group.name %></span>
-        <span class="medium material-symbols-rounded"><%= group.icon %></span>
+        <div class="flex center">
+            <span class="medium material-symbols-rounded"><%= group.icon %></span>
+            <span class="large"><%= group.name %></span>
+        
+        </div>
+        <div class="flex center">
+             <% if(group.elevated) { %>
+                <span class="small">MANAGER</span>
+            <% } %>
+        </div>
     </div>
 </div>

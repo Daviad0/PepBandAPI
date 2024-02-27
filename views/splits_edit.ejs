@@ -7,9 +7,9 @@
   </head>
   <body>
     <%- include('./partials/header.ejs'); %>
-    <% let default_split_item_data_0 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
-    <% let default_split_item_data_1 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
-    <% let default_split_item_data_plural = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0 } %>
+    <% let default_split_item_data_0 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0, managers: [] } %>
+    <% let default_split_item_data_1 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0, managers: [] } %>
+    <% let default_split_item_data_plural = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0, managers: [] } %>
     
     <script>
         let split_item_template_0 = `<%- include('./partials/config/split_item.ejs', {split: default_split_item_data_0}) %>`;
@@ -32,8 +32,29 @@
                         <span class="small message-content">Any changes made to your split that downgrade its "permission power" are permanent. Exercise caution when changing your split's permission power.</span>
                     </div>
                     <div class="flex center">
-                        <span class="small spacing">Split Name</span>
-                        <input type="text" class="input small" placeholder="New Split Name" name="name" id="split-create-name" />
+                        <div class="split-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny split-detail-tag">Split Name</span>
+                            </div>
+                            <div class="flex apart">
+                                <input type="text" class="input small" placeholder="New Split Name" name="name" id="split-create-name" />
+                            </div>
+                        </div>
+                        <div class="split-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny split-detail-tag">Apart of Group</span>
+                            </div>
+                            <div class="flex apart">
+                                <select class="input small" name="age" id="split-create-gid">
+                                    <option value="-1" disabled selected>Select a Group</option>
+                                    <% for(let i = 0; i < groups.length; i++) { %>
+                                        <option value="<%= groups[i].gid %>"><%= groups[i].name %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+                        
+
                         <button class="button-main" onclick="createSplit()" id="split-create"><span class="button-text">Create Split</span></button>
                     </div>
                     

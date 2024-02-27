@@ -511,8 +511,14 @@ router.get("/songs", async (req, res) => {
 router.get("/splits/edit", async (req, res) => {
     var images = await generateImagesList("corner_images");
     var splits = (await db.getSplits()).data;
+    var groups = (await db.getGroups()).data;
 
-    res.render("splits_edit", {user: req.session.user, role: req.session.role, splits: splits, images: images});
+    for(var i = 0; i < splits.length; i++){
+        var splitManagers = (await db.getSplitElevated(splits[i].sid)).data;
+        splits[i].managers = splitManagers;
+    }
+
+    res.render("splits_edit", {user: req.session.user, role: req.session.role, splits: splits, images: images, groups: groups});
 });
 
 router.get("/groups/edit", async (req, res) => {

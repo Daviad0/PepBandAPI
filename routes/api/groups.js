@@ -302,7 +302,7 @@ router.post("/split", async (req, res) => {
     if(!extra_data) extra_data = null;
     if(!color) color = null;
 
-    db.setSplit(sid, name, gid, icon, open, extra_data, color).then((result) => {
+    db.setSplit(sid, gid, name, icon, open, extra_data, color).then((result) => {
         res.send(result);
     });
 });
@@ -316,8 +316,9 @@ router.post("/split/create", async (req, res) => {
     }
 
     let name = req.body.name;
+    let gid = req.body.gid;
 
-    db.setSplit(null, name, null, null, null, null).then((result) => {
+    db.setSplit(null, gid, name, null, null, null, null).then((result) => {
         let sid = result.data[0].sid;
 
         db.getSplit(sid).then((result) => {
@@ -351,7 +352,7 @@ router.post("/split/clone", async (req, res) => {
     let extra_data = oldSplit.data[0].extra_data;
     let color = oldSplit.data[0].color;
 
-    db.setSplit(null, name, null, null, null, null, null).then((result) => {
+    db.setSplit(null, gid, name, null, null, null, null).then((result) => {
 
         let newSid = result.data[0].sid;
 
@@ -359,7 +360,7 @@ router.post("/split/clone", async (req, res) => {
             res.send(result);
         });
 
-        db.setSplit(newSid, name, gid, icon, open, extra_data, color).then((result) => {
+        db.setSplit(newSid, gid, name, icon, open, extra_data, color).then((result) => {
             
         })
     });

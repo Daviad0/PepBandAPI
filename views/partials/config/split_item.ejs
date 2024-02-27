@@ -3,14 +3,12 @@
    "split" parameter is passed into this file:
 
     - sid
-    - gid
+    - gid  
     - name
     - description
-    - icon
     - user_count (custom variable from db)
     - updated
     - extra_data
-    - uid_primary
 
 -->
 
@@ -33,9 +31,22 @@
                 <span class="tiny split-detail-tag">Split Name</span>
             </div>
             <div class="flex apart">
-                <input data-sid="<%= split.sid %>" onchange="editsplit(this)" name="name" type="text" class="input split-detail-value" placeholder="Split Name" value="<%= split.name %>"/>
+                <input data-sid="<%= split.sid %>" onchange="editSplit(this)" name="name" type="text" class="input split-detail-value" placeholder="Group Name" value="<%= split.name %>"/>
             </div>
         </div>
+        <div class="split-detail-item">
+            <div class="flex apart">
+                <span class="tiny split-detail-tag">Split Open</span>
+            </div>
+            <div class="flex apart">
+                <label class="checkbox-container">
+                    <input type="checkbox" data-sid="<%= split.sid %>" onchange="editSplitCheckbox(this)" name="open" checked="<%= split.open %>"/>
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="flex center">
         <div>
             <div class="split-detail-item flex center">
                 <div class="flex center icon-container">
@@ -46,41 +57,59 @@
                     <span class="tiny split-detail-tag">Split Icon</span>
                 </div>
                 <div class="flex apart">
-                    <input data-sid="<%= split.sid %>" onchange="editsplit(this)" hidden disabled name="icon" type="text" class="input split-detail-value" placeholder="Icon" value="<%= split.icon %>"/>
+                    <input data-sid="<%= split.sid %>" onchange="editSplit(this)" hidden disabled name="icon" type="text" class="input split-detail-value" placeholder="Icon" value="<%= split.icon %>"/>
                 </div>
             </div>
             <div class="flex center">
-                <button data-sid="<%= split.sid %>" onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
-                <button data-sid="<%= split.sid %>" onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Choose Image</span></button>
+                <button data-sid="<%= split.sid %>" onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Icon</span></button>
+                <button data-sid="<%= split.sid %>" onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Image</span></button>
             </div>
         </div>
     </div>
     <div class="split-detail-item">
         <div class="flex apart">
-            <span class="tiny split-detail-tag">Split Contact</span>
+            <span class="tiny split-detail-tag">Managers</span>
         </div>
-        <div class="flex apart">
-            <input data-sid="<%= split.sid %>" onchange="editsplit(this)" name="uid_primary" type="number" class="input split-detail-value" placeholder="123456" value="<%= split.uid_primary %>"/>
-        </div>
-    </div>
-    <div class="split-detail-item">
-        <div class="flex apart">
-            <span class="tiny split-detail-tag">Applicable Group</span>
-        </div>
-        <div class="flex apart">
-            <input data-sid="<%= split.sid %>" onchange="editsplit(this)" name="gid" type="number" class="input split-detail-value" placeholder="123456" value="<%= split.gid %>"/>
+        <div class="flex center managers wrap" data-sid="<%= split.sid %>">
+            <% for(var i = 0; i < split.managers.length; i++) { %>
+                <span class="tiny config-detail-value config-main-info resolve-further manager" data-uid="<%= split.managers[i].uid %>" data-sid="<%= split.sid %>" onclick="removeManager(this)"><%= split.managers[i].full_name %></span>
+            <% } %>
+            
+            <button class="button-alternate manager-add" onclick="addManager(this)" data-sid="<%= split.sid %>"><span class="button-text">+</span></button>
         </div>
     </div>
     <div class="flex center">
         <div class="split-detail-item">
             <div class="flex apart">
-                <span class="tiny split-detail-tag">Description</span>
+                <span class="tiny split-detail-tag">Notes</span>
             </div>
             <div class="flex apart">
-                <textarea data-sid="<%= split.sid %>" onchange="editsplit(this)" name="description" class="input small split-detail-value"><%= split.description %></textarea>
+                <textarea data-sid="<%= split.sid %>" onchange="editSplit(this)" name="description" class="input small split-detail-value"><%= split.description %></textarea>
             </div>
         </div>
     </div>
+    <div class="flex center">
+        <div class="split-detail-item">
+            <div class="flex apart">
+                <span class="tiny split-detail-tag">Split Color</span>
+            </div>
+            <div class="flex apart">
+                <input data-sid="<%= split.sid %>" name="color" type="color" class="input split-detail-value permission-input" onchange="editSplit(this)" value="<%= split.color %>"/>
+            </div>
+        </div>
+        <div class="split-detail-item">
+            <div class="flex apart">
+                <span class="tiny split-detail-tag">Apart of Group</span>
+            </div>
+            <div class="flex apart">
+                <select onchange="editSplit(this)" class="input small" name="gid" data-sid="<%= split.sid %>">
+                    
+                </select>
+            </div>
+        </div>
+    </div>
+
+
     <div class="flex center">
         <span class="small no-display error error-message" name="error" data-sid="<%= split.sid %>"></span>
     </div>

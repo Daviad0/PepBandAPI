@@ -570,7 +570,7 @@ function dialog_getUsers(){
                             <span class="medium material-symbols-rounded" title="${user.mtu_based ? "Internal MTU User" : "External User"}">${user.mtu_based ? "home" : "flight_land"}</span>
                         </div>
                         <div class="spacing">
-                            <span class="tiny">By ${user.mtu_id == null ? "Unknown MTU ID" : user.mtu_id}</span>
+                            <span class="tiny">${user.mtu_id == null ? "Unknown MTU ID" : user.mtu_id}</span>
                         </div>
                         
                     </div>

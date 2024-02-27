@@ -18,7 +18,7 @@ function updateSplitView(selected_split){
 
 function createSplit(){
     let name = document.getElementById("split-create-name").value;
-
+    let gid = document.getElementById("split-create-gid").value;
     let button = document.getElementById("split-create");
     button.setAttribute("disabled", "disabled");
 
@@ -28,8 +28,8 @@ function createSplit(){
         return;
     }
 
-    let url = "/api/groups/splut/create";
-    let data = {name: name};
+    let url = "/api/groups/split/create";
+    let data = {name: name, gid: gid};
 
     apiPost(url, data, (result) => {
         if(result.success){
@@ -64,7 +64,7 @@ function editSplit(element){
     let sid = element.getAttribute("data-sid");
     var property = element.getAttribute("name");
 
-    let url = "/api/groups/splut/";
+    let url = "/api/groups/split/";
     let data = {sid: sid};
     data[property] = element.value;
 
@@ -82,7 +82,7 @@ function deleteSplit(element){
     let sid = element.getAttribute("data-sid");
     let error_span = document.querySelector(`span[data-sid="${sid}"][name="error"]`);
 
-    let url = "/api/groups/splut/" + sid + "/delete";
+    let url = "/api/groups/split/" + sid + "/delete";
     let data = {sid: sid};
 
     apiPost(url, data, (result) => {
