@@ -17,6 +17,7 @@ function updateSplitView(selected_split){
 }
 
 function createSplit(){
+    document.getElementById("split-create-name").classList.remove("input-error");
     let name = document.getElementById("split-create-name").value;
     let gid = document.getElementById("split-create-gid").value;
     let button = document.getElementById("split-create");
@@ -79,28 +80,55 @@ function editSplit(element){
 }
 
 function deleteSplit(element){
+
     let sid = element.getAttribute("data-sid");
     let error_span = document.querySelector(`span[data-sid="${sid}"][name="error"]`);
 
-    let url = "/api/groups/split/" + sid + "/delete";
-    let data = {sid: sid};
+    showDialog({
+        title: "Are You Sure?",
+        description: "Deleting a split will remove it from all groups and events that use it. This action cannot be undone. If you would like to remove the ability to join this split, you can always change the status of the split to be not open! Are you sure you want to continue?",
+        type: "buttons",
+        icon: "delete",
+        buttons: [
+            {
+                text: "Delete Split",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+                    let url = "/api/groups/split/" + sid + "/delete";
+                    let data = {sid: sid};
 
-    apiPost(url, data, (result) => {
-        if(result.success){
-            let split_item = document.querySelector(`div[data-sid="${sid}"]`);
-            split_item.remove();
-            // remove from default split option
-            let option = document.querySelector(`option[value="${sid}"]`);
-            option.remove();
-        }else{
-            if(result.message){
-                showError(error_span, result.message);
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            let split_item = document.querySelector(`div[data-sid="${sid}"]`);
+                            split_item.remove();
+                            // remove from default split option
+                            let option = document.querySelector(`option[value="${sid}"]`);
+                            option.remove();
+                        }else{
+                            if(result.message){
+                                showError(error_span, result.message);
+                            }
+                            else{
+                                showError(error_span, "Error deleting split");
+                            }
+                        }
+                    });
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
             }
-            else{
-                showError(error_span, "Error deleting split");
-            }
-        }
+        ]
     });
+    
+    
+
+    
 }
 
 function setConfig_defaultSplit(element){
@@ -149,6 +177,23 @@ function imageChoose(element){
         extra: {}
     });
 
+}
+
+function updateSplitFilter(){
+    let filter = document.getElementById("split-filter-gid").value;
+
+    let splits = document.querySelectorAll(".split-view");
+    let splitGroupSelectors = document.querySelectorAll(".linked-group");
+
+    splitGroupSelectors.forEach((element) => {
+        let selectedGid = element.value;
+        if(selectedGid == filter || filter == "all"){
+            element.classList.remove("no-display");
+        }
+        else{
+            element.classList.add("no-display");
+        }
+    });
 }
 
 function iconChoose(element){

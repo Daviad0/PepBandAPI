@@ -3,7 +3,7 @@
   <head>
     <title>Group</title>
     <%- include('./partials/links.ejs'); %>
-    <link rel="stylesheet" href="/css/group.css" />
+    <link rel="stylesheet" href="/css/split.css" />
   </head>
   <body>
 
@@ -12,20 +12,20 @@
     <%- include('./partials/header.ejs'); %>
     
     <script>
-        let gid = "<%= group.gid %>";
+        let sid = "<%= split.sid %>";
     </script>
 
-    <script src="/js/group.js"></script>
+    <script src="/js/split.js"></script>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
-            <div class="flex apart group" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
+            <div class="flex apart split" style="background: <%= split.color %>;background: <%= split.gradientBackground %>">
                 <div class="flex center">
                     <div>
-                        <span class="xlarge material-symbols-rounded"><%= group.icon %></span>
+                        <span class="xlarge material-symbols-rounded"><%= split.icon %></span>
                     </div>
                     <div class="spacing">
-                        <span class="small">GROUP</span>
-                        <span class="xlarge"><%= group.name %></span>
+                        <span class="small">SPLIT</span>
+                        <span class="xlarge"><%= split.name %></span>
                     </div>
                     
                 </div>
@@ -33,17 +33,23 @@
                     <% if(user) { %>
                         <% let membership = users.find(u => u.uid == user.uid) %>
                         <% if(membership) { %>
-                            <button class="button-main white-bg" onclick="leaveGroup()"><span class="button-text" style="color: <%= group.color %>">Leave Group</span></button>
+                            <button class="button-main white-bg" onclick="leaveSplit()"><span class="button-text" style="color: <%= split.color %>">Leave Group</span></button>
                             <% if(membership.elevated) { %>
-                                <button class="button-main white-bg" onclick="window.location = '/group/<%= group.gid %>/edit'"><span class="button-text" style="color: <%= group.color %>">Edit Group</span></button>
+                                <button class="button-main white-bg" onclick="window.location = '/split/<%= split.sid %>/edit'"><span class="button-text" style="color: <%= split.color %>">Edit Group</span></button>
                             <% } %>
                         <% } else { %>
-                            <button class="button-main white-bg" onclick="joinGroup()"><span class="button-text" style="color: <%= group.color %>" <%= group.open ? "" : "disabled" %>>Join Group</span></button>
+                            <button class="button-main white-bg" onclick="joinSplit()"><span class="button-text" style="color: <%= split.color %>" <%= split.open ? "" : "disabled" %>>Join Group</span></button>
                         <% } %> 
 
                     <% } else { %>
                         <span class="small"><i>Sign In to Join</i></span>
                     <% } %>
+                </div>
+            </div>
+            <div class="flex apart">
+                <div class="group flex center" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
+                    <span class="small">A Part of </span>
+                    <span class="small"><strong><%= group.name %></strong></span>
                 </div>
             </div>
             <div class="splitpage spacing">
@@ -56,7 +62,7 @@
                 <div class="content-right">
                     
                     <div>
-                        <span class="large spacing">Splits</span>
+                        <span class="large spacing">Announcements</span>
                         
                     </div>
                     

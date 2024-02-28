@@ -1,0 +1,143 @@
+.splitpage{
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+/*
+
+If the screen is smaller than 600px, stack the links on top of each other, instead of next to each other with width 100%
+
+*/
+
+.splitpage .content-left{
+    width: 60%;
+    margin:10px;
+}
+
+.splitpage .content-right{
+    width: 30%;
+    margin:10px;
+}
+
+@media screen and (max-width: 1000px) {
+    .splitpage {
+        flex-direction: column;
+    }
+    .splitpage .content-left{
+        width: 100%;
+        margin: 10px 0px;
+    }
+    .splitpage .content-right{
+        width: 100%;
+        margin: 10px 0px;
+    }
+}
+
+.split{
+    width: 100%;
+    padding: 20px;
+    border-radius: 16px 16px 16px 4px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.split span{
+    color: white;
+    font-weight: 800;
+    text-align: left;
+}
+
+.split .material-symbols-rounded{
+    margin-right: 10px;
+}
+
+.group{
+    border-radius: 4px 4px 16px 16px;
+    padding: 10px;
+    margin: 5px 0px;
+}
+
+.group span{
+    color: white;
+    margin: 0px 5px;
+}
+
+
+
+.event-image{
+    margin-right:10px;
+    width: 40px;
+}
+
+.event-passed{
+    text-decoration: line-through;
+}
+
+.event-content{
+    width: 100%;
+}
+
+.event-title{
+    margin:0;
+}
+
+.event-header{
+    width: 100%;
+}
+
+.event-date{
+    margin-top:10px;
+}
+
+.icon-container{
+    margin-top:5px;
+}
+
+.song-slot{
+    border-radius: 8px;
+    padding: 5px;
+    margin: 5px;
+    transition: 0.5s ease all;
+    width: 200px;
+    height: 100px;
+}
+
+.song-slot-name{
+    margin-bottom: 20px;
+}
+
+.song-slot-details{
+    position:relative;
+}
+
+.song-slot-options{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+.song-slot-icon{
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+
+.slot-list{
+    margin:10px;
+    border: 1px dashed rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
+
+.segment-list{
+    margin-top:20px;
+}
+
+.user-attending{
+    margin-bottom: 20px;
+}
+
+.user-attending span{
+    margin: 5px 0px;
+}

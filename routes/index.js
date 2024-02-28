@@ -306,6 +306,75 @@ router.get("/event/template/:etid", async (req, res) => {
     res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template, eventTypes: event_types, images: images});
 });
 
+router.get("/split/:sid", async (req, res) => {
+    var images = await generateImagesList("corner_images");
+
+    let sid = req.params.sid;
+    if(sid == ""){
+        res.redirect("/groups");
+        return;
+    }
+    // check if gid is number
+    if(isNaN(sid)){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Split not found"
+        }});
+        return;
+    }
+
+    var split = (await db.getSplit(sid)).data;
+
+    if(split.length == 0){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Split not found"
+        }});
+        return;
+    }
+
+    split = split[0];
+
+    let allMembership = (await db.getSplitMembers(sid)).data;
+    let group = (await db.getGroup(split.gid)).data[0];
+
+    var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
+
+    if(gradientBackground.length > 0){
+        group.gradientBackground = gradientBackground[0].value;
+    }
+    // check if color is in hex format
+    if(group.color.match(/^#[0-9A-F]{6}$/i)){
+        // generate RGBA representation
+        var colorA = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",0.7)";
+        var colorB = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",1)";
+
+        group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+    }else{
+        group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+    }
+
+    if(gradientBackground.length > 0){
+        split.gradientBackground = gradientBackground[0].value;
+    }
+    // check if color is in hex format
+    if(split.color.match(/^#[0-9A-F]{6}$/i)){
+        // generate RGBA representation
+        var colorA = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",0.7)";
+        var colorB = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",1)";
+
+        split.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+    }
+    else{
+        split.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+    }
+
+    
+
+    res.render("split", {user: req.session.user, role: req.session.role, group: group, users: allMembership, split: split, images: images});
+
+});
+
 router.get("/group/:gid", async (req, res) => {
     var images = await generateImagesList("corner_images");
 

@@ -7,11 +7,13 @@
   </head>
   <body>
     <%- include('./partials/header.ejs'); %>
-    <% let default_split_item_data_0 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0, managers: [] } %>
-    <% let default_split_item_data_1 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0, managers: [] } %>
-    <% let default_split_item_data_plural = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0, managers: [] } %>
+    <% let default_split_item_data_0 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0, managers: [], groups: groups } %>
+    <% let default_split_item_data_1 = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0, managers: [], groups: groups } %>
+    <% let default_split_item_data_plural = {sid: "DEFAULT_SID", gid: "DEFAULT_GID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", icon: "DEFAULT_ICON", uid_primary: "DEFAULT_UIDPRIMARY", user_count: 0, managers: [], groups: groups } %>
     
     <script>
+        let groups = <%- JSON.stringify(groups) %>;
+
         let split_item_template_0 = `<%- include('./partials/config/split_item.ejs', {split: default_split_item_data_0}) %>`;
         let split_item_template_1 = `<%- include('./partials/config/split_item.ejs', {split: default_split_item_data_1}) %>`;
         let split_item_template_plural = `<%- include('./partials/config/split_item.ejs', {split: default_split_item_data_plural}) %>`;
@@ -32,6 +34,7 @@
                         <span class="small message-content">Any changes made to your split that downgrade its "permission power" are permanent. Exercise caution when changing your split's permission power.</span>
                     </div>
                     <div class="flex center">
+                        <span class="medium spacing">Create a Split</span>
                         <div class="split-detail-item">
                             <div class="flex apart">
                                 <span class="tiny split-detail-tag">Split Name</span>
@@ -57,12 +60,31 @@
 
                         <button class="button-main" onclick="createSplit()" id="split-create"><span class="button-text">Create Split</span></button>
                     </div>
+                    <div class="flex center">
+                        <span class="medium spacing">Filter Splits</span>
+                        <div class="split-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny split-detail-tag">Apart of Group</span>
+                            </div>
+                            <div class="flex apart">
+                                <select onchange="updateSplitFilter()" class="input small" name="age" id="split-filter-gid">
+                                    <option value="all" selected>Any Group</option>
+                                    <% for(let i = 0; i < groups.length; i++) { %>
+                                        <option value="<%= groups[i].gid %>"><%= groups[i].name %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+                        
+
+                    
+                    </div>
                     
                     
                     
                 </div>
                 <div id="split-list" class="flex center start split-list">
-                    <%- include('./partials/config/all_splits.ejs', {splits: splits}); %>
+                    <%- include('./partials/config/all_splits.ejs', {splits: splits, groups: groups}); %>
                 </div>
             </div>
             

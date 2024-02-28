@@ -860,7 +860,7 @@ class Database {
 
             return this.edit("UPDATE splits SET gid = " + gid + ", name = '" + name + "', icon = '" + icon + "', open = '" + open + "', extra_data = '" + extra_data + "', updated = CURRENT_TIMESTAMP, color = '" + color + "'" + " WHERE sid = " + sid);
         }else{
-            return this.edit("INSERT INTO splits (gid, name, icon, open, extra_data, updated, color) VALUES (" + gid + ", '" + name + "', '', 'FALSE', '', CURRENT_TIMESTAMP, '') RETURNING *")
+            return this.edit("INSERT INTO splits (gid, name, icon, open, extra_data, updated, color, description) VALUES (" + gid + ", '" + name + "', '', 'FALSE', '', CURRENT_TIMESTAMP, '', '') RETURNING *")
         }
     }
 

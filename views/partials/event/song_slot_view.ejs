@@ -17,11 +17,20 @@
             </div>
             
         </div>
+        <% } if(slot.type == "break") { %>
+        <div class="fill song-slot-details-category" data-segid="<%= segment.segid %>" data-slotindex="<%= slot.slotIndex %>" name="note">
+            <div class="flex apart">
+                <span class="medium" name="name"><%= slot.title %></span>
+            </div>
+            <div class="flex apart">
+                <span class="small" name="content"><%= slot.content %></span>
+            </div>
+        </div>
         <% } %>
         
         <div class="song-slot-icon">
             <div class="flex center">
-                <span class="medium material-symbols-rounded" name="icon"><%= slot.type == "song" ? "music_note" : "sleep" %></span>
+                <span class="medium material-symbols-rounded" name="icon"><%= slot.type == "song" ? "music_note" : (slot.type == "break" ? "sleep" : "event_note") %></span>
             </div>
 
         </div>

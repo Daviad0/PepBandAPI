@@ -102,8 +102,11 @@
                 <span class="tiny split-detail-tag">Apart of Group</span>
             </div>
             <div class="flex apart">
-                <select onchange="editSplit(this)" class="input small" name="gid" data-sid="<%= split.sid %>">
-                    
+                <select onchange="editSplit(this)" class="input small linked-group" name="gid" data-sid="<%= split.sid %>">
+                    <option value="-1" disabled>Select a Group</option>
+                    <% for(let i = 0; i < groups.length; i++) { %>
+                        <option value="<%= groups[i].gid %>" <%= split.gid == groups[i].gid ? "selected" : ""%>><%= groups[i].name %></option>
+                    <% } %>
                 </select>
             </div>
         </div>
@@ -115,7 +118,7 @@
     </div>
     <div class="flex apart">
         <div class="flex center">
-            <button data-sid="<%= split.sid %>" <%= split.user_count > 0 ? 'disabled' : '' %> onclick="deletesplit(this)" class="button-alternate"><span class="button-text">Remove</span></button>
+            <button data-sid="<%= split.sid %>" <%= split.user_count > 0 ? 'disabled' : '' %> onclick="deleteSplit(this)" class="button-alternate"><span class="button-text">Remove</span></button>
         </div>
     </div>
 </div>

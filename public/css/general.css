@@ -166,6 +166,29 @@ a .logo:hover{
 
 }
 
+
+.error-popup{
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: 0.5s ease all;
+    z-index: 100;
+    padding: 8px 20px;
+    border-radius: 16px 16px 0px 0px;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+    cursor:pointer;
+}
+
+.error-popup span {
+    color: white;
+}
+
+.error-popup-hidden{
+    transform: translateX(-50%) translateY(100%);
+}
+
+
 .account-dot .role-icon{
     pointer-events: none;
 }
@@ -185,6 +208,12 @@ a .logo:hover{
 }
 .spacing-bottom{
     margin-bottom: 10px;
+}
+.spacing-left{
+    margin-left: 10px;
+}
+.spacing-right{
+    margin-right: 10px;
 }
 
 .fill{

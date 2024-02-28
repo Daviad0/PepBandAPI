@@ -113,6 +113,18 @@ function log_out_click(){
 
 
 
+function showGeneralError(message){
+    let errorPopup = document.getElementById("error-popup");
+    let errorPopupMessage = document.getElementById("error-popup-message");
+    if(message == null){
+        errorPopup.classList.add("error-popup-hidden");
+    }else{
+        errorPopupMessage.innerHTML = message;
+        errorPopup.classList.remove("error-popup-hidden");
+    }
+
+}
+
 
 
 let current_dialog_data = {};
@@ -336,6 +348,9 @@ function showDialog(properties){
             dialog_buttons_static_icon.innerHTML = "";
             title = properties.title;
             icon = properties.icon;
+
+            dialog_title.innerHTML = title;
+            dialog_icon.innerHTML = icon;
 
             let dialog_icon_input = selectedOptionDiv.querySelector("#dialog-icon-input");
             dialog_icon_input.value = "";

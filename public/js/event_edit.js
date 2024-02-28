@@ -388,6 +388,12 @@ function switchSlotToFilled(element, slotData, isAfterInitialize){
 
         categoryElement.querySelector("input[name='name']").value = slotData.name;
         categoryElement.querySelector("input[name='time']").innerHTML = slotData.time;
+    }else if(slotData.type == "note"){
+
+        element.querySelector("span[name='icon']").innerHTML = "event_note";
+
+        categoryElement.querySelector("input[name='title']").value = slotData.title;
+        categoryElement.querySelector("input[name='content']").innerHTML = slotData.content;
     }
 
     if(isAfterInitialize){
@@ -412,7 +418,7 @@ function editFilledSlot(element){
     let property = element.getAttribute("name");
     let value = element.value;
 
-    if(slot.type == "break"){
+    if(slot.type == "break" || slot.type == "note"){
         slot[property] = value;
     }
 }
@@ -551,7 +557,20 @@ function slotTriggerChoose(element, type){
         let slotElement = document.querySelector(`div.song-slot[data-segid="${segid}"][data-slotindex="${slotIndex}"]`);
     
         switchSlotToFilled(slotElement, defaultBreak, true);
+    }else if(type == "note"){
+        let defaultNote = {
+            type: "note",
+            title: "A New Note",
+            content: "This is a new note!"
+        }
+
+        segment.slots[slotIndex] = defaultNote;
+
+        let slotElement = document.querySelector(`div.song-slot[data-segid="${segid}"][data-slotindex="${slotIndex}"]`);
+    
+        switchSlotToFilled(slotElement, defaultBreak, true);
     }
+
 
     
 }

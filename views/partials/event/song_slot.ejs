@@ -4,6 +4,7 @@
         <div class="flex center spacing">
             <button data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onclick="slotTriggerChoose(this, 'song')" class="button-tiny slot-empty-button flex center"><span class="button-text tiny material-symbols-rounded">music_note</span></button>
             <button data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onclick="slotTriggerChoose(this, 'break')" class="button-tiny slot-empty-button flex center"><span class="button-text tiny material-symbols-rounded">snooze</span></button>
+            <button data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onclick="slotTriggerChoose(this, 'note')" class="button-tiny slot-empty-button flex center"><span class="button-text tiny material-symbols-rounded">event_note</span></button>
             <button data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onclick="removeSlot(this, event)" class="button-tiny slot-empty-button-remove flex center"><span class="button-text tiny material-symbols-rounded">remove</span></button>
         </div>
 
@@ -42,7 +43,27 @@
             </div>
             
         </div>
-        
+        <div class="flex center fill song-slot-details-category" name="note">
+            <div class="song-slot-name">
+                <div class="event-management-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny event-management-detail-tag">Note Title</span>
+                    </div>
+                    <div class="flex apart">
+                        <input data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onchange="editFilledSlot(this)" name="title" type="text" class="input event-type-detail-value small input-small" placeholder="Notable Note"/>
+                    </div>
+                </div>
+                <div class="event-management-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny event-management-detail-tag">Note Content</span>
+                    </div>
+                    <div class="flex apart">
+                        <textarea data-segid="<%= segment.segid %>" data-slotindex="<%= slotIndex %>" onchange="editFilledSlot(this)" name="content" type="text" class="input event-type-detail-value small input-small" placeholder="Notable Note"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
         <div class="song-slot-icon">
             <div class="flex center">
                 <span class="medium material-symbols-rounded" name="icon">music_note</span>
