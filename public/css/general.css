@@ -146,6 +146,28 @@ a .logo:hover{
     background-color: rgba(0,0,0,0.2);
 }
 
+.dialog-option .option{
+    display:block;
+    color: black;
+    font-size: 18px;
+    width: 100%;
+    font-weight: bold;
+    margin: 10px 0px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.5s ease all;
+    text-decoration: none;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.dialog-option .option:hover{
+    background-color: rgba(0,0,0,0.2);
+}
+
 .header .account-dot{
     position: absolute;
     top: 0;

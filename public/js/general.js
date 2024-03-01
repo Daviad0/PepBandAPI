@@ -190,6 +190,8 @@ function showDialog(properties){
     let preselectedButtons = [];
 
     switch(dialog_type){
+        case "menu":
+            break;
         case "buttons": 
             
             let dialog_buttons = selectedOptionDiv.querySelector("#dialog-buttons");
@@ -427,6 +429,12 @@ function hideDialog(){
     setTimeout(() => {
         dialog_component.classList.add("dialog-hidden");
     }, 600);
+}
+
+function showSmallMenu(){
+    showDialog({
+        type: "menu"
+    });
 }
 
 function dialog_icon_changeIcon(element){

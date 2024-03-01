@@ -32,6 +32,32 @@ function resolveSlots(){
     
 }
 
+function hideEvent(){
+    let url = '/api/event/';
+    let data = {show: false, eid: eid};
+
+    apiPost(url, data, (result) => {
+        if(result.success){
+            location.reload();
+        } else {
+            console.log(result);
+        }
+    });
+}
+
+function showEvent(){
+    let url = '/api/event/';
+    let data = {show: true, eid: eid};
+
+    apiPost(url, data, (result) => {
+        if(result.success){
+            location.reload();
+        } else {
+            console.log(result);
+        }
+    });
+}
+
 function handleLinkBacks(linkBack, song){
     linkBack.forEach(link => {
 

@@ -397,7 +397,7 @@ router.post("/", (req, res) => {
     if(!name) name = null;
     if(!start) start = null;
     if(!ending) ending = null;
-    if(!show) show = null;
+    if(show == null || show == undefined) show = null;
     if(!open) open = null;
     if(!data) data = null;
     if(!location) location = null;
