@@ -321,7 +321,7 @@ function switchSlotToFilled(element, defaultSlot, isAfterInitialize){
         element.querySelector("span[name='icon']").innerHTML = "event_note";
 
         categoryElement.querySelector("input[name='title']").value = slotData.title;
-        categoryElement.querySelector("input[name='content']").innerHTML = slotData.content;
+        categoryElement.querySelector("textarea[name='content']").innerHTML = slotData.content;
     }
 
     if(isAfterInitialize){
@@ -515,7 +515,7 @@ function slotTriggerChoose(element, type){
 
         let slotElement = document.querySelector(`div.song-slot[data-segid="${segid}"][data-slotindex="${slotIndex}"]`);
     
-        switchSlotToFilled(slotElement, defaultBreak, true);
+        switchSlotToFilled(slotElement, defaultNote, true);
     }
 
     

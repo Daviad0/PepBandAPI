@@ -12,7 +12,7 @@
     <% let default_segment = { segid: "DEFAULT_SEGID", name: "DEFAULT_NAME", description: "DEFAULT_DESCRIPTION", idealTime: "DEFAULT_IDEALTIME", notifyOnChange: "DEFAULT_NOTIFYONCHANGE", slots: 0 } %>
     <% let default_slot = { slotIndex: "DEFAULT_SLOTINDEX", segment: default_segment, song: "DEFAULT_SONG" } %>
     <% let eventData = JSON.parse(event.data) %>
-    <% if(eventData == null || eventData == {}) { %>
+    <% if(eventData == null || eventData == {} || !eventData.segments) { %>
         <% eventData = {segments: []}; %>
     <% } %>
     <script>
@@ -22,7 +22,7 @@
         let dataStructure = JSON.stringify(<%- event.data %>);
         let usingEid = "<%= event.eid %>";
         dataStructure = JSON.parse(dataStructure);
-        if(dataStructure == null || dataStructure == {}) {
+        if(dataStructure == null || dataStructure == {} || !dataStructure.segments) {
             dataStructure = {segments: []};
         }
     </script>
@@ -35,6 +35,7 @@
                 <div class="event-management-header">
                     <div class="flex center spacing wrap">
                         <button onclick="window.location = '/events'" class="button-alternate"><span class="button-text">See All Events</span></button>
+                        <button onclick="window.location = '/event/<%= event.eid %>'" class="button-alternate"><span class="button-text">View This Event</span></button>
                         <button onclick="deleteEvent()" class="button-main error-bg"><span class="button-text">Delete Event</span></button>
                         <button onclick="cloneEvent()" class="button-main"><span class="button-text">Duplicate Event</span></button>
                     </div>

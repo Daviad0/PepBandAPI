@@ -207,6 +207,52 @@ router.get("/:eid/overrides", (req, res) => {
     });
 });
 
+router.post("/:eid/split", async (req, res) => {
+    
+    // expecting sid in body, not OK if null
+
+
+    var eid = req.params.eid;
+    var sid = req.body.sid;
+
+    if(!sid){
+        res.status(400).send({message: "sid property required to split event"});
+        return;
+    }  
+
+    // check if a record already exists
+
+    let existing = (await db.getEventSplits_sid(sid)).data;
+    existing = existing.filter(e => e.eid == eid);
+    if(existing.length > 0){
+        res.status(400).send({message: "You are already attending!"});
+        return;
+    }
+
+    db.setEventSplit(eid, sid).then((result) => {
+        res.send(result);
+    });
+    
+    
+});
+
+router.post("/:eid/split/delete", (req, res) => {
+    
+    // expecting sid in body, not OK if null
+
+    var eid = req.params.eid;
+    var sid = req.body.sid;
+
+    if(!sid){
+        res.status(400).send({message: "sid property required to delete split"});
+        return;
+    }
+
+    db.deleteEventSplit(eid, sid).then((result) => {
+        res.send(result);
+    });
+});
+
 /*
    Since events are so major, this will have a creation page that passes in the initial parameters
 */
@@ -227,6 +273,7 @@ router.post("/create", async (req, res) => {
     var end = req.body.end;
     var show = req.body.show;
     var etyid = req.body.etyid;
+    var location = req.body.location;
 
     if(!etid_used) etid_used = null;
 
@@ -270,6 +317,7 @@ router.post("/create", async (req, res) => {
         return;
     }
     if(!description) description = "";
+    if(!location) location = "";
     if(!start){
         res.status(400).send({message: "start property required to create event"});
         return;
@@ -287,7 +335,7 @@ router.post("/create", async (req, res) => {
 
     db.createEvent(etid_used).then((result) => {
         let eid = result.data[0].eid;
-        db.updateEvent(eid, etyid, etid_used, name, start, end, show, null, initializeWithData, null, description).then((result) => {
+        db.updateEvent(eid, etyid, etid_used, name, start, end, show, null, initializeWithData, location, description).then((result) => {
             res.send(result);
         });
     });

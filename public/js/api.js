@@ -1,8 +1,14 @@
 function apiGet(url, callback) {
     fetch(url)
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("API Error: " + response.status + " " + response.statusText);
+            }
+        })
         .then(data => callback(data))
-        .catch(error => callback({success: false, message: error}))
+        .catch(error => errorCallback(error, callback))
 }
 
 function apiPost(url, body, callback) {
@@ -13,7 +19,20 @@ function apiPost(url, body, callback) {
             'Content-Type': 'application/json'
         }
     })
-        .then(response => response.json())
+        .then(
+            response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("API Error: " + response.status + " " + response.statusText);
+                }
+            }
+        )
         .then(data => callback(data))
-        .catch(error => callback({success: false, message: error}))
+        .catch(error => errorCallback(error, callback))
+}
+
+function errorCallback(error, callback){
+    showGeneralError(error, "language");
+    callback({success: false, message: error})
 }

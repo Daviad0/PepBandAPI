@@ -90,6 +90,7 @@
 
                     <div class="segment-list">
                         <% let parsedData = JSON.parse(event.data) %>
+                        <% if(!parsedData.segments) parsedData.segments = [] %>
                         <% for(let i = 0; i < parsedData.segments.length; i++) { %>
                             <% let segment = parsedData.segments[i] %>
                             <% segment.number = i + 1 %>

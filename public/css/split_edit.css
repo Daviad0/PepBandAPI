@@ -1,0 +1,55 @@
+.split{
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 16px 16px 16px 4px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    transition: 1s ease all;
+}
+
+.split-detail-item{
+    margin: 10px;
+}
+
+.split-details{
+    flex-wrap: wrap;
+}
+
+.split-detail-value{
+    font-weight: bold;
+    resize: none;
+}
+
+.split-item{
+    padding: 15px 0px;
+    border-bottom: 1px dashed #ccc;
+
+}
+
+.split-main-info{
+    margin: 5px;
+}
+
+.split-detail-tag{
+    margin-left:5px;
+    margin-bottom: 2px;
+}
+
+.icon-view .button-text{
+    font-size: 10px !important;
+}
+
+.icon-view .button-main{
+    display:block;
+    padding: 5px 8px;
+    margin: 0px 3px;
+}
+
+.icon-view .buttons{
+    margin-top: 10px;
+}
+
+.split .input{
+    border: white 2px solid;
+}

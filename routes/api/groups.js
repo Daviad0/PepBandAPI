@@ -45,7 +45,7 @@ router.post("/group", async (req, res) => {
     if(!icon) icon = null;
     if(!description) description = null;
     if(!extra_data) extra_data = null;
-    if(!open) open = null;
+    if(open == null || open == undefined) open = null;
     if(!color) color = null;
 
     db.setGroup(gid, name, icon, description, open, extra_data, color).then((result) => {
@@ -298,7 +298,7 @@ router.post("/split", async (req, res) => {
     if(!name) name = null;
     if(!gid) gid = null;
     if(!icon) icon = null;
-    if(!open) open = null;
+    if(open == null || open == undefined) open = null;
     if(!extra_data) extra_data = null;
     if(!color) color = null;
 

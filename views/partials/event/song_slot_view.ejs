@@ -1,4 +1,4 @@
-<div class="song-slot slot-filled flex center">
+<div class="song-slot slot-filled flex center<%= slot.type == 'note' ? ' song-slot-long' : ''%>">
     <div class="song-slot-details fill">
         <% if(slot.type == "song"){ %>
         <div class="flex center fill song-slot-details-category" data-segid="<%= segment.segid %>" data-slotindex="<%= slot.slotIndex %>" name="song">
@@ -17,8 +17,8 @@
             </div>
             
         </div>
-        <% } if(slot.type == "break") { %>
-        <div class="fill song-slot-details-category" data-segid="<%= segment.segid %>" data-slotindex="<%= slot.slotIndex %>" name="note">
+        <% } if(slot.type == "note") { %>
+        <div class="fill song-slot-details-category spacing" data-segid="<%= segment.segid %>" data-slotindex="<%= slot.slotIndex %>" name="note">
             <div class="flex apart">
                 <span class="medium" name="name"><%= slot.title %></span>
             </div>

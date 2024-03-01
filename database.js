@@ -751,6 +751,19 @@ class Database {
         return this.edit("DELETE FROM event_templates WHERE etid = " + etid)
     }
 
+    getEventSplits_eid(eid){
+        return this.query("SELECT * FROM event_splits WHERE eid = " + eid)
+    }
+    getEventSplits_sid(sid){
+        return this.query("SELECT * FROM event_splits WHERE sid = " + sid)
+    }
+
+    setEventSplit(eid, sid){
+        return this.edit("INSERT INTO event_splits (eid, sid, updated) VALUES (" + eid + ", " + sid + ", CURRENT_TIMESTAMP)")
+    }
+    deleteEventSplit(eid, sid){
+        return this.edit("DELETE FROM event_splits WHERE eid = " + eid + " AND sid = " + sid)
+    }
 
 
     setOverride(eid, uid, override){

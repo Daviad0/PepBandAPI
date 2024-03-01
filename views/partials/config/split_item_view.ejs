@@ -1,0 +1,26 @@
+<div class="floating-box split" data-sid="<%= split.sid %>">
+    <div class="flex apart name" style="background: <%= split.color %>;background: <%= split.gradientBackground %>">
+        <div class="flex center">
+            <span class="medium material-symbols-rounded icon"><%= split.icon %></span>
+            <span class="large"><%= split.name %></span>
+        
+        </div>
+        <div class="flex center">
+             
+            <button class="button-main white-bg flex center" onclick="window.location = '/split/<%= split.sid %>'"><span class="button-text material-symbols-rounded" style="color: <%= split.color %>">arrow_forward</span></button>
+        </div>
+    </div>
+    <div class="spacing">
+        <% if(split.membership) { %>
+            <div class="flex center">
+                <span class="small material-symbols-rounded icon">badge</span>
+                <span class="small">You are a <%= split.membership.elevated ? "manager!" : "member!" %></span>
+            </div>
+            
+        <% } %>
+        <div class="flex center">
+            <span class="small material-symbols-rounded icon">group</span>
+            <span class="small"><strong><%= split.user_count %> member<%= split.user_count != 1 ? 's' : '' %></strong></span>
+        </div>
+    </div>
+</div>

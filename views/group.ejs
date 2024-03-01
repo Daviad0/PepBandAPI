@@ -10,6 +10,12 @@
     
 
     <%- include('./partials/header.ejs'); %>
+
+
+    <% let membership = undefined %>
+    <% if(user) { %>
+        <% membership = users.find(u => u.uid == user.uid) %>
+    <% } %>
     
     <script>
         let gid = "<%= group.gid %>";
@@ -18,7 +24,7 @@
     <script src="/js/group.js"></script>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
-            <div class="flex apart group" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
+            <div class="flex apart group" style="background: <%= group.color %>;background: <%= group.gradientBackground %>;border-radius: <%= membership != undefined ? '16px 16px 16px 4px' : '16px'%> ">
                 <div class="flex center">
                     <div>
                         <span class="xlarge material-symbols-rounded"><%= group.icon %></span>
@@ -31,20 +37,33 @@
                 </div>
                 <div class="flex center">
                     <% if(user) { %>
-                        <% let membership = users.find(u => u.uid == user.uid) %>
                         <% if(membership) { %>
-                            <button class="button-main white-bg" onclick="leaveGroup()"><span class="button-text" style="color: <%= group.color %>">Leave Group</span></button>
+                            <button class="button-main white-bg" data-open="<%= group.open %>" onclick="leaveGroup(this)"><span class="button-text" style="color: <%= group.color %>">Leave Group</span></button>
                             <% if(membership.elevated) { %>
                                 <button class="button-main white-bg" onclick="window.location = '/group/<%= group.gid %>/edit'"><span class="button-text" style="color: <%= group.color %>">Edit Group</span></button>
                             <% } %>
                         <% } else { %>
-                            <button class="button-main white-bg" onclick="joinGroup()"><span class="button-text" style="color: <%= group.color %>" <%= group.open ? "" : "disabled" %>>Join Group</span></button>
+                            <button class="button-main white-bg" onclick="joinGroup()" <%= group.open ? "" : "disabled" %>><span class="button-text" style="color: <%= group.color %>">Join Group</span></button>
                         <% } %> 
 
                     <% } else { %>
                         <span class="small"><i>Sign In to Join</i></span>
                     <% } %>
                 </div>
+            </div>
+            <div class="flex apart">
+                <div class="flex center start">
+                    <% if(user) { %>
+                        <% let membership = users.find(u => u.uid == user.uid) %>
+                        <% if(membership) { %>
+                            <div class="group-note flex center info-bg">
+                                <span class="small">You are a <%= membership.elevated ? "Manager" : "Member" %>!</span>
+                            </div>
+                        <% } %>
+
+                    <% } %>
+                </div>
+                
             </div>
             <div class="splitpage spacing">
                 <div class="content-left">
@@ -57,7 +76,11 @@
                     
                     <div>
                         <span class="large spacing">Splits</span>
-                        
+                        <div class="spacing-top">
+                            <% splits.forEach(split => { %>
+                                <%- include('./partials/config/split_item_view.ejs', {split: split}) %>
+                            <% }) %>
+                        </div>
                     </div>
                     
                     

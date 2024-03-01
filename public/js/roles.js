@@ -21,6 +21,7 @@ function createRole(){
     if(name == ""){
         document.getElementById("role-create-name").classList.add("input-error");
         button.removeAttribute("disabled");
+        showGeneralError("Role name is required!", "add");
         return;
     }
 

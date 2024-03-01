@@ -113,12 +113,19 @@ function log_out_click(){
 
 
 
-function showGeneralError(message){
+function showGeneralError(message, icon){
     let errorPopup = document.getElementById("error-popup");
     let errorPopupMessage = document.getElementById("error-popup-message");
+    let errorPopupIcon = document.getElementById("error-popup-icon");
+
+    if(!icon){
+        icon = "error";
+    }
+    
     if(message == null){
         errorPopup.classList.add("error-popup-hidden");
     }else{
+        errorPopupIcon.innerHTML = icon;
         errorPopupMessage.innerHTML = message;
         errorPopup.classList.remove("error-popup-hidden");
     }

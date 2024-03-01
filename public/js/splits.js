@@ -131,6 +131,14 @@ function deleteSplit(element){
     
 }
 
+
+
+function editSplitCheckbox(element){
+    element.value = element.checked ? true : false;
+    editSplit(element);
+}
+
+
 function setConfig_defaultSplit(element){
     let sid = element.value;
 

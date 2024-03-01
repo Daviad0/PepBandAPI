@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit Group</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/split.css" />
+    <link rel="stylesheet" href="/css/split_edit.css" />
+  </head>
+  <body>
+
+    
+
+    <%- include('./partials/header.ejs'); %>
+
+
+    <% let membership = undefined %>
+    <% if(user) { %>
+        <% membership = users.find(u => u.uid == user.uid) %>
+    <% } %>
+    
+    <script>
+        let sid = "<%= split.sid %>";
+    </script>
+
+    <script src="/js/split_edit.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="flex apart wrap split" style="background: <%= split.color %>;background: <%= split.gradientBackground %> " id="split-color">
+                <div class="flex center">
+                    <div class="icon-view spacing-right">
+                        <div class="flex center">
+                            <span class="xlarge material-symbols-rounded" <%= split.icon.startsWith("IMAGE:") ? 'hidden' : '' %> id="split-icon"><%= split.icon %></span>
+                            <img src="<%= split.icon %>" class="icon-image <%= split.icon.startsWith("IMAGE:") ? '' : 'no-display' %>" id="split-image" />
+                            <div class="split-detail-item">
+                                <div class="flex apart">
+                                    <span class="tiny split-detail-tag">Color</span>
+                                </div>
+                                <div class="flex apart">
+                                    <input name="color" type="color" class="input split-detail-value permission-input" onchange="colorChange(this)" value="<%= split.color %>"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex center buttons spacing-bottom">
+                            <button class="button-main white-bg" onclick="iconChoose()"><span class="button-text split-color" style="color: <%= split.color %>">Change Icon</span></button>
+                            <button class="button-main white-bg" onclick="imageChoose()"><span class="button-text split-color" style="color: <%= split.color %>">Change Image</span></button>
+                        </div>
+                        
+                    </div>
+                    <div class="spacing">
+                        <span class="small">SPLIT</span>
+                        <span class="xlarge"><%= split.name %></span>
+                    </div>
+                    
+                </div>
+                <div class="flex center">
+                    <span class="large material-symbols-rounded" id="split-open-icon"><%= split.open ? 'lock_open' : 'lock' %></span>
+                    <button class="button-main white-bg" data-open="<%= split.open %>" onclick="openChange(this)"><span class="button-text split-color" style="color: <%= split.color %>"><%= split.open ? 'Lock / Close Split' : 'Unlock / Open Split' %></span></button>
+                </div>
+            </div>
+            <div class="flex apart">
+                <div class="flex center start">
+                    <div class="split-note flex center gray-bg">
+                        <span class="small">You are editing this split!</span>
+                    </div>
+                    <div class="split-note flex center group" onclick="window.location = '/group/<%= split.gid %>'" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
+                        <span class="small">A Part of </span>
+                        <span class="small material-symbols-rounded"><%= group.icon %></span>
+                        <span class="small"><strong><%= group.name %></strong></span>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="splitpage spacing">
+                <div class="content-left">
+                    <div class="flex center">
+                        <span class="large spacing">Attending Future Events</span>
+                    </div>
+                    <div class="flex center wrap spacing-top">
+                        <% events.forEach(function(e){ %>
+                            <% let applicableEventType = eventTypes.find(et => et.etyid == e.etyid); %>
+                            <% if(applicableEventType == null) { %>
+                                <% applicableEventType = defaultEventType; %>
+                            <% } %>
+                            <% let attending = eventParticipation.find(ep => ep.eid == e.eid); %>
+                            <%- include('./partials/event/event_basic_split.ejs', {event: e, eventType: applicableEventType, attending: attending != undefined, edit:true}); %>
+                        <% }); %>
+                    </div>
+                </div>
+                <div class="content-right">
+                    
+                    <div>
+                        <span class="large spacing">Announcements</span>
+                       
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

@@ -53,7 +53,47 @@ If the screen is smaller than 600px, stack the links on top of each other, inste
     margin-right: 10px;
 }
 
+.group-note{
+    border-radius: 4px 4px 16px 16px;
+    padding: 10px;
+    margin: 5px 0px;
+    margin-right:5px;
+}
 
+.group-note span{
+    color: white;
+    margin: 0px 5px;
+}
+
+
+.split{
+    width: 100%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.split .name span{
+    color: white;
+    font-weight: 800;
+}
+
+.split .name .button-main{
+    width: 30px;
+    height: 30px;
+}
+
+.split .icon{
+    margin-right: 10px;
+}
+
+.split .name{
+    padding: 5px;
+    border-radius: 8px;
+}
 
 .event-image{
     margin-right:10px;
@@ -129,4 +169,34 @@ If the screen is smaller than 600px, stack the links on top of each other, inste
 
 .user-attending span{
     margin: 5px 0px;
+}
+
+.event{
+    width: 300px;
+    border-top: 8px solid #f1f1f1;
+}
+
+.event-image{
+    margin-right:10px;
+    width: 40px;
+}
+
+.event-content{
+    width: 100%;
+}
+
+.event-title{
+    margin:0;
+}
+
+.event-header{
+    margin-bottom: 5px;
+}
+
+.event-date{
+    margin-top:10px;
+}
+
+.icon-container{
+    margin-top:5px;
 }

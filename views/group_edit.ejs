@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit Group</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/group.css" />
+    <link rel="stylesheet" href="/css/group_edit.css" />
+  </head>
+  <body>
+
+    
+
+    <%- include('./partials/header.ejs'); %>
+
+
+    <% let membership = undefined %>
+    <% if(user) { %>
+        <% membership = users.find(u => u.uid == user.uid) %>
+    <% } %>
+    
+    <script>
+        let gid = "<%= group.gid %>";
+    </script>
+
+    <script src="/js/group_edit.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="flex apart wrap group" style="background: <%= group.color %>;background: <%= group.gradientBackground %> " id="group-color">
+                <div class="flex center">
+                    <div class="icon-view spacing-right">
+                        <div class="flex center">
+                            <span class="xlarge material-symbols-rounded" <%= group.icon.startsWith("IMAGE:") ? 'hidden' : '' %> id="group-icon"><%= group.icon %></span>
+                            <img src="<%= group.icon %>" class="icon-image <%= group.icon.startsWith("IMAGE:") ? '' : 'no-display' %>" id="group-image" />
+                            <div class="group-detail-item">
+                                <div class="flex apart">
+                                    <span class="tiny group-detail-tag">Color</span>
+                                </div>
+                                <div class="flex apart">
+                                    <input name="color" type="color" class="input group-detail-value permission-input" onchange="colorChange(this)" value="<%= group.color %>"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex center buttons spacing-bottom">
+                            <button class="button-main white-bg" onclick="iconChoose()"><span class="button-text group-color" style="color: <%= group.color %>">Change Icon</span></button>
+                            <button class="button-main white-bg" onclick="imageChoose()"><span class="button-text group-color" style="color: <%= group.color %>">Change Image</span></button>
+                        </div>
+                        
+                    </div>
+                    <div class="spacing">
+                        <span class="small">GROUP</span>
+                        <span class="xlarge"><%= group.name %></span>
+                    </div>
+                    
+                </div>
+                <div class="flex center">
+                    <span class="large material-symbols-rounded" id="group-open-icon"><%= group.open ? 'lock_open' : 'lock' %></span>
+                    <button class="button-main white-bg" data-open="<%= group.open %>" onclick="openChange(this)"><span class="button-text group-color" style="color: <%= group.color %>"><%= group.open ? 'Lock / Close Group' : 'Unlock / Open Group' %></span></button>
+                </div>
+            </div>
+            <div class="flex apart">
+                <div class="flex center start">
+                    <div class="group-note flex center gray-bg">
+                        <span class="small">You are editing this group!</span>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="splitpage spacing">
+                <div class="content-left">
+                    <div class="flex center">
+                        <span class="large spacing">Attending Future Events</span>
+                    </div>
+                    <div class="flex center wrap spacing-top">
+                        <% events.forEach(function(e){ %>
+                            <% let applicableEventType = eventTypes.find(et => et.etyid == e.etyid); %>
+                            <% if(applicableEventType == null) { %>
+                                <% applicableEventType = defaultEventType; %>
+                            <% } %>
+                            <%- include('./partials/event/event_basic.ejs', {event: e, eventType: applicableEventType}); %>
+                        <% }); %>
+                    </div>
+                </div>
+                <div class="content-right">
+                    
+                    <div>
+                        <span class="large spacing">Splits</span>
+                        <div class="spacing-top">
+                            <% splits.forEach(split => { %>
+                                <%- include('./partials/config/split_item_view.ejs', {split: split}) %>
+                            <% }) %>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>
