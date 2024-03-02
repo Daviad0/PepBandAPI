@@ -207,6 +207,32 @@ router.get("/event/:eid/edit", async (req, res) => {
     var event_types = (await db.getEventTypes()).data;
     var event_templates = (await db.getEventTemplates()).data;
 
+    var splits = (await db.getSplits()).data;
+
+    var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
+
+    if(gradientBackground.length > 0){
+        group.gradientBackground = gradientBackground[0].value;
+    }
+    
+
+    for(var i = 0; i < splits.length; i++){
+        let split = splits[i];
+        
+        // check if color is in hex format
+        if(split.color.match(/^#[0-9A-F]{6}$/i)){
+            // generate RGBA representation
+            var colorA = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",0.7)";
+            var colorB = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",1)";
+
+            split.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+        }else{
+            split.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+        }
+    }
+
+    var groups = (await db.getGroups()).data;
+    var splitAttending = (await db.getEventSplits_eid(req.params.eid)).data;
 
     // before we send back data, do a segment data check
 
@@ -225,7 +251,7 @@ router.get("/event/:eid/edit", async (req, res) => {
         event.data = "{}";
     }
 
-    res.render("event_edit", {user: req.session.user, role: req.session.role, event: event, eventTypes: event_types, eventTemplates: event_templates, images: images});
+    res.render("event_edit", {user: req.session.user, role: req.session.role, event: event, eventTypes: event_types, eventTemplates: event_templates, images: images, splits: splits, groups: groups, eventParticipation: splitAttending});
 
 });
 

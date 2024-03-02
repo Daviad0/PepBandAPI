@@ -58,6 +58,36 @@ function saveEventStructure(){
 
 }
 
+function updateSplitAttending(element){
+    let sid = element.dataset.sid;
+    let attending = element.checked;
+
+    if(attending){
+        let url = '/api/event/' + usingEid + '/split';
+        let data = {sid: sid};
+
+        apiPost(url, data, (result) => {
+            if(result.success){
+                console.log("Successfully joined event");
+            } else {
+                console.log(result);
+            }
+        });
+
+    }else{
+        let url = '/api/event/' + usingEid + '/split/delete';
+        let data = {sid: sid};
+
+        apiPost(url, data, (result) => {
+            if(result.success){
+                console.log("Successfully left event");
+            } else {
+                console.log(result);
+            }
+        });
+    }
+}
+
 function editEventTime(element){
     let property = element.getAttribute("name");
     let value = element.value;

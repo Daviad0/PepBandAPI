@@ -1,3 +1,39 @@
+.splitpage{
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+/*
+
+If the screen is smaller than 600px, stack the links on top of each other, instead of next to each other with width 100%
+
+*/
+
+.splitpage .content-left{
+    width: 30%;
+    margin:10px;
+}
+
+.splitpage .content-right{
+    width: 60%;
+    margin:10px;
+}
+
+@media screen and (max-width: 1000px) {
+    .splitpage {
+        flex-direction: column;
+    }
+    .splitpage .content-left{
+        width: 100%;
+        margin: 10px 0px;
+    }
+    .splitpage .content-right{
+        width: 100%;
+        margin: 10px 0px;
+    }
+}
+
 /* 
 Song slot should look like it's going into the page
 */
@@ -42,6 +78,20 @@ Song slot should look like it's going into the page
     border: 1px dashed rgba(0,0,0,0.5);
     padding:10px;
     border-radius: 8px;
+}
+
+.split-attend-item{
+    margin: 5px 0px;
+}
+
+.split-attend-item .tag-text{
+    border:none;
+    padding-left:0px;
+}
+
+.split-attend-item .material-symbols-rounded{
+    margin: 0px 5px;
+
 }
 
 .event-management-detail-item{
