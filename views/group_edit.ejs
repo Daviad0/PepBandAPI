@@ -48,8 +48,14 @@
                         
                     </div>
                     <div class="spacing">
-                        <span class="small">GROUP</span>
-                        <span class="xlarge"><%= group.name %></span>
+                        <div class="group-detail-item">
+                            <div class="flex apart">
+                                <span class="small group-detail-tag">GROUP</span>
+                            </div>
+                            <div class="flex apart">
+                                <input class="large input" onchange="changeName(this)" value="<%= group.name %>" placeholder="Group Name">
+                            </div>
+                        </div>
                     </div>
                     
                 </div>
@@ -66,7 +72,7 @@
                 </div>
                 
             </div>
-            <div class="splitpage spacing">
+            <div class="splitpage spacing wrap">
                 <div class="content-left">
                     <div class="flex center">
                         <span class="large spacing">Attending Future Events</span>
@@ -84,7 +90,11 @@
                 <div class="content-right">
                     
                     <div>
-                        <span class="large spacing">Splits</span>
+                        <div class="flex center spacing-bottom">
+                            <span class="large spacing">Splits</span>
+                            <span class="button large material-symbols-rounded" onclick="createSplit()">add</span>
+                        </div>
+                        
                         <div class="spacing-top">
                             <% splits.forEach(split => { %>
                                 <%- include('./partials/config/split_item_view.ejs', {split: split}) %>
@@ -92,6 +102,27 @@
                         </div>
                     </div>
                     
+                    
+                </div>
+                <div class="content-left">
+                    
+                    <div class="flex center">
+                        <span class="large spacing">Members</span>
+                        <span class="button large material-symbols-rounded" onclick="addUsers(this)">person_add</span>
+                       
+                    </div>
+                    <div class="flex center wrap" id="group-members">
+                        <% for(let i = 0; i < users.length; i++) { %>
+                            <% let u = users[i] %>
+                            <div class="user resolve-further flex center" onclick="manageUser(this)" data-uid="<%= u.uid %>" data-elevated="<%= u.elevated %>" data-username="<%= u.mtu_id %>">
+                                <span class="medium"><%= u.full_name %></span>
+                                <% if(u.elevated) { %>
+                                    <span class="spacing-left material-symbols-rounded">star</span>
+                                <% } %>
+                            </div>
+                            
+                        <% } %>
+                    </div>
                     
                 </div>
             </div>

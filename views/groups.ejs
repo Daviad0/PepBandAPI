@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>All Groups</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/groups.css" />
+  </head>
+  <body>
+
+    
+
+    <%- include('./partials/header.ejs'); %>
+
+    
+    <script src="/js/groups.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+
+            <% for(let i = 0; i < groups.length; i++) { %>
+                <% let group = groups[i] %>
+                <% let membership = group.membership %>
+                <% let elevated = membership != undefined && membership.elevated %>
+                <div class="flex apart group" style="background: <%= group.color %>;background: <%= group.gradientBackground %> ">
+                    <div class="flex center">
+                        <div>
+                            <span class="large material-symbols-rounded"><%= group.icon %></span>
+                        </div>
+                        <div class="spacing">
+                            <span class="large"><%= group.name %></span>
+                        </div>
+                        
+                    </div>
+                    <div class="flex center">
+                        <% if(user) { %>
+                            <% if(elevated) { %>
+                                <button class="button-main white-bg" onclick="window.location = '/group/<%= group.gid %>/edit'"><span class="button-text" style="color: <%= group.color %>">Edit Group</span></button>
+                            <% } %>
+                            <% if(membership) { %>
+                                <button class="button-main white-bg" data-open="<%= group.open %>" data-gid="<%= group.gid %>" onclick="leaveGroup(this)"><span class="button-text" style="color: <%= group.color %>">Leave Group</span></button>
+                                
+                            <% } else { %>
+                                <button class="button-main white-bg" onclick="joinGroup(this)" data-gid="<%= group.gid %>" <%= group.open ? "" : "disabled" %>><span class="button-text" style="color: <%= group.color %>">Join Group</span></button>
+                            <% } %> 
+                        <% } %>
+                        <button class="button-main white-bg" onclick="window.location = '/group/<%= group.gid %>'"><span class="button-text" style="color: <%= group.color %>">View Group</span></button>
+                    </div>
+                </div>
+            <% } %>
+
+            
+           
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

@@ -1,3 +1,16 @@
+let allUids = [];
+
+function initSplitEdit(){
+    document.querySelectorAll(".user").forEach((element) => {
+        allUids.push(element.dataset.uid);
+    });
+
+}
+
+setTimeout(() => {
+    initSplitEdit();
+}, 500);
+
 function iconChoose(){
     showDialog({
         title: "Choose Icon for This Split",
@@ -153,6 +166,94 @@ function attendingChange(element){
         });
     
     }
+}
+
+function changeName(element){
+    let name = element.value;
+    let nameChangeCallback = () => {
+        
+    }
+
+    changeProperty("name", name, nameChangeCallback);
+}
+
+function addUsers(){
+    showDialog({
+        title: "Add Users to Split",
+        description: "User",
+        type: "user",
+        icon: "person_add",
+        multiple: true,
+        exclude: allUids,
+        onchoose: () => {
+            let url = "/api/groups/split/membership";
+
+            current_dialog_data.selected.forEach((user) => {
+                let data = {sid: sid, uid: user.uid};
+
+                apiPost(url, data, (result) => {
+                    if(result.success){
+                        allUids.push(user.uid);
+                        let addHTML = `<span class="medium user resolve-further" data-uid="${user.uid}" data-username="${user.full_name}">${user.full_name}</span>`
+                        document.getElementById("split-members").innerHTML += addHTML;
+                    }else{
+                        console.log(result);
+                    }
+                    
+                });
+            });
+
+            hideDialog();
+        },
+    })
+}
+
+function manageUser(element){
+    let uid = element.dataset.uid;
+    let username = element.dataset.username;
+    let elevated = element.dataset.elevated == "true";
+
+    // TODO: check for permissions on removing elevated permissions
+    if(elevated) return;
+
+    showDialog({
+        title: "Remove " + username + " from Split?",
+        description: "Would you like to remove this user from the split? Unless this split is locked, the user will be able to rejoin the split at any time.",
+        type: "buttons",
+        icon: "person_remove",
+        buttons: [
+            {
+                text: "Remove User",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+
+                    let url = '/api/groups/split/membership/delete';
+                    let data = {sid: sid, uid: uid};
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            allUids = allUids.filter((value) => {
+                                return value != uid;
+                            });
+                            element.remove();
+                        } else {
+                            console.log(result);
+                        }
+                    });
+                    hideDialog();
+                }
+            },
+            {
+                text: "Keep User in Split",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    });
+    
 }
 
 function changeProperty(name, value, callback){

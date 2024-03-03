@@ -37,11 +37,12 @@
                 </div>
                 <div class="flex center">
                     <% if(user) { %>
+                        <% if(elevated) { %>
+                            <button class="button-main white-bg" onclick="window.location = '/group/<%= group.gid %>/edit'"><span class="button-text" style="color: <%= group.color %>">Edit Group</span></button>
+                        <% } %>
                         <% if(membership) { %>
                             <button class="button-main white-bg" data-open="<%= group.open %>" onclick="leaveGroup(this)"><span class="button-text" style="color: <%= group.color %>">Leave Group</span></button>
-                            <% if(membership.elevated) { %>
-                                <button class="button-main white-bg" onclick="window.location = '/group/<%= group.gid %>/edit'"><span class="button-text" style="color: <%= group.color %>">Edit Group</span></button>
-                            <% } %>
+                            
                         <% } else { %>
                             <button class="button-main white-bg" onclick="joinGroup()" <%= group.open ? "" : "disabled" %>><span class="button-text" style="color: <%= group.color %>">Join Group</span></button>
                         <% } %> 

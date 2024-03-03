@@ -1,80 +1,203 @@
-.managers{
-    border: 2px solid rgba(0,0,0,0.5);
-    padding:10px;
+.splitpage{
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+/*
+
+If the screen is smaller than 600px, stack the links on top of each other, instead of next to each other with width 100%
+
+*/
+
+.splitpage .content-left{
+    width: 60%;
+    margin:10px;
+}
+
+.splitpage .content-right{
+    width: 30%;
+    margin:10px;
+}
+
+@media screen and (max-width: 1000px) {
+    .splitpage {
+        flex-direction: column;
+    }
+    .splitpage .content-left{
+        width: 100%;
+        margin: 10px 0px;
+    }
+    .splitpage .content-right{
+        width: 100%;
+        margin: 10px 0px;
+    }
+}
+
+.group{
+    width: 100%;
+    padding: 20px;
+    border-radius: 16px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    margin: 10px 0px;
+}
+
+.group span{
+    color: white;
+    font-weight: 800;
+    text-align: left;
+}
+
+.group .material-symbols-rounded{
+    margin-right: 10px;
+}
+
+.group-note{
+    border-radius: 4px 4px 16px 16px;
+    padding: 10px;
+    margin: 5px 0px;
+    margin-right:5px;
+}
+
+.group-note span{
+    color: white;
+    margin: 0px 5px;
+}
+
+
+.split{
+    width: 100%;
+    padding: 10px;
+    margin: 10px;
     border-radius: 8px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 
-.manager{
-    margin: 3px;
+.split .name span{
+    color: white;
+    font-weight: 800;
 }
 
-.manager-add{
-    margin: 3px;
+.split .name .button-main{
+    width: 30px;
+    height: 30px;
+}
+
+.split .icon{
+    margin-right: 10px;
+}
+
+.split .name{
     padding: 5px;
     border-radius: 8px;
 }
 
-.group-detail-item{
-    margin: 10px;
+.event-image{
+    margin-right:10px;
+    width: 40px;
 }
 
-.group-details{
-    flex-wrap: wrap;
+.event-passed{
+    text-decoration: line-through;
 }
 
-.group-detail-value{
-    font-weight: bold;
-    resize: none;
+.event-content{
+    width: 100%;
 }
 
-.group-item{
-    padding: 15px 0px;
-    border-bottom: 1px dashed #ccc;
-
+.event-title{
+    margin:0;
 }
 
-.group-main-info{
-    margin: 5px;
+.event-header{
+    width: 100%;
 }
 
-.group-detail-tag{
-    margin-left:5px;
-    margin-bottom: 2px;
+.event-date{
+    margin-top:10px;
 }
 
-.group-list{
-    height: 100%;
-    overflow-y: auto;
-    flex-wrap: wrap;
-}
-.group-header{
-    margin-bottom: 20px;
-
-}
-.group-footer{
-    margin-top: 20px;
-}
-
-.group-vertical-flex{
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    height: calc(100vh - 100px);
-}
-
-.no-display{
-    display: none;
-}
-
-.error-message{
+.icon-container{
     margin-top:5px;
 }
 
-.permission-input{
-    width: 50px;
+.song-slot{
+    border-radius: 8px;
+    padding: 5px;
+    margin: 5px;
+    transition: 0.5s ease all;
+    width: 200px;
+    height: 100px;
 }
 
-.message-in-box{
-    margin: 5px 10px;
+.song-slot-name{
+    margin-bottom: 20px;
+}
+
+.song-slot-details{
+    position:relative;
+}
+
+.song-slot-options{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+.song-slot-icon{
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+
+.slot-list{
+    margin:10px;
+    border: 1px dashed rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
+
+.segment-list{
+    margin-top:20px;
+}
+
+.user-attending{
+    margin-bottom: 20px;
+}
+
+.user-attending span{
+    margin: 5px 0px;
+}
+
+.event{
+    width: 300px;
+    border-top: 8px solid #f1f1f1;
+}
+
+.event-image{
+    margin-right:10px;
+    width: 40px;
+}
+
+.event-content{
+    width: 100%;
+}
+
+.event-title{
+    margin:0;
+}
+
+.event-header{
+    margin-bottom: 5px;
+}
+
+.event-date{
     margin-top:10px;
+}
+
+.icon-container{
+    margin-top:5px;
 }

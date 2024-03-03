@@ -332,6 +332,46 @@ router.get("/event/template/:etid", async (req, res) => {
     res.render("event_template_edit", {user: req.session.user, role: req.session.role, eventTemplate: event_template, eventTypes: event_types, images: images});
 });
 
+router.get("/groups", async (req, res) => {
+    var images = await generateImagesList("corner_images");
+
+    let groups = (await db.getGroups()).data;
+
+    var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
+
+    for(var i = 0; i < groups.length; i++){
+        let group = groups[i];
+        let splits = (await db.getSplits(group.gid)).data;
+        let groupMembership = (await db.getGroupMembers(group.gid)).data;
+
+        group.splits = splits;
+        group.user_count = groupMembership.length;
+        if(req.session.user){
+            group.membership = groupMembership.find(m => m.uid == req.session.user.uid);
+        }
+
+        if(gradientBackground.length > 0){
+            group.gradientBackground = gradientBackground[0].value;
+        }
+        // check if color is in hex format
+        if(group.color.match(/^#[0-9A-F]{6}$/i)){
+            // generate RGBA representation
+            var colorA = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",0.7)";
+            var colorB = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",1)";
+    
+            group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+        }else{
+            group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+        }
+
+
+    }
+
+
+    res.render("groups", {user: req.session.user, role: req.session.role, groups: groups, images: images});
+
+});
+
 router.get("/split/:sid", async (req, res) => {
     var images = await generateImagesList("corner_images");
 
@@ -396,9 +436,32 @@ router.get("/split/:sid", async (req, res) => {
         split.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
     }
 
+    let eventParticipation = (await db.getEventSplits_sid(sid)).data;
+    let events = (await db.getEvents()).data;
+    // only send back the events that are in the future (by end date)
+
+    let now = new Date();
+    events = events.filter(e => new Date(e.ending) > now);
+    events = events.filter(e => eventParticipation.find(ep => ep.eid == e.eid) != undefined);
+
+    let eventTypes = (await db.getEventTypes()).data;
+
+    let elevated = false;
+    if(req.session.user){
+        elevated = (await db.checkAccess(req.session.role, "other_splits"));
+
+        if((await db.checkAccess(req.session.role, "other_groups"))){
+            elevated = true;
+        }
+
+        let membership = allMembership.find(m => m.uid == req.session.user.uid)
+        if(membership != undefined && membership.elevated){
+            elevated = true;
+        }
+    }
     
 
-    res.render("split", {user: req.session.user, role: req.session.role, group: group, users: allMembership, split: split, images: images});
+    res.render("split", {user: req.session.user, role: req.session.role, group: group, users: allMembership, split: split, images: images, events: events, eventTypes: eventTypes, elevated: elevated});
 
 });
 
@@ -478,9 +541,21 @@ router.get("/group/:gid", async (req, res) => {
     }
 
 
+    let elevated = false;
+    if(req.session.user){
+        elevated = (await db.checkAccess(req.session.role, "other_groups"));
+
+        let membership = allMembership.find(m => m.uid == req.session.user.uid)
+        if(membership != undefined && membership.elevated){
+            elevated = true;
+        }
+    }
+
+
+
     
 
-    res.render("group", {user: req.session.user, role: req.session.role, group: group, users: allMembership, splits: splits, images: images});
+    res.render("group", {user: req.session.user, role: req.session.role, group: group, users: allMembership, splits: splits, images: images, elevated: elevated});
 
 });
 

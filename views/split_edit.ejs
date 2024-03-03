@@ -48,8 +48,16 @@
                         
                     </div>
                     <div class="spacing">
-                        <span class="small">SPLIT</span>
-                        <span class="xlarge"><%= split.name %></span>
+                        <div class="split-detail-item">
+                            <div class="flex apart">
+                                <span class="small split-detail-tag">SPLIT</span>
+                            </div>
+                            <div class="flex apart">
+                                <input class="large input" onchange="changeName(this)" value="<%= split.name %>" placeholder="Split Name">
+                            </div>
+                        </div>
+                        
+                        
                     </div>
                     
                 </div>
@@ -71,7 +79,7 @@
                 </div>
                 
             </div>
-            <div class="splitpage spacing">
+            <div class="splitpage spacing wrap">
                 <div class="content-left">
                     <div class="flex center">
                         <span class="large spacing">Attending Future Events</span>
@@ -94,6 +102,27 @@
                        
                     </div>
                     
+                    
+                </div>
+                <div class="content-left">
+                    
+                    <div class="flex center">
+                        <span class="large spacing">Members</span>
+                        <span class="button large material-symbols-rounded" onclick="addUsers(this)">person_add</span>
+                       
+                    </div>
+                    <div class="flex center wrap" id="split-members">
+                        <% for(let i = 0; i < users.length; i++) { %>
+                            <% let u = users[i] %>
+                            <div class="user resolve-further flex center" onclick="manageUser(this)" data-uid="<%= u.uid %>" data-elevated="<%= u.elevated %>" data-username="<%= u.mtu_id %>">
+                                <span class="medium"><%= u.full_name %></span>
+                                <% if(u.elevated) { %>
+                                    <span class="spacing-left material-symbols-rounded">star</span>
+                                <% } %>
+                            </div>
+                            
+                        <% } %>
+                    </div>
                     
                 </div>
             </div>

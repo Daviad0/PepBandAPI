@@ -31,12 +31,13 @@
                 </div>
                 <div class="flex center">
                     <% if(user) { %>
+                        <% if(elevated) { %>
+                            <button class="button-main white-bg" onclick="window.location = '/split/<%= split.sid %>/edit'"><span class="button-text" style="color: <%= split.color %>">Edit Split</span></button>
+                        <% } %>
                         <% let membership = users.find(u => u.uid == user.uid) %>
                         <% if(membership) { %>
                             <button class="button-main white-bg" onclick="leaveSplit()"><span class="button-text" style="color: <%= split.color %>">Leave Split</span></button>
-                            <% if(membership.elevated) { %>
-                                <button class="button-main white-bg" onclick="window.location = '/split/<%= split.sid %>/edit'"><span class="button-text" style="color: <%= split.color %>">Edit Split</span></button>
-                            <% } %>
+                            
                         <% } else { %>
                             <button class="button-main white-bg" onclick="joinSplit()"><span class="button-text" style="color: <%= split.color %>" <%= split.open ? "" : "disabled" %>>Join Split</span></button>
                         <% } %> 
@@ -70,7 +71,16 @@
                     <div class="flex center">
                         <span class="large spacing">Upcoming Events</span>
                     </div>
-                    
+                    <div class="flex center wrap">
+                        <% for(var i = 0; i < events.length; i++) { %>
+                            <% let e = events[i]; %>
+                            <% let applicableEventType = eventTypes.find(et => et.etyid == e.etyid); %>
+                            <% if(applicableEventType == null) { %>
+                                <% applicableEventType = defaultEventType; %>
+                            <% } %>
+                            <%- include('./partials/event/event_basic.ejs', {event: e, eventType: applicableEventType}); %>
+                        <% } %> 
+                    </div>
                 </div>
                 <div class="content-right">
                     

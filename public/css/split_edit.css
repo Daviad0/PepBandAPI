@@ -52,4 +52,10 @@
 
 .split .input{
     border: white 2px solid;
+    background-color: transparent;
+    color:white;
+}
+
+.user{
+    margin: 5px;
 }

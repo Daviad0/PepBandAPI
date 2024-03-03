@@ -1,0 +1,80 @@
+.managers{
+    border: 2px solid rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
+
+.manager{
+    margin: 3px;
+}
+
+.manager-add{
+    margin: 3px;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.group-detail-item{
+    margin: 10px;
+}
+
+.group-details{
+    flex-wrap: wrap;
+}
+
+.group-detail-value{
+    font-weight: bold;
+    resize: none;
+}
+
+.group-item{
+    padding: 15px 0px;
+    border-bottom: 1px dashed #ccc;
+
+}
+
+.group-main-info{
+    margin: 5px;
+}
+
+.group-detail-tag{
+    margin-left:5px;
+    margin-bottom: 2px;
+}
+
+.group-list{
+    height: 100%;
+    overflow-y: auto;
+    flex-wrap: wrap;
+}
+.group-header{
+    margin-bottom: 20px;
+
+}
+.group-footer{
+    margin-top: 20px;
+}
+
+.group-vertical-flex{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    height: calc(100vh - 100px);
+}
+
+.no-display{
+    display: none;
+}
+
+.error-message{
+    margin-top:5px;
+}
+
+.permission-input{
+    width: 50px;
+}
+
+.message-in-box{
+    margin: 5px 10px;
+    margin-top:10px;
+}

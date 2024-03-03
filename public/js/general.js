@@ -221,6 +221,8 @@ function showDialog(properties){
             });
             break;
         case "inputs":
+            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons-inputs");
+            dialog_buttons_static.innerHTML = "";
             let dialog_inputs = selectedOptionDiv.querySelector("#dialog-inputs");
 
             title = properties.title;
@@ -239,14 +241,47 @@ function showDialog(properties){
                 let input_element = `
                 <div class="dialog-detail-item">
                     <div class="flex apart">
-                        <span class="tiny dialog-detail-tag">Input Name</span>
+                        <span class="tiny dialog-detail-tag">${input.name}</span>
                     </div>
                     <div class="flex apart">
-                        <input type="text" class="input dialog-detail-value" placeholder="Act 1"/>
+                        <input type="${input.type}" onchange="dialog_input_changeValue(this)" name="${input.property}" class="input dialog-detail-value" placeholder="${input.placeholder}"/>
                     </div>
                 </div>
                 `;
-                dialog_inputs.appendChild(input_element);
+                dialog_inputs.innerHTML += input_element;
+            });
+
+            current_dialog_data["inputs"] = {};
+            current_dialog_data["done"] = properties.done || (() => {});
+            preselectedButtons = [
+                {
+                    text: "Cancel",
+                    class: "button-alternate",
+                    onclick: () => {
+                        hideDialog();
+                    }
+                },
+                {
+                    text: "Select",
+                    class: "button-main",
+                    onclick: () => {
+                        current_dialog_data["done"](current_dialog_data["inputs"]);
+                    }
+                }
+            ]
+
+            preselectedButtons.forEach((button) => {
+                // expecting text, class, and onclick
+                // background may be defined 
+                let button_element = document.createElement("button");
+                button_element.innerHTML = button.text;
+                button_element.classList.add(button.class);
+                button_element.classList.add("dialog-button");
+                if(button.background){
+                    button_element.classList.add(button.background);
+                }
+                button_element.onclick = button.onclick;
+                dialog_buttons_static.appendChild(button_element);
             });
             break;
         case "song":
@@ -302,7 +337,7 @@ function showDialog(properties){
             break;
         case "user":
 
-            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
+            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons-inputs");
             dialog_buttons_static.innerHTML = "";
             title = properties.title;
             icon = properties.icon;
@@ -314,6 +349,7 @@ function showDialog(properties){
             current_dialog_data["selected"] = [];
             current_dialog_data["onchoose"] = properties.onchoose || (() => {});
             current_dialog_data["extra"] = properties.extra || {};
+            current_dialog_data["exclude"] = properties.exclude || [];
             preselectedButtons = [
                 {
                     text: "Cancel",
@@ -358,6 +394,7 @@ function showDialog(properties){
             title = properties.title;
             icon = properties.icon;
 
+
             dialog_title.innerHTML = title;
             dialog_icon.innerHTML = icon;
 
@@ -366,7 +403,7 @@ function showDialog(properties){
             current_dialog_data["onchoose"] = properties.onchoose || (() => {});
             current_dialog_data["selected"] = null;
             current_dialog_data["extra"] = properties.extra || {};
-            let preselectedButtonsIcons = [
+            preselectedButtons = [
                 {
                     text: "Cancel",
                     class: "button-alternate",
@@ -383,7 +420,7 @@ function showDialog(properties){
                 }
             ]
 
-            preselectedButtonsIcons.forEach((button) => {
+            preselectedButtons.forEach((button) => {
                 // expecting text, class, and onclick
                 // background may be defined 
                 let button_element = document.createElement("button");
@@ -435,6 +472,12 @@ function showSmallMenu(){
     showDialog({
         type: "menu"
     });
+}
+
+function dialog_input_changeValue(element){
+    let property = element.getAttribute("name");
+    let value = element.value;
+    current_dialog_data["inputs"][property] = value;
 }
 
 function dialog_icon_changeIcon(element){
@@ -579,6 +622,13 @@ function dialog_getUsers(){
     apiGet(url, (result) => {
         if(result.success){
             let users = result.data;
+
+            if(current_dialog_data["exclude"]){
+                users = users.filter((user) => {
+                    return !current_dialog_data["exclude"].includes(user.uid.toString());
+                });
+            }
+
             current_dialog_data["users"] = users;
             dialog_users.innerHTML = "";
             users.forEach((user) => {

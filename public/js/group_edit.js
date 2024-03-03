@@ -1,3 +1,12 @@
+let allUids = [];
+
+function initSplitEdit(){
+    document.querySelectorAll(".user").forEach((element) => {
+        allUids.push(element.dataset.uid);
+    });
+
+}
+
 function iconChoose(){
     showDialog({
         title: "Choose Icon for This Group",
@@ -111,6 +120,126 @@ function openChange(element){
     }
 
     changeProperty("open", !open, openChangeCallback);
+}
+
+function changeName(element){
+    let name = element.value;
+    let nameChangeCallback = () => {
+        
+    }
+
+    changeProperty("name", name, nameChangeCallback);
+}
+
+function createSplit(){
+    showDialog({
+        title: "Create New Split",
+        description: "Create a new split for members to join",
+        type: "inputs",
+        icon: "add",
+        inputs: [
+            {
+            	type: "text",
+                name: "Split Name",
+                placeholder: "Name",
+                property: "name",
+                class: "button-main",
+            }
+        ],
+        done: (dialog_data) => {
+            let splitName = dialog_data.name;
+
+            let url = "/api/groups/split/create";
+            let data = {name: splitName, gid: gid};
+
+            apiPost(url, data, (result) => {
+                if(result.success){
+                    location.reload();
+                } else {
+                    console.log(result);
+                }
+            });
+        }
+    });
+}
+
+function addUsers(){
+    showDialog({
+        title: "Add Users to Group",
+        description: "User",
+        type: "user",
+        icon: "person_add",
+        multiple: true,
+        exclude: allUids,
+        onchoose: () => {
+            let url = "/api/groups/group/membership";
+
+            current_dialog_data.selected.forEach((user) => {
+                let data = {sid: sid, uid: user.uid};
+
+                apiPost(url, data, (result) => {
+                    if(result.success){
+                        allUids.push(user.uid);
+                        let addHTML = `<span class="medium user resolve-further" data-uid="${user.uid}" data-username="${user.full_name}">${user.full_name}</span>`
+                        document.getElementById("group-members").innerHTML += addHTML;
+                    }else{
+                        console.log(result);
+                    }
+                    
+                });
+            });
+
+            hideDialog();
+        },
+    })
+}
+
+function manageUser(element){
+    let uid = element.dataset.uid;
+    let username = element.dataset.username;
+    let elevated = element.dataset.elevated == "true";
+
+    // TODO: check for permissions on removing elevated permissions
+    if(elevated) return;
+
+    showDialog({
+        title: "Remove " + username + " from Group?",
+        description: "Would you like to remove this user from the group? Unless this group is locked, the user will be able to rejoin the group at any time.",
+        type: "buttons",
+        icon: "person_remove",
+        buttons: [
+            {
+                text: "Remove User",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+
+                    let url = '/api/groups/group/membership/delete';
+                    let data = {sid: sid, uid: uid};
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            allUids = allUids.filter((value) => {
+                                return value != uid;
+                            });
+                            element.remove();
+                        } else {
+                            console.log(result);
+                        }
+                    });
+                    hideDialog();
+                }
+            },
+            {
+                text: "Keep User in Group",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    });
+    
 }
 
 function changeProperty(name, value, callback){
