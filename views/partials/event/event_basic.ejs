@@ -14,6 +14,10 @@
 
 -->
 
+<% let startDateString = event.start.getFullYear() + "-" + (event.start.getMonth() + 1).toString().padStart(2, '0') + "-" + event.start.getDate().toString().padStart(2, '0') %>
+<% let startTimeString = event.start.getHours().toString().padStart(2, '0') + ":" + event.start.getMinutes().toString().padStart(2, '0') %>
+<% let endDateString = event.ending.getFullYear() + "-" + (event.ending.getMonth() + 1).toString().padStart(2, '0') + "-" + event.ending.getDate().toString().padStart(2, '0') %>
+<% let endTimeString = event.ending.getHours().toString().padStart(2, '0') + ":" + event.ending.getMinutes().toString().padStart(2, '0') %>
 
 <div class="floating-box event" style="border-top-color: <%= eventType.color %>">
     <div class="flex apart event-header">
@@ -31,7 +35,11 @@
         </div>
     </div>
     
-    <div></div>
+    <div class="flex center spacing-bottom">
+        <span class="small material-symbols-rounded spacing-right">schedule</span>
+        <span class="small"><%= startDateString %> <%= startTimeString %></span>
+
+    </div>
     <div class="flex center">
         <span class="tiny event-description"><%= event.description %></span>
     </div>

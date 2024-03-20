@@ -202,9 +202,90 @@ router.get("/:eid", (req, res) => {
 router.get("/:eid/overrides", (req, res) => {
 
     // returns user objects based on an inner join
-    db.getOverrides_eid(req.params.eid).then((result) => {
+    db.getParticipationOverrides_eid(req.params.eid).then((result) => {
         res.send(result.data);
     });
+});
+
+router.get("/:uid/overrides", (req, res) => {
+    db.getParticipationOverrides_uid(req.params.uid).then((result) => {
+        res.send(result.data);
+    });
+
+});
+
+router.post("/:eid/override", async (req, res) => {
+    var eid = req.params.eid;
+    var uid = req.body.uid;
+    var override = req.body.override;
+
+    if(uid == undefined){
+        uid = req.session.user ? req.session.user.uid : null;
+    }
+
+    if(!uid){
+        res.status(400).send({message: "uid property required to override event"});
+        return;
+    }
+    if(override == null || ![0,1,2, "0", "1", "2"].includes(override)){
+        res.status(400).send({message: "override property required to override event"});
+        return;
+    }
+
+    let accessToOverride = false;
+    if(req.session.user){
+        if(req.session.user.uid == uid){
+            accessToOverride = true;
+        }
+    }
+    if((await db.checkAccess(req.session.role, "events_attendance"))){
+        accessToOverride = true;
+    }
+
+    if(!accessToOverride){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    db.setParticipationOverride(eid, uid, override).then((result) => {
+        res.send(result);
+    });
+
+});
+
+router.post("/:eid/override/delete", async (req, res) => {
+    var eid = req.params.eid;
+    var uid = req.body.uid;
+
+    if(uid == undefined){
+        uid = req.session.user ? req.session.user.uid : null;
+    }
+
+    if(!uid){
+        res.status(400).send({message: "uid property required to delete override"});
+        return;
+    }
+
+    let accessToOverride = false;
+    if(req.session.user){
+        if(req.session.user.uid == uid){
+            accessToOverride = true;
+        }
+    }
+    if((await db.checkAccess(req.session.role, "events_attendance"))){
+        accessToOverride = true;
+    }
+
+    if(!accessToOverride){
+        res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    db.deleteParticipationOverride(eid, uid).then((result) => {
+        res.send(result);
+    });
+
+
 });
 
 router.post("/:eid/split", async (req, res) => {

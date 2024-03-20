@@ -69,4 +69,30 @@ function handleLinkBacks(linkBack, song){
     });
 }
 
+let backgroundOverrideButtons = {
+    0: "error-bg",
+    1: "success-bg",
+    2: "warning-bg"
+}
+
+function changeParticipationOverride(element){
+    let override = element.getAttribute("data-override");
+    let url = "/api/event/" + eid + "/override/";
+    let data = {override: override};
+
+    apiPost(url, data, (result) => {
+        if(result.success){
+            document.querySelectorAll(`.override[data-override]`).forEach(overrideElement => {
+                overrideElement.classList.remove(backgroundOverrideButtons[0]);
+                overrideElement.classList.remove(backgroundOverrideButtons[1]);
+                overrideElement.classList.remove(backgroundOverrideButtons[2]);
+            
+            });
+            document.querySelector(`.override[data-override="${override}"]`).classList.add(backgroundOverrideButtons[override]);
+        } else {
+            console.log(result);
+        }
+    });
+}
+
 setTimeout(resolveSlots, 1000);

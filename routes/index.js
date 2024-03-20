@@ -786,6 +786,15 @@ router.get("/event/:eid", async (req, res) => {
     }
 
     
+    var participationOverride = undefined;
+    if(req.session.user){
+        participationOverride = (await db.getParticipationOverride(event.eid, req.session.user.uid)).data;
+        if(participationOverride.length > 0){
+            participationOverride = participationOverride[0].override;
+        }else{
+            participationOverride = undefined;
+        }
+    }
 
     // before we send back data, do a segment data check
 
@@ -805,7 +814,7 @@ router.get("/event/:eid", async (req, res) => {
     }
 
 
-    res.render("event", {user: req.session.user, role: req.session.role, event: event, images: images});
+    res.render("event", {user: req.session.user, role: req.session.role, event: event, images: images, override: participationOverride});
 });
 
 router.get("/report/songs", async (req, res) => {

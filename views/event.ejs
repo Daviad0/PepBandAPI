@@ -112,9 +112,9 @@
                                 </div>
                                 
                                 <div class="spacing flex center">
-                                    <button class="button-alternate success-bg"><span class="button-text">Yes</span></button>
-                                    <button class="button-alternate"><span class="button-text">Maybe</span></button>
-                                    <button class="button-alternate"><span class="button-text">No</span></button>
+                                    <button onclick="changeParticipationOverride(this)" data-override="1" class="override button-alternate <%= override == 1 ? 'success-bg' : '' %>"><span class="button-text">Yes</span></button>
+                                    <button onclick="changeParticipationOverride(this)" data-override="2" class="override button-alternate <%= override == 2 ? 'warning-bg' : '' %>"><span class="button-text">Maybe</span></button>
+                                    <button onclick="changeParticipationOverride(this)" data-override="0" class="override button-alternate <%= override == 0 ? 'error-bg' : '' %>"><span class="button-text">No</span></button>
                                 </div>
                                 
                             </div>

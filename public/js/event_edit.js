@@ -104,11 +104,9 @@ function editEventTime(element){
             date = document.querySelector(`input[name="start_date"]`).value;
         }
 
-        let start = new Date(Date.parse(date));
-        start.setHours(time.split(":")[0]);
-        start.setMinutes(time.split(":")[1]);
-        start.setSeconds(0);
-        
+        let start = new Date(Date.parse(date + "T" + time + ":00+00:00"));
+        // set normalize timezone from current to UTC
+
         document.querySelector(`input[name="start"]`).value = start.toISOString();
         editEvent(document.querySelector(`input[name="start"]`));
 

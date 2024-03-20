@@ -345,9 +345,6 @@ class Database {
                 let result = await this.sql.query(query)
 
                 let data = result.rows
-                let dataObj = {
-                    recordset: data
-                }
                 resolve(new DBQuery(data, true))
             }catch(e){
                 resolve(new DBQuery(null, false))
@@ -654,11 +651,20 @@ class Database {
 
         let existing_event = (await this.getEvent(eid)).data[0]
 
+        let reuseStart = false;
+        let reuseEnding = false;
+
         if(etyid == null) etyid = existing_event.etyid
         if(etid_used == null) etid_used = existing_event.etid_used
         if(name == null) name = existing_event.name
-        if(start == null) start = existing_event.start
-        if(ending == null) ending = existing_event.ending
+        if(start == null){
+            start = existing_event.start
+            reuseStart = true;
+        }
+        if(ending == null){
+            ending = existing_event.ending
+            reuseEnding = true;
+        }
         if(show == null) show = existing_event.show
         if(open == null) open = existing_event.open
         if(data == null) data = existing_event.data
@@ -678,10 +684,10 @@ class Database {
         var tzoffset = (new Date()).getTimezoneOffset() * 60000;
 
         // if start is a date object, convert it to a string
-        if(start instanceof Date){
+        if(start instanceof Date && reuseStart){
             start = (new Date(start - tzoffset)).toISOString().slice(0, -1);
         }
-        if(ending instanceof Date){
+        if(ending instanceof Date && reuseEnding){
             ending = (new Date(ending - tzoffset)).toISOString().slice(0, -1);
         }
 
@@ -763,24 +769,6 @@ class Database {
     }
     deleteEventSplit(eid, sid){
         return this.edit("DELETE FROM event_splits WHERE eid = " + eid + " AND sid = " + sid)
-    }
-
-
-    setOverride(eid, uid, override){
-        return this.edit("UPDATE events SET event_participation_overrides = " + override + " WHERE eid = " + eid + " AND uid = " + uid)
-    }
-
-    getOverrides_eid(eid){
-        // return all users with overrides for this event (with a join on identity_management by uid)
-        return this.query("SELECT * FROM event_participation_overrides INNER JOIN identity_management ON event_participation_overrides.uid = identity_management.uid WHERE eid = " + eid)
-    }
-
-    getOverrides_uid(uid){
-        return this.query("SELECT * FROM event_participation_overrides WHERE uid = " + uid)
-    }
-
-    removeOverride(eid, uid){
-        return this.edit("UPDATE events SET event_participation_overrides = NULL WHERE eid = " + eid + " AND uid = " + uid)
     }
 
 
@@ -981,6 +969,39 @@ class Database {
     deleteSplitMember(uid, sid){
         return this.edit("DELETE FROM identity_management_splits WHERE uid = " + uid + " AND sid = " + sid)
     }
+
+    getParticipationOverrides_uid(uid){
+        return this.query("SELECT * FROM event_participation_overrides WHERE uid = " + uid)
+    }
+
+    getParticipationOverrides_eid(eid){
+        return this.query("SELECT * FROM event_participation_overrides WHERE eid = " + eid)
+    }
+
+    getParticipationOverride(eid, uid){
+        return this.query("SELECT * FROM event_participation_overrides WHERE eid = " + eid + " AND uid = " + uid)
+    }
+
+    async setParticipationOverride(eid, uid, override){
+
+        // Override = 1 means YES
+        // Override = 2 means MAYBE
+        // Override = 0 means NO
+
+        let existing_override = await this.getParticipationOverride(eid, uid)
+        if(existing_override.success && existing_override.data.length > 0){
+            return this.edit("UPDATE event_participation_overrides SET override = " + override + " WHERE eid = " + eid + " AND uid = " + uid);
+        }
+        
+
+        return this.edit("INSERT INTO event_participation_overrides (eid, uid, override) VALUES (" + eid + ", " + uid + ", " + override + ")")
+    }
+
+    deleteParticipationOverride(eid, uid){
+        return this.edit("DELETE FROM event_participation_overrides WHERE eid = " + eid + " AND uid = " + uid)
+    }
+
+
 }
 
 module.exports = Database
