@@ -12,7 +12,6 @@
 
     <%- include('./partials/header.ejs'); %>
 
-
     <% let membership = undefined %>
     <% if(user) { %>
         <% membership = users.find(u => u.uid == user.uid) %>

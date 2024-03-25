@@ -12,8 +12,12 @@
     min-width: 40px;
     min-height: 40px;
     border-radius: 8px;
-    border: 2px solid #ffcd00;
+    border-width: 2px;
     margin: 0px 3px;
+}
+
+.report-detail-value-border{
+    border: 2px solid #ffcd00;
 }
 
 .report-text{

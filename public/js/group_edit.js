@@ -1,11 +1,17 @@
 let allUids = [];
 
-function initSplitEdit(){
+function initGroupEdit(){
     document.querySelectorAll(".user").forEach((element) => {
         allUids.push(element.dataset.uid);
     });
 
 }
+
+
+setTimeout(() => {
+    initGroupEdit();
+
+}, 500);
 
 function iconChoose(){
     showDialog({
@@ -175,7 +181,7 @@ function addUsers(){
             let url = "/api/groups/group/membership";
 
             current_dialog_data.selected.forEach((user) => {
-                let data = {sid: sid, uid: user.uid};
+                let data = {gid: gid, uid: user.uid};
 
                 apiPost(url, data, (result) => {
                     if(result.success){

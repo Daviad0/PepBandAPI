@@ -337,7 +337,7 @@ function showDialog(properties){
             break;
         case "user":
 
-            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons-inputs");
+            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
             dialog_buttons_static.innerHTML = "";
             title = properties.title;
             icon = properties.icon;

@@ -137,3 +137,32 @@ If the screen is smaller than 600px, stack the links on top of each other, inste
 .user-attending span{
     margin: 5px 0px;
 }
+
+.user-attending .reset_override{
+    padding: 2px 10px;
+}
+
+.group{
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    cursor: pointer;
+}
+
+.group span{
+    color: white;
+    font-weight: 800;
+    text-align: left;
+}
+
+.group .material-symbols-rounded{
+    margin-right: 10px;
+}
+
+.group-splits{
+    padding-left: 10px;
+    border-left: 2px solid rgba(0,0,0,0.5);
+}

@@ -19,6 +19,47 @@ async function permissionsRequest(req, permissions){
     return available_permissions;
 }
 
+async function shouldParticipateInEvent(req, eid){
+    // same algorithm as participatingInEvent, but do not factor in overrides
+    if(req.session.user){
+            
+            let splits = (await db.getEventSplits_eid(eid)).data;
+            for(var i = 0; i < splits.length; i++){
+                let split = splits[i];
+                let membership = (await db.getSplitMembers(split.sid)).data.find(m => m.uid == req.session.user.uid);
+                if(membership){
+                    return true;
+                }
+            }
+        
+    }
+    return false;
+}
+
+async function participatingInEvent(req, eid){
+    if(req.session.user){
+
+        let override = (await db.getParticipationOverride(eid, req.session.user.uid)).data;
+        if(override.length > 0){
+            override = override[0];
+
+            if(override.override == 1){
+                return true;
+            }
+            if(override.override == 0){
+                return false;
+            }
+        }
+
+        
+
+        if(await shouldParticipateInEvent(req, eid)){
+            return true;
+        }
+    }
+    return false;
+}
+
 router.get("/authenticate", (req, res) => {
     res.redirect("/account/authenticate");
 })
@@ -89,6 +130,43 @@ router.get("/events", async (req, res) => {
     var events = (await db.getEvents()).data;
 
     var eventTypes = (await db.getEventTypes()).data;
+
+
+    var showHiddenEvents = (await permissionsRequest(req, ["events"])).length > 0;
+    showHiddenEvents = true;
+
+
+    var eventsTaken = 0;
+    // TODO: Allow configuration on eventsTaken
+    for(var i = 0; i < events.length && eventsTaken < 10; i++){
+
+        // check if the ending is before now
+        // if it is, remove it from the list
+
+        if(new Date(events[i].ending) < new Date()){
+            events.splice(i, 1);
+            i--;
+            continue;
+        }
+
+        if(!showHiddenEvents && !events[i].show){
+            events.splice(i, 1);
+            i--;
+            continue;
+        }
+
+        if(await participatingInEvent(req, events[i].eid)){
+            events[i].participating = true;
+        }else{
+            events[i].participating = false;
+        }
+
+       
+
+        eventsTaken++;
+    }
+
+    events = events.slice(0, 10);
 
     res.render("events", {user: req.session.user, role: req.session.role, events: events, images: images, eventTypes: eventTypes});
 });
@@ -513,8 +591,29 @@ router.get("/group/:gid", async (req, res) => {
         group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
     }
 
+    let events = (await db.getEvents()).data;
+    // filter to only future events (where start or end date is after now)
+    let now = new Date();
+    events = events.filter(e => new Date(e.ending) > now);
+
+    let attendingEvents = [];
+
     for(var i = 0; i < splits.length; i++){
         let split = splits[i];
+
+        let splitAttendingEvents = (await db.getEventSplits_sid(split.sid)).data;
+        for(var j = 0; j < splitAttendingEvents.length; j++){
+            let event = events.find(e => e.eid == splitAttendingEvents[j].eid);
+            if(event){
+                if(attendingEvents.find(e => e.eid == event.eid) == undefined){
+                    event.splits = [split.sid];
+                    attendingEvents.push(event);
+                }else{
+                    attendingEvents.find(e => e.eid == event.eid).splits.push(split.sid);
+                }
+            }
+        }
+
         if(gradientBackground.length > 0){
             split.gradientBackground = gradientBackground[0].value;
         }
@@ -540,6 +639,7 @@ router.get("/group/:gid", async (req, res) => {
         split.membership = userMembership;
     }
 
+    let eventTypes = (await db.getEventTypes()).data;
 
     let elevated = false;
     if(req.session.user){
@@ -555,7 +655,7 @@ router.get("/group/:gid", async (req, res) => {
 
     
 
-    res.render("group", {user: req.session.user, role: req.session.role, group: group, users: allMembership, splits: splits, images: images, elevated: elevated});
+    res.render("group", {user: req.session.user, role: req.session.role, group: group, users: allMembership, splits: splits, images: images, elevated: elevated, events: attendingEvents, eventTypes: eventTypes});
 
 });
 
@@ -796,7 +896,72 @@ router.get("/event/:eid", async (req, res) => {
         }
     }
 
+    let defaultParticipation = await shouldParticipateInEvent(req, event.eid);
+    event.defaultParticipation = defaultParticipation;
     // before we send back data, do a segment data check
+
+    let groups = (await db.getGroups()).data;
+    let splitParticipation = (await db.getEventSplits_eid(event.eid)).data;
+
+    for(var i = 0; i < splitParticipation.length; i++){
+        let split = (await db.getSplit(splitParticipation[i].sid)).data[0];
+
+        let group = groups.find(g => g.gid == split.gid);
+        if(!group.splits){
+            group.splits = [];
+        }
+
+        if(gradientBackground.length > 0){
+            split.gradientBackground = gradientBackground[0].value;
+        }
+        // check if color is in hex format
+        if(split.color.match(/^#[0-9A-F]{6}$/i)){
+            // generate RGBA representation
+            var colorA = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",0.7)";
+            var colorB = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",1)";
+
+            split.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+        }else{
+            split.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+        }
+
+        // check if user is a part of split
+        if(!req.session.user){
+            split.partOf = false;
+        }else{
+            let userParticipation = (await db.getSplitMembers(split.sid)).data.find(m => m.uid == req.session.user.uid);
+            split.partOf = userParticipation != undefined;
+        }
+        
+
+        group.splits.push(split);
+    }
+
+    for(var i = 0; i < groups.length; i++){
+        let group = groups[i];
+
+        if(!group.splits){
+            // don't send down group
+            groups.splice(i, 1);
+            i--;
+            continue;
+        }
+
+        if(gradientBackground.length > 0){
+            group.gradientBackground = gradientBackground[0].value;
+        }
+        // check if color is in hex format
+        if(group.color.match(/^#[0-9A-F]{6}$/i)){
+            // generate RGBA representation
+            var colorA = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",0.7)";
+            var colorB = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",1)";
+
+            group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+        }else{
+            group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+        }
+    }
+
 
     try{
         let formatted = JSON.parse(event.data);
@@ -814,7 +979,7 @@ router.get("/event/:eid", async (req, res) => {
     }
 
 
-    res.render("event", {user: req.session.user, role: req.session.role, event: event, images: images, override: participationOverride});
+    res.render("event", {user: req.session.user, role: req.session.role, event: event, images: images, override: participationOverride, groups: groups});
 });
 
 router.get("/report/songs", async (req, res) => {
@@ -876,6 +1041,30 @@ router.get("/report/songs", async (req, res) => {
 
     // don't send back events
     res.render("report_usage", {user: req.session.user, role: req.session.role, songs: songs, songUsageGroups: songUsageGroups, eventTypes: eventTypes, songSums: songSums, images: images, start: start, end: end});
+
+});
+
+router.get("/report/overrides", async (req, res) => {
+
+    // start and end date are optional
+    // in the format YYYY-MM-DD
+
+    var images = await generateImagesList("corner_images");
+
+    var users = (await db.getIdentities()).data;
+
+    for(var i = 0; i < users.length; i++){
+        let user = users[i];
+        let overrides = (await db.getParticipationOverrides_uid(user.uid)).data;
+        user.override_yes = overrides.filter(o => o.override == 1).length;
+        user.override_no = overrides.filter(o => o.override == 0).length;
+        user.override_maybe = overrides.filter(o => o.override == 2).length;
+    }
+
+    
+
+    // don't send back events
+    res.render("report_override", {user: req.session.user, role: req.session.role, images: images, users: users});
 
 });
 

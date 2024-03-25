@@ -1,0 +1,23 @@
+<div class="report-item<%= alternate ? ' report-item-alternate' : '' %>">
+    <div class="flex apart">
+        <div class="report-col-1">
+            <span class="medium report-text"><%= user.full_name %></span>
+            <span class="small report-text"><%= user.mtu_id %></span>
+        </div>
+        <div class="flex center report-col-2">
+            <div class="report-detail-value flex center success-border"  title="Attending!">
+                <span class="medium"><%= user.override_yes %></span>
+            </div>
+            <div class="report-detail-value flex center warning-border"  title="Not Sure if Attending">
+                <span class="medium"><%= user.override_maybe %></span>
+            </div>
+            <div class="report-detail-value flex center error-border"  title="Not Attending">
+                <span class="medium"><%= user.override_no %></span>
+            </div>
+        </div>
+        <div class="flex center report-col-3">
+            <span class="medium report-text tag-text info-bg">Total: <%= user.override_yes + user.override_maybe + user.override_no %></span>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Report - Song Usage</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/report.css" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs'); %>
+    <script src="/js/report_usage.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <div class="report-vertical-flex">
+                <div class="report-header">
+                    <div class="flex center">
+                        <span class="large spacing">Event Attendance Override Report</span>
+                    </div>
+                    
+    
+                    <span class="small spacing">See the override attendance report for all users of a specified cohort.</span>
+                    <div class="message message-warning">
+                        <span class="small message-content">Deleted events will not be available on this report, but all previous and hidden events are shown</span>
+                    </div>
+
+                    <div class="flex center wrap spacing">
+                        <span class="small">Filter Report</span>
+                        <span class="small material-symbols-rounded" title="Reports are based on the start date of an event">question_mark</span>
+                        
+                        <button class="button-main" onclick="refreshFilter()"><span class="button-text">Filter Report</span></button>
+                    </div>
+                    
+        
+                    <div class="flex apart">
+                        <div class="report-col-1">
+                            <span class="medium report-text">Username</span>
+                        </div>
+                        <div class="flex center report-col-2">
+                            <div class="icon-preview flex center success-bg"  title="Attending!">
+                                <span class="large material-symbols-rounded">how_to_reg</span>
+                            </div>
+                            <div class="icon-preview flex center warning-bg"  title="Not Sure if Attending">
+                                <span class="large material-symbols-rounded">psychology_alt</span>
+                            </div>
+                            <div class="icon-preview flex center error-bg"  title="Not Attending">
+                                <span class="large material-symbols-rounded">person_cancel</span>
+                            </div>
+                        </div>
+                        <div class="report-col-3">
+                            <span class="medium">Total Overrides</span>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+                <div id="report-list" class="report-list">
+                
+                    <% for (let i = 0; i < users.length; i++) { %>
+                        <% let u = users[i] %>
+                        <%- include('./partials/config/report_item_user_override.ejs', {user: u, alternate: i % 2 == 1}) %>
+                    <% } %>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

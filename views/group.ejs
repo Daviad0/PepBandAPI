@@ -71,6 +71,13 @@
                     <div class="flex center">
                         <span class="large spacing">Upcoming Events</span>
                     </div>
+                    <div class="spacing-top">
+                        <% events.forEach(event => { %>
+                            <% let eventType = eventTypes.find(et => et.etyid == event.etyid) %>
+                            <%- include('./partials/event/event_basic.ejs', {event: event, splits: splits, eventType: eventType}) %>
+                        <% }) %>
+                    </div>
+
                     
                 </div>
                 <div class="content-right">

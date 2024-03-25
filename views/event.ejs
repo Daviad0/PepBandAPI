@@ -108,22 +108,33 @@
                             <div class="spacing floating-box">
                                 <div class="spacing">
                                     <span class="small">Are you able to attend this event? By signing up, you'll receive set list notifications and announcements!</span>
-                                    <span class="tiny"><i>By default, you're not attending</i></span>
+                                    <span class="tiny"><i>By default, you're <%= event.defaultParticipation ? "participating" : "not participating" %></i></span>
                                 </div>
+                                
+                               
                                 
                                 <div class="spacing flex center">
                                     <button onclick="changeParticipationOverride(this)" data-override="1" class="override button-alternate <%= override == 1 ? 'success-bg' : '' %>"><span class="button-text">Yes</span></button>
                                     <button onclick="changeParticipationOverride(this)" data-override="2" class="override button-alternate <%= override == 2 ? 'warning-bg' : '' %>"><span class="button-text">Maybe</span></button>
                                     <button onclick="changeParticipationOverride(this)" data-override="0" class="override button-alternate <%= override == 0 ? 'error-bg' : '' %>"><span class="button-text">No</span></button>
                                 </div>
+
+                                <div class="spacing-bottom flex center">
+                                    <button onclick="removeParticipationOverride()" class="reset_override button-alternate tiny <%= override == undefined ? 'no-display' : '' %> "><span class="button-text tiny">Reset Override</span></button>
+                                </div>
                                 
+
                             </div>
                         </div>
                         
                     <% } %>
                     <div>
                         <span class="large spacing">Attending Groups</span>
-                        
+                        <div>
+                            <% for(let i = 0; i < groups.length; i++) { %>
+                                <%- include('./partials/event/event_group.ejs', {group: groups[i]}) %>
+                            <% } %>
+                        </div>
                     </div>
                     
                     

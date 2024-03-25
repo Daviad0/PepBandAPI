@@ -13,7 +13,7 @@
                 <% let usages = songUsageGroups[etyid].filter(su => su.soid == song.soid) %>
                 <% let sum = usages.reduce((acc, su) => acc + su.count, 0) %>
 
-                <div class="report-detail-value flex center" style="border-color: <%= eventType.color %>">
+                <div class="report-detail-value report-detail-value-border flex center" style="border-color: <%= eventType.color %>">
                     <span class="medium" title="<%= eventType.name %>"><%= sum %></span>
                 </div>
             <% } %>

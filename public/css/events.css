@@ -63,3 +63,7 @@ If the screen is smaller than 600px, stack the links on top of each other, inste
 .icon-container{
     margin-top:5px;
 }
+
+.event-hidden{
+    opacity: 0.7;
+}

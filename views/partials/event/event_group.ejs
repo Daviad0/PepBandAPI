@@ -1,0 +1,35 @@
+<div class="floating-box">
+    <div>
+        <div class="group" onclick="window.location = '/group/<%= group.gid %>'" data-gid="<%= group.gid %>" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
+            <div class="flex apart">
+                <div class="flex center">
+                    <span class="small material-symbols-rounded"><%= group.icon %></span>
+                    <span class="medium"><%= group.name %></span>
+                
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="spacing-left group-splits">
+        <% for(let i = 0; i < group.splits.length; i++) { %>
+            <% let split = group.splits[i] %>
+            <div class="group" onclick="window.location = '/split/<%= split.sid %>'" data-sid="<%= split.sid %>" style="background: <%= split.color %>;background: <%= split.gradientBackground %>">
+                <div class="flex apart">
+                    <div class="flex center">
+                        <span class="small material-symbols-rounded"><%= split.icon %></span>
+                        <span class="small"><%= split.name %></span>
+                    
+                    </div>
+                    <% if(split.partOf) { %>
+                        <div class="flex center">
+                            <span class="small"><i>Member Of</i></span>
+                        </div>
+                    <% } %>
+                    
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+

@@ -88,7 +88,26 @@ function changeParticipationOverride(element){
                 overrideElement.classList.remove(backgroundOverrideButtons[2]);
             
             });
+            document.querySelector(".reset_override").classList.remove("no-display");
             document.querySelector(`.override[data-override="${override}"]`).classList.add(backgroundOverrideButtons[override]);
+        } else {
+            console.log(result);
+        }
+    });
+}
+
+function removeParticipationOverride(){
+    let url = "/api/event/" + eid + "/override/delete";
+    let data = {};
+
+    apiPost(url, data, (result) => {
+        if(result.success){
+            document.querySelector(".reset_override").classList.add("no-display");
+            document.querySelectorAll(`.override[data-override]`).forEach(overrideElement => {
+                overrideElement.classList.remove(backgroundOverrideButtons[0]);
+                overrideElement.classList.remove(backgroundOverrideButtons[1]);
+                overrideElement.classList.remove(backgroundOverrideButtons[2]);
+            });
         } else {
             console.log(result);
         }

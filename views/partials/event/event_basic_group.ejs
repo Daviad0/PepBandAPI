@@ -1,0 +1,77 @@
+<!--
+
+    "event" parameter passed in. This parameter contains...
+     - eid
+     - etyid
+     - etid_used
+     - begin
+     - end
+     - open
+     - show
+     - data
+     - updated
+     - name
+
+-->
+
+<% let formattedStart = event.start.toISOString().substring(0,10) + " @ " + event.start.toISOString().substring(11,16)  %>
+    <% let formattedEnd = event.ending.toISOString().substring(0,10) + " @ " + event.ending.toISOString().substring(11,16)  %>
+
+<div class="floating-box event<%= attending ? '' : ' event-not-attending'%>" style="border-top-color: <%= eventType.color %>" data-eid="<%= event.eid %>">
+    <div class="flex apart event-header">
+        <div class="flex center icon-container">
+            <span class="material-symbols-rounded large" data-etyid="<%= eventType.etyid %>" <%= eventType.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= eventType.icon %></span>
+            <img class="icon<%= eventType.icon.startsWith("IMAGE:") ? "" : " no-display event-image" %>" data-etyid="<%= eventType.etyid %>" name="icon_image"  src="<%= eventType.icon %>"/>
+        </div>
+        
+        <div class="event-content">
+            <div class="flex center">
+                <span class="title event-title"><%= event.name %></span>
+            </div>
+            
+            
+        </div>
+    </div>
+    
+    <div class="flex center spacing">
+        <span class="small material-symbols-rounded icon spacing-right">my_location</span>
+        <span class="tiny event-description"><strong><%= event.location %></strong></span>
+    </div>
+    <div class="flex center spacing">
+        <span class="small material-symbols-rounded icon spacing-right">schedule</span>
+        <div>
+            <span class="tiny event-description"><strong><%= formattedStart %></strong> start</span>
+            <span class="tiny event-description"><strong><%= formattedEnd %></strong> end</span>
+        </div>
+        
+    </div>
+    <div class="flex center">
+        <span class="tiny event-description"><%= event.description %></span>
+    </div>
+
+    <% if(edit) { %>
+    <div class="flex center">
+        <div class="split-detail-item">
+            <div class="flex apart">
+                <span class="tiny split-detail-tag">Attending Event</span>
+            </div>
+            <div class="flex apart">
+                <select class="input split-detail-value permission-input" data-eid="<%= event.eid %>" name="attending" onchange="attendingChange(this)">
+                    <option value="no" <%= attending ? "selected" : "" %>>Not Attending</option>
+                    <option value="yes" <%= attending ? "selected" : "" %>>Attending</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+    <div class="flex apart event-date">
+        <div>
+            
+        </div>
+        <div class="flex center">
+            <button class="button-main info-bg" style="background-color: <%= eventType.color %>;" onclick="window.open('/event/<%= event.eid %>', '_blank')"><span class="button-text">View Event</span></button>
+        </div>
+    </div>
+    
+</div>

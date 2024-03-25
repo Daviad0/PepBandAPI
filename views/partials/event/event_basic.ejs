@@ -19,7 +19,7 @@
 <% let endDateString = event.ending.getFullYear() + "-" + (event.ending.getMonth() + 1).toString().padStart(2, '0') + "-" + event.ending.getDate().toString().padStart(2, '0') %>
 <% let endTimeString = event.ending.getHours().toString().padStart(2, '0') + ":" + event.ending.getMinutes().toString().padStart(2, '0') %>
 
-<div class="floating-box event" style="border-top-color: <%= eventType.color %>">
+<div class="floating-box event <%= event.show ? "" : "event-hidden" %>" style="border-top-color: <%= eventType.color %>">
     <div class="flex apart event-header">
         <div class="flex center icon-container">
             <span class="material-symbols-rounded large" data-etyid="<%= eventType.etyid %>" <%= eventType.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= eventType.icon %></span>
@@ -43,11 +43,26 @@
     <div class="flex center">
         <span class="tiny event-description"><%= event.description %></span>
     </div>
+    <% if(event.splits != undefined && splits != undefined) { %>
+        <div class="spacing">
+            <div class="flex center">
+                <span class="small">Attending Splits:</span>
+            </div>
+            <div class="flex center wrap">
+                <% for(let i = 0; i < event.splits.length; i++) { %>
+                    <% let split = splits[event.splits[i]] %>
+                    <% let splitObject = splits.find(s => s.sid == event.splits[i]) %>
+                    <% if(splitObject == undefined) continue %>
+                    <span class="tiny tag-text white" style="background-color: <%= splitObject.color %>;"><%= splitObject.name %></span>
+                <% } %>
+            </div>
+        </div>
+    <% } %>
 
     <div class="flex apart event-date">
         <div>
-            <% if(user) { %>
-                <span class="tiny"><i>You are attending</i></span>
+            <% if(user && event.participating) { %>
+                <span class="tiny tag-text white" style="background-color: <%= eventType.color %>;"><i>You're attending</i></span>
             <% } %>
         </div>
         <div class="flex center">

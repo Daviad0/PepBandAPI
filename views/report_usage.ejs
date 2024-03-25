@@ -71,7 +71,7 @@
                 <div id="report-list" class="report-list">
                     <% for (let i = 0; i < songs.length; i++) { %>
                         <% let songSum = songSums[songs[i].soid] %>
-                        <%- include('./partials/config/report_item.ejs', {song: songs[i], songUsageGroups: songUsageGroups, songSum: songSum, eventTypes: eventTypes, alternate: i % 2 == 1}) %>
+                        <%- include('./partials/config/report_item_song.ejs', {song: songs[i], songUsageGroups: songUsageGroups, songSum: songSum, eventTypes: eventTypes, alternate: i % 2 == 1}) %>
                     <% } %>
                 </div>
             </div>
