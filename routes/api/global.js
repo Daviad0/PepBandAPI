@@ -11,6 +11,10 @@ router.get("/config", async (req, res) => {
 });
 
 router.get("/config/:cid", async (req, res) => {
+    if(!cid){
+        res.status(400).send({message: "Missing cid"});
+        return;
+    }
     var config = (await db.getConfig_cid(req.params.cid)).data;
 
     res.send(config);
@@ -113,6 +117,11 @@ router.post("/config/:uniq_name/delete", async (req, res) => {
     //     res.status(403).send({message: "Access denied"});
     //     return;
     // }
+
+    if(!req.params.uniq_name){
+        res.status(400).send({message: "Missing uniq_name"});
+        return;
+    }
 
     if(!req.session.user){
         res.status(403).send({message: "Not logged in"});

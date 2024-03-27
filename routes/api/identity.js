@@ -20,7 +20,6 @@ function verifyPassword(password, hash, salt){
 }
 
 
-router.get("/role")
 
 router.get('/overrides', (req, res) => {
     if(req.session.user){
@@ -135,6 +134,11 @@ router.get("/find/:uid", async (req, res) => {
         return;
     }
 
+    if(!req.params.uid){
+        res.status(400).send({success: false, message: "Missing uid"});
+        return;
+    }
+
     db.getIdentity_uid(req.params.uid).then((result) => {
         res.send({success: true, data: result.data});
     })
@@ -143,6 +147,11 @@ router.get("/find/:uid", async (req, res) => {
 router.get("/:uid/overrides", async (req, res) => {
     if(!(await db.checkAccess(req.session.role, "other_users_membership"))){
         res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    if(!req.params.uid){
+        res.status(400).send({message: "Missing uid"});
         return;
     }
 
@@ -167,6 +176,11 @@ router.get("/roles", async (req, res) => {
 router.get("/roles/:rid", async (req, res) => {
     if(!(await db.checkAccess(req.session.role, "other_roles"))){
         res.status(403).send({message: "Access denied"});
+        return;
+    }
+
+    if(!req.params.rid){
+        res.status(400).send({message: "Missing rid"});
         return;
     }
 
@@ -202,7 +216,7 @@ router.post("/roles/create", async (req, res) => {
 router.post("/roles", async (req, res) => {
     
     // expecting name in body, OK if null
-    // expecting permission in body, OK if null
+    // expecting power in body, OK if null
     // expecting rid in body, not OK if null
     // expecting description in body, OK if null
 
@@ -212,14 +226,14 @@ router.post("/roles", async (req, res) => {
     }
 
     let name = req.body.name;
-    let permission = req.body.permission;
+    let power = req.body.power;
     let rid = req.body.rid;
     let description = req.body.description;
     if(!name) name = null;
-    if(!permission) permission = null;
-    if(permission){
-        let userPermission = req.session.role.permission;
-        if(userPermission <= permission){
+    if(!power) power = null;
+    if(power){
+        let userPermission = req.session.role.power;
+        if(userPermission <= power){
             res.status(403).send({message: "Cannot set permission higher than or equal to your own"});
             return;
         }
@@ -230,7 +244,7 @@ router.post("/roles", async (req, res) => {
     }
     if(!description) description = null;
 
-    db.setRole(rid, name, permission, description).then((result) => {
+    db.setRole(rid, name, power, description).then((result) => {
         res.send(result);
     })
 });
@@ -239,6 +253,10 @@ router.post("/roles/:rid/delete", async (req, res) => {
     
     // have to do some damage control to change roles of users with this role
 
+    if(!req.params.rid){
+        res.status(400).send({message: "Missing rid"});
+        return;
+    }
 
         if(!(await db.checkAccess(req.session.role, "other_roles_remove"))){
             res.status(403).send({message: "Access denied"});
@@ -262,6 +280,11 @@ router.post("/roles/:rid/delete", async (req, res) => {
 router.post("/login", async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
+
+    if(!username || !password){
+        res.status(400).send({message: "Missing username or password"});
+        return;
+    }
 
     // mtu_sso is treated as the username
     let userObject = await db.getIdentity_mtusso(username);
@@ -291,6 +314,11 @@ router.post("/register", async (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
     let full_name = req.body.full_name;
+    
+    if(!email || !password || !full_name){
+        res.status(400).send({message: "Missing email, password, or full_name"});
+        return;
+    }
 
     let userObject = await db.getIdentity_mtusso(email);
     if(userObject.data.length > 0){

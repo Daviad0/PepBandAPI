@@ -1,6 +1,6 @@
 const express = require('express');
 
-const router = express.Router("/api/event");
+const router = express.Router("/api/groups");
 
 var db;
 
@@ -11,6 +11,11 @@ router.get("/groups", async (req, res) => {
 });
 
 router.get("/group/:gid", async (req, res) => {
+    if(!req.params.gid){
+        res.status(400).send({message: "Missing gid"});
+        return;
+    }
+    
     var group = (await db.getGroup(req.params.gid)).data;
 
     res.send(group);
@@ -234,6 +239,11 @@ router.post("/group/:gid/leave", async (req, res) => {
 
     var gid = req.params.gid;
 
+    if(!gid){
+        res.status(400).send({message: "gid property required to leave group"});
+        return;
+    }
+
     db.deleteGroupMember(req.session.user.uid, gid).then((result) => {
         res.send(result);
     });
@@ -252,6 +262,11 @@ router.post("/group/:gid/delete", async (req, res) => {
 
     var gid = req.params.gid;
 
+    if(!gid){
+        res.status(400).send({message: "gid property required to delete group"});
+        return;
+    }
+
     db.deleteGroup(gid).then((result) => {
         res.send(result);
     });
@@ -266,6 +281,12 @@ router.get("/splits", async (req, res) => {
 });
 
 router.get("/split/:sid", async (req, res) => {
+
+    if(!req.params.sid){
+        res.status(400).send({message: "Missing sid"});
+        return;
+    }
+
     var split = (await db.getSplit(req.params.sid)).data;
 
     res.send(split);
@@ -488,6 +509,11 @@ router.post("/split/:sid/leave", async (req, res) => {
 
     var sid = req.params.sid;
 
+    if(!sid){
+        res.status(400).send({message: "sid property required to leave split"});
+        return;
+    }
+
     db.deleteSplitMember(req.session.user.uid, sid).then((result) => {
         res.send(result);
     });
@@ -500,6 +526,12 @@ router.post("/split/:sid/delete", async (req, res) => {
     // }
 
     var sid = req.params.sid;
+
+    if(!sid){
+        res.status(400).send({message: "sid property required to delete split"});
+        return;
+    
+    }
 
     db.deleteSplit(sid).then((result) => {
         res.send(result);

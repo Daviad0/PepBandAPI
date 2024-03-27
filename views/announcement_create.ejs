@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Create Announcement</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/announcement_create.css" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs'); %>
+    <script src="/js/announcement_create.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <span class="large">Create Announcement</span>
+            <div class="form">
+                <div class="flex apart">
+                    <div class="announcement-create-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny announcement-create-detail-tag">Announcement Title</span>
+                        </div>
+                        <div class="flex apart">
+                            <input name="name" type="text" class="input announcement-create-detail-value" placeholder="Super Cool Event"/>
+                        </div>
+                    </div>
+                    
+                    <div class="announcement-create-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny announcement-create-detail-tag">Publish Date</span>
+                        </div>
+                        <div class="flex center">
+                            <input type="time" class="input" placeholder="Publish Time" name="published_time" />
+                            <input type="date" class="input" placeholder="Publish Date" name="published_date" />
+                        </div>
+                    </div>
+                    <div class="announcement-create-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny announcement-create-detail-tag">Effective Until</span>
+                        </div>
+                        <div class="flex center">
+                            <input type="time" class="input" placeholder="Until Time" name="until_time" />
+                            <input type="date" class="input" placeholder="Until Date" name="until_date" />
+                        </div>
+                    </div>
+                </div>
+                <div class="announcement-create-detail-item">
+                    <div class="flex apart">
+                        <span class="tiny announcement-create-detail-tag">Announcement Content</span>
+                    </div>
+                    <div class="flex apart">
+                        <textarea class="input textarea small" placeholder="Description" name="description"></textarea>
+                    </div>
+                </div> 
+                
+                <div class="flex center section">
+                    <div class="announcement-create-detail-item">
+                        <div class="flex center icon-container">
+                            <span class="material-symbols-rounded icon" hidden id="announcement-create-icon"></span>
+                            <img class="icon no-display" id="announcement-create-image"/>
+                        </div>
+                        <div class="flex apart">
+                            <span class="tiny announcement-create-detail-tag">Event Icon</span>
+                        </div>
+                        <div class="flex apart">
+                            <input name="location" type="text" class="input announcement-create-detail-value" placeholder="Location"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="announcement-template-warning" class="no-display">
+                    <div class="message message-warning">
+                        <span class="small message-content">The event template you selected does not match the selected event type. This won't stop the event from being created, but the data may not be similar to other events.</span>
+                    </div>
+                </div>
+
+                <div class="flex center spacing">
+                    <span class="small no-display error error-message" name="error" id="announcement-create-error"></span>
+                </div>
+
+                <div class="flex center">
+                    <button class="button-main" onclick="submitEventForCreation()"><span class="button-text">Create Event</span></button>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

@@ -11,6 +11,12 @@ router.get("/list", (req, res) => {
 });
 
 router.get("/:soid", (req, res) => {
+
+    if(!req.params.soid){
+        res.status(400).send({message: "soid property required to get song"});
+        return;
+    }
+
     db.getSong(req.params.soid).then((result) => {
         res.send(result);
     })

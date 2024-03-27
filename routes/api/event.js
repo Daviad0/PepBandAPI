@@ -11,13 +11,20 @@ router.get("/type/list", (req, res) => {
 });
 
 router.get("/type/:etyid", (req, res) => {
+
+    if(!req.params.etyid){
+        res.status(400).send({message: "etyid property required to get event type"});
+        return;
+    }
+
     db.getEventType(req.params.etyid).then((result) => {
         res.send(result);
     })
 });
 
 router.post("/type/create", (req, res) => {
-    // maybe change this to be all one
+    
+    
     db.setEventType(null, null, null, null, null).then((result) => {
         let etyid = result.data[0].etyid;
 
@@ -85,6 +92,12 @@ router.get("/template/list", (req, res) => {
 });
 
 router.get("/template/:etid", (req, res) => {
+
+    if(!req.params.etid){
+        res.status(400).send({message: "etid property required to get event template"});
+        return;
+    }
+
     db.getEventTemplate(req.params.etid).then((result) => {
         res.send(result);
     })
@@ -261,6 +274,11 @@ router.post("/:eid/override/delete", async (req, res) => {
         uid = req.session.user ? req.session.user.uid : null;
     }
 
+    if(!eid){
+        res.status(400).send({message: "eid property required to delete override"});
+        return;
+    }
+
     if(!uid){
         res.status(400).send({message: "uid property required to delete override"});
         return;
@@ -296,6 +314,11 @@ router.post("/:eid/split", async (req, res) => {
     var eid = req.params.eid;
     var sid = req.body.sid;
 
+    if(!eid){
+        res.status(400).send({message: "eid property required to split event"});
+        return;
+    }
+
     if(!sid){
         res.status(400).send({message: "sid property required to split event"});
         return;
@@ -323,6 +346,11 @@ router.post("/:eid/split/delete", (req, res) => {
 
     var eid = req.params.eid;
     var sid = req.body.sid;
+
+    if(!eid){
+        res.status(400).send({message: "eid property required to delete split"});
+        return;
+    }
 
     if(!sid){
         res.status(400).send({message: "sid property required to delete split"});
