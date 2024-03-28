@@ -62,3 +62,19 @@
     margin: 5px 10px;
     margin-top:10px;
 }
+
+.permissions{
+    border: 2px solid rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
+
+.permission{
+    margin: 3px;
+}
+
+.permission-add{
+    margin: 3px;
+    padding: 5px;
+    border-radius: 8px;
+}

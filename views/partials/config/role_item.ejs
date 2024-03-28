@@ -40,10 +40,15 @@
         </div>
         <div class="role-detail-item">
             <div class="flex apart">
-                <span class="tiny role-detail-tag">Permission</span>
+                <div class="flex center">
+                    <span class="tiny role-detail-tag">Power</span>
+                    <span class="small material-symbols-rounded" title="A role power determines what actions it can perform relative to other roles!">question_mark</span>
+                </div>
+                
+                
             </div>
             <div class="flex apart">
-                <input data-rid="<%= role.rid %>" onchange="editRole(this)" name="permission" type="number" class="input role-detail-value permission-input" placeholder="Role Name" value="<%= role.permission %>"/>
+                <input data-rid="<%= role.rid %>" onchange="editRole(this)" name="power" type="number" class="input role-detail-value permission-input" placeholder="Power" value="<%= role.power %>"/>
             </div>
         </div>
         <div>
@@ -72,6 +77,20 @@
             </div>
             <div class="flex apart">
                 <textarea data-rid="<%= role.rid %>" onchange="editRole(this)" name="description" class="input small role-detail-value"><%= role.description %></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="flex center">
+        <div class="role-detail-item">
+            <div class="flex apart">
+                <span class="tiny role-detail-tag">Permissions</span>
+            </div>
+            <div class="flex center permissions wrap" data-rid="<%= role.rid %>">
+                <% for(var i = 0; i < role.permissions.length; i++) { %>
+                    <span class="tiny config-detail-value config-main-info resolve-further permission" data-permission="<%= role.permissions[i].permission_uniq_name %>" data-rid="<%= role.rid %>" onclick="removePermission(this)"><%= role.permissions[i].permission_uniq_name %></span>
+                <% } %>
+                
+                <button class="button-alternate permission-add" onclick="addPermission(this)" data-rid="<%= role.rid %>"><span class="button-text">+</span></button>
             </div>
         </div>
     </div>

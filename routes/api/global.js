@@ -4,6 +4,15 @@ const router = express.Router("/api/global");
 
 var db;
 
+router.get("/permissions", async (req, res) => {
+
+    // check for permissions to see this
+
+    var permissions = (await db.getPermissions());
+
+    res.send(permissions);
+});
+
 router.get("/config", async (req, res) => {
     var config = (await db.getConfig()).data;
 

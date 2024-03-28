@@ -387,6 +387,59 @@ function showDialog(properties){
 
             dialog_getUsers();
             break;
+
+        case "permission":
+
+            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
+            dialog_buttons_static.innerHTML = "";
+            title = properties.title;
+            icon = properties.icon;
+
+            dialog_title.innerHTML = title;
+            dialog_icon.innerHTML = icon;
+
+            current_dialog_data["multiple"] = properties.multiple || false;
+            current_dialog_data["selected"] = [];
+            current_dialog_data["onchoose"] = properties.onchoose || (() => {});
+            current_dialog_data["extra"] = properties.extra || {};
+            current_dialog_data["exclude"] = properties.exclude || [];
+            preselectedButtons = [
+                {
+                    text: "Cancel",
+                    class: "button-alternate",
+                    onclick: () => {
+                        hideDialog();
+                    }
+                },
+                {
+                    text: "Add Permissions",
+                    class: "button-main",
+                    onclick: () => {
+                        current_dialog_data["onchoose"](current_dialog_data["selected"]);
+                    }
+                }
+            ]
+
+            preselectedButtons.forEach((button) => {
+                // expecting text, class, and onclick
+                // background may be defined 
+                let button_element = document.createElement("button");
+                if(button.text == "Add Permissions"){
+                    button_element.setAttribute("disabled", "disabled");
+                    button_element.setAttribute("id", "dialog-permission-select");
+                }
+                button_element.innerHTML = button.text;
+                button_element.classList.add(button.class);
+                button_element.classList.add("dialog-button");
+                if(button.background){
+                    button_element.classList.add(button.background);
+                }
+                button_element.onclick = button.onclick;
+                dialog_buttons_static.appendChild(button_element);
+            });
+
+            dialog_getPermissions();
+            break;
         case "icon":
 
             let dialog_buttons_static_icon = selectedOptionDiv.querySelector("#dialog-buttons");
@@ -516,7 +569,7 @@ function dialog_user_toggleSelected(element){
         // only one song can be selected
         let selected = document.querySelectorAll(".dialog-song-selected");
         selected.forEach((element) => {
-            element.classList.remove("dialog-user-selected");
+            element.classList.remove("dialog-song-selected");
         })
         current_dialog_data["selected"] = [];
     }
@@ -530,6 +583,43 @@ function dialog_user_toggleSelected(element){
     element.classList.add("dialog-song-selected");
 
     document.getElementById("dialog-user-select").removeAttribute("disabled");
+
+}
+
+function dialog_permission_toggleSelected(element){
+    let permission = element.getAttribute("data-permission");
+
+    if(current_dialog_data["selected"].find(s => s.permission_uniq_name == permission)){
+        // remove from selected
+
+        let index = current_dialog_data["selected"].findIndex(s => s.permission_uniq_name == permission);
+        current_dialog_data["selected"].splice(index, 1);
+
+        element.classList.remove("dialog-song-selected");
+
+        if(current_dialog_data["selected"].length == 0){
+            document.getElementById("dialog-permission-select").setAttribute("disabled", "disabled");
+        }
+        return;
+    }
+
+    if(!current_dialog_data["multiple"]){
+        // only one song can be selected
+        let selected = document.querySelectorAll(".dialog-song-selected");
+        selected.forEach((element) => {
+            element.classList.remove("dialog-song-selected");
+        })
+        current_dialog_data["selected"] = [];
+    }
+
+    let permissionObj = {
+        permission_uniq_name: permission
+    }
+    current_dialog_data["selected"].push(permissionObj);
+
+    element.classList.add("dialog-song-selected");
+
+    document.getElementById("dialog-permission-select").removeAttribute("disabled");
 
 }
 
@@ -614,6 +704,50 @@ function dialog_user_changeSearch(){
     
     }
 
+}
+
+function dialog_getPermissions(){
+    let url = "/api/global/permissions";
+    let dialog_permissions = document.getElementById("dialog-permission-parent");
+
+    apiGet(url, (result) => {
+        if(result.success){
+            let permissions = result.data;
+
+            current_dialog_data["permissions"] = permissions;
+            dialog_permissions.innerHTML = "";
+            permissions.forEach((permission) => {
+                let option = document.createElement("div");
+                option.classList.add("floating-box");
+                option.classList.add("dialog-permission");
+
+                option.setAttribute("data-permission", permission.permission_uniq_name);
+                option.onclick = () => {
+                    dialog_permission_toggleSelected(option);
+                }
+
+                option.innerHTML = `
+
+                <div class="flex center">
+                    
+                    <div class="fill">
+                        <div class="flex center">
+                            <span class="small"><strong name="full_name">${permission.permission_uniq_name}</strong></span>
+                            
+                        </div>
+                        
+                        
+                    </div>
+                
+                </div>
+
+                `;
+
+                dialog_permissions.appendChild(option);
+
+            });
+        }
+    });
 }
 
 function dialog_getUsers(){

@@ -191,14 +191,20 @@ router.get("/roles", async (req, res) => {
         default_role = default_role.data[0].value;
     }
 
-    // check if user has access to other_roles
-    if(!(await db.checkAccess(req.session.role, "other_roles"))){
-        res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
-            code: 403,
-            message: "Access denied" + (req.session.user ? "" : " (are you signed in?)")
-        }});
-        return;
+    for(var i = 0; i < roles.length; i++){
+        let role = roles[i];
+        let permissions = (await db.getPermissions_rid(role.rid)).data;
+        role.permissions = permissions;
     }
+
+    // check if user has access to other_roles
+    // if(!(await db.checkAccess(req.session.role, "other_roles"))){
+    //     res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+    //         code: 403,
+    //         message: "Access denied" + (req.session.user ? "" : " (are you signed in?)")
+    //     }});
+    //     return;
+    // }
 
     res.render("roles_edit", {user: req.session.user, role: req.session.role, roles: roles, default_role: default_role, images: images});
 

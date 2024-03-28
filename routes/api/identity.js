@@ -213,6 +213,58 @@ router.post("/roles/create", async (req, res) => {
     });
 });
 
+router.post("/roles/:rid/permission", async (req, res) => {
+    // expecting permission in body, not OK if null
+
+    // if(!(await db.checkAccess(req.session.role, "other_roles_edit"))){
+    //     res.status(403).send({message: "Access denied"});
+    //     return;
+    // }
+
+    if(!req.params.rid){
+        res.status(400).send({message: "Missing rid"});
+        return;
+    }
+    if(!req.body.permission){
+        res.status(400).send({message: "Missing permission"});
+        return;
+    }
+
+    let permission = req.body.permission;
+
+    // check access to make change here
+
+    db.setPermission_rid(req.params.rid, permission).then((result) => {
+        res.send(result);
+    });
+});
+
+router.post("/roles/:rid/permission/delete", async (req, res) => {
+    // expecting permission in body, not OK if null
+
+    // if(!(await db.checkAccess(req.session.role, "other_roles_edit"))){
+    //     res.status(403).send({message: "Access denied"});
+    //     return;
+    // }
+
+    if(!req.params.rid){
+        res.status(400).send({message: "Missing rid"});
+        return;
+    }
+    if(!req.body.permission){
+        res.status(400).send({message: "Missing permission"});
+        return;
+    }
+
+    let permission = req.body.permission;
+
+    // check access to make change here
+
+    db.deletePermission_rid(req.params.rid, permission).then((result) => {
+        res.send(result);
+    });
+});
+
 router.post("/roles", async (req, res) => {
     
     // expecting name in body, OK if null
@@ -232,9 +284,9 @@ router.post("/roles", async (req, res) => {
     if(!name) name = null;
     if(!power) power = null;
     if(power){
-        let userPermission = req.session.role.power;
+        let userPower = req.session.role.power;
         if(userPermission <= power){
-            res.status(403).send({message: "Cannot set permission higher than or equal to your own"});
+            res.status(403).send({message: "Cannot set power higher than or equal to your own"});
             return;
         }
     }
@@ -243,6 +295,19 @@ router.post("/roles", async (req, res) => {
         return;
     }
     if(!description) description = null;
+
+    // check role power against user power
+    let role = await db.getRole(rid);
+    if(role.data.length == 0){
+        res.status(400).send({message: "Invalid rid"});
+        return;
+    }
+    role = role.data[0];
+    let userPower = req.session.role.power;
+    if(userPower <= role.power){
+        res.status(403).send({message: "Cannot set power higher than or equal to your own"});
+        return;
+    }
 
     db.setRole(rid, name, power, description).then((result) => {
         res.send(result);

@@ -4,7 +4,7 @@ function updateRoleView(selected_role){
 
     html = html.replaceAll("DEFAULT_RID", selected_role.rid);
     html = html.replaceAll("DEFAULT_NAME", selected_role.name);
-    html = html.replaceAll("DEFAULT_PERMISSION", selected_role.permission);
+    html = html.replaceAll("DEFAULT_POWER", selected_role.power);
     html = html.replaceAll("DEFAULT_DESCRIPTION", selected_role.description);
     html = html.replaceAll("DEFAULT_ICON", selected_role.icon);
     html = html.replaceAll("DEFAULT_USER_COUNT", 0);
@@ -174,4 +174,43 @@ function iconChoose(element){
         },
         extra: {}
     });
+}
+
+function addPermission(element){
+    let rid = element.getAttribute("data-rid");
+    
+    showDialog({
+        title: "Add Permission(s) to Role",
+        description: "Permission",
+        type: "permission",
+        icon: "person_add",
+        multiple: true,
+        onchoose: () => {
+            let url = "/api/identity/roles/" + rid + "/permission";
+
+            let permissions = document.querySelector(`.permissions[data-rid="${rid}"]`);
+
+            current_dialog_data.selected.forEach((permission) => {
+                permissions.innerHTML += `<span class="tiny config-detail-value config-main-info resolve-further permission" data-permission="${permission.permission_uniq_name}" data-rid="${rid}" onclick="removePermission(this)">${permission.permission_uniq_name}</span>`;
+            
+                let data = {permission: permission.permission_uniq_name, rid: rid};
+
+                apiPost(url, data, (result) => {
+                    if(result.success){
+                        
+                    }
+                });
+            });
+
+
+            // swap this last element with the add button
+            let addPermissionButton = document.querySelector(`.permission-add[data-rid="${rid}"]`);
+            // remove the original add button and move it to the end
+            addPermissionButton.remove();
+            permissions.appendChild(addPermissionButton);
+            
+
+            hideDialog();
+        },
+    })
 }
