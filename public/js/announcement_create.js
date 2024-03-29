@@ -109,3 +109,46 @@ function submitEventForCreation(){
         }
     });
 }
+
+function iconChoose(){
+    showDialog({
+        title: "Choose Icon for This Announcement",
+        description: "Icon",
+        type: "icon",
+        icon: "ink_highlighter",
+        onchoose: () => {
+            let image_viewer = document.querySelector("#announcement-create-image");
+            image_viewer.classList.add("no-display");
+            let icon_viewer = document.querySelector("#announcement-create-icon");
+            icon_viewer.removeAttribute("hidden");
+            icon_viewer.innerHTML = current_dialog_data.selected;
+
+            changeProperty("icon", current_dialog_data.selected);
+            
+            hideDialog();
+        },
+        extra: {}
+    });
+}
+
+function imageChoose(){
+    showDialog({
+        title: "Choose Image for This Announcement",
+        description: "Image",
+        type: "image",
+        icon: "ink_highlighter",
+        onchoose: () => {
+            let image_viewer = document.querySelector("#announcement-create-image");
+            image_viewer.classList.add("no-display");
+            let icon_viewer = document.querySelector("#announcement-create-icon");
+            icon_viewer.removeAttribute("hidden");
+            icon_viewer.src = current_dialog_data.selected;
+
+            changeProperty("icon", "IMAGE:" + current_dialog_data.selected);
+            
+            hideDialog();
+        },
+        extra: {}
+    });
+
+}

@@ -38,7 +38,7 @@
                         <span class="tiny config-detail-tag">Visible Name</span>
                     </div>
                     <div class="flex apart">
-                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="text" class="input config-detail-value" placeholder="Config Name" name="name" value="<%= config.name %>" />
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="text" class="input config-detail-value" placeholder="Config Name" name="name" value="<%= config.name %>" <%= canEdit ? "" : "disabled" %>/>
                     </div>
                 </div>
                 <div class="config-detail-item">
@@ -47,25 +47,25 @@
                     </div>
                     <div class="flex apart">
                         <% if (config.type == 'string'){ %>
-                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="text" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" />
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="text" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" <%= canEdit ? "" : "disabled" %>/>
                         <% } else if (config.type == 'number'){ %>
-                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="number" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" />
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="number" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" <%= canEdit ? "" : "disabled" %>/>
                         <% } else if (config.type == 'boolean'){ %>
-                        <select data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" class="input config-detail-value" name="value">
+                        <select data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" class="input config-detail-value" name="value" <%= canEdit ? "" : "disabled" %>>
                             <option value="true" <% if (config.value == 'true'){ %> selected <% } %>>True</option>
                             <option value="false" <% if (config.value == 'false'){ %> selected <% } %>>False</option>
                         </select>
                         <% } else if (config.type == 'date'){ %>
-                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="date" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" />
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="date" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" <%= canEdit ? "" : "disabled" %>/>
                         <% } else if (config.type == 'datetime'){ %>
-                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="datetime-local" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" />
+                        <input data-uniq_name="<%= config.uniq_name %>" onchange="editConfig(this)" type="datetime-local" class="input config-detail-value" placeholder="1234" name="value" value="<%= config.value %>" <%= canEdit ? "" : "disabled" %>/>
                         <% } %>
                     </div>
                 </div>
             </div>
             
             <div class="config-detail-item">
-                <button data-uniq_name="<%= config.uniq_name %>" onclick="deleteConfig(this)" class="button-alternate"><span class="button-text">Remove</span></button>
+                <button data-uniq_name="<%= config.uniq_name %>" onclick="deleteConfig(this)" class="button-alternate" <%= canEdit ? "" : "disabled" %>><span class="button-text">Remove</span></button>
             </div>
         </div>
         <div>

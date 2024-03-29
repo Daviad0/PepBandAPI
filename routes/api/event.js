@@ -10,7 +10,10 @@ var db;
 async function permissionCheck(req, res, permissions_allowed){
 
     if(permissions_allowed.length == 0) return true;
-    if(!req.session.user) return false;
+    if(!req.session.user) {
+        res.status(403).send({message: "Access denied"});
+        return false;
+    }
 
     for(var i = 0; i < permissions_allowed.length; i++){
         if(permissions_allowed[i] == "LOGIN"){
@@ -18,7 +21,7 @@ async function permissionCheck(req, res, permissions_allowed){
                 return true;
             }
         }
-        if(await db.checkAccess(req.session.role.rid, permissions_allowed[i])){
+        if(await db.checkAccess(req.session.role, permissions_allowed[i])){
             return true;
         }
     }
@@ -27,9 +30,9 @@ async function permissionCheck(req, res, permissions_allowed){
     return false;
 }
 
-router.get("/type/list", (req, res) => {
+router.get("/type/list", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
 
     db.getEventTypes().then((result) => {
@@ -37,9 +40,9 @@ router.get("/type/list", (req, res) => {
     })
 });
 
-router.get("/type/:etyid", (req, res) => {
+router.get("/type/:etyid", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     if(!req.params.etyid){
         res.status(400).send({message: "etyid property required to get event type"});
@@ -51,9 +54,9 @@ router.get("/type/:etyid", (req, res) => {
     })
 });
 
-router.post("/type/create", (req, res) => {
+router.post("/type/create", async (req, res) => {
     
-    if(!permissionCheck(req, res, ["event_types"])) return;
+    if(! await permissionCheck(req, res, ["event_types"])) return;
     
     db.setEventType(null, null, null, null, null).then((result) => {
         let etyid = result.data[0].etyid;
@@ -65,14 +68,14 @@ router.post("/type/create", (req, res) => {
 
 });
 
-router.post("/type", (req, res) => {
+router.post("/type", async (req, res) => {
     // expecting etyid in body, not OK if null
     // expecting name in body, OK if null
     // expecting icon in body, OK if null
     // expecting color in body, OK if null
     // expecting extra_data in body, OK if null
 
-    if(!permissionCheck(req, res, ["event_types"])) return;
+    if(! await permissionCheck(req, res, ["event_types"])) return;
 
     var etyid = req.body.etyid;
     if(!etyid){
@@ -96,12 +99,12 @@ router.post("/type", (req, res) => {
 
 });
 
-router.post("/type/delete", (req, res) => {
+router.post("/type/delete", async (req, res) => {
     
     // expecting etyid in body, not OK if null
     // need to fix results if there are event templates that use this type
 
-    if(!permissionCheck(req, res, ["event_types_remove"])) return;
+    if(! await permissionCheck(req, res, ["event_types_remove"])) return;
 
     var etyid = req.body.etyid;
     if(!etyid){
@@ -119,18 +122,18 @@ router.post("/type/delete", (req, res) => {
 
 
 
-router.get("/template/list", (req, res) => {
+router.get("/template/list", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     db.getEventTemplates().then((result) => {
         res.send(result.data);
     })
 });
 
-router.get("/template/:etid", (req, res) => {
+router.get("/template/:etid", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     if(!req.params.etid){
         res.status(400).send({message: "etid property required to get event template"});
@@ -142,9 +145,9 @@ router.get("/template/:etid", (req, res) => {
     })
 });
 
-router.post("/template/create", (req, res) => {
+router.post("/template/create", async (req, res) => {
 
-    if(!permissionCheck(req, res, ["events_templates"])) return;
+    if(! await permissionCheck(req, res, ["events_templates"])) return;
 
     // maybe change this to be all one
     db.setEventTemplate(null, null, null, null).then((result) => {
@@ -156,13 +159,13 @@ router.post("/template/create", (req, res) => {
     });
 });
 
-router.post("/template", (req, res) => {
+router.post("/template", async (req, res) => {
     // expecting etid in body, not OK if null
     // expecting etyid in body, OK if null
     // expecting name in body, OK if null
     // expecting data in body, OK if null
 
-    if(!permissionCheck(req, res, ["events_templates"])) return;
+    if(! await permissionCheck(req, res, ["events_templates"])) return;
 
     var etid = req.body.etid;
     if(!etid){
@@ -184,10 +187,10 @@ router.post("/template", (req, res) => {
 
 })
 
-router.post("/template/clone", (req, res) => {
+router.post("/template/clone", async (req, res) => {
     // expecting etid in body, not OK if null
 
-    if(!permissionCheck(req, res, ["events_templates"])) return;
+    if(! await permissionCheck(req, res, ["events_templates"])) return;
 
     var oldEtid = req.body.etid;
     if(!oldEtid){
@@ -212,11 +215,11 @@ router.post("/template/clone", (req, res) => {
     });
 });
 
-router.post("/template/delete", (req, res) => {
+router.post("/template/delete", async (req, res) => {
 
     // expecting etid in body, not OK if null
 
-    if(!permissionCheck(req, res, ["events_templates_remove"])) return;
+    if(! await permissionCheck(req, res, ["events_templates_remove"])) return;
 
     var etid = req.body.etid;
     if(!etid){
@@ -229,9 +232,9 @@ router.post("/template/delete", (req, res) => {
     });
 });
 
-router.get("/list", (req, res) => {
+router.get("/list", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     db.getEvents().then((result) => {
 
@@ -243,9 +246,9 @@ router.get("/list", (req, res) => {
     })
 });
 
-router.get("/:eid", (req, res) => {
+router.get("/:eid", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     db.getEvent(req.params.eid).then((result) => {
 
@@ -266,9 +269,9 @@ router.get("/:eid", (req, res) => {
     })
 });
 
-router.get("/:eid/overrides", (req, res) => {
+router.get("/:eid/overrides", async (req, res) => {
 
-    if(!permissionCheck(req, res, ["events_attendance_view", "events_attendance"])) return;
+    if(! await permissionCheck(req, res, ["events_attendance_view", "events_attendance"])) return;
 
     // returns user objects based on an inner join
     db.getParticipationOverrides_eid(req.params.eid).then((result) => {
@@ -276,9 +279,9 @@ router.get("/:eid/overrides", (req, res) => {
     });
 });
 
-router.get("/:uid/overrides", (req, res) => {
+router.get("/:uid/overrides", async (req, res) => {
 
-    if(!permissionCheck(req, res, ["events_attendance_view", "events_attendance", "other_users_attendance"])) return;
+    if(! await permissionCheck(req, res, ["events_attendance_view", "events_attendance", "other_users_attendance"])) return;
 
     db.getParticipationOverrides_uid(req.params.uid).then((result) => {
         res.send(result.data);
@@ -288,7 +291,7 @@ router.get("/:uid/overrides", (req, res) => {
 
 router.post("/:eid/override", async (req, res) => {
     
-    if(!permissionCheck(req, res, ["events_attendance", "other_users_attendance"])) return;
+    if(! await permissionCheck(req, res, ["events_attendance", "other_users_attendance"])) return;
 
     var eid = req.params.eid;
     var uid = req.body.uid;
@@ -329,7 +332,7 @@ router.post("/:eid/override", async (req, res) => {
 });
 
 router.post("/:eid/override/delete", async (req, res) => {
-    if(!permissionCheck(req, res, ["events_attendance", "other_users_attendance"])) return;
+    if(! await permissionCheck(req, res, ["events_attendance", "other_users_attendance"])) return;
     
     var eid = req.params.eid;
     var uid = req.body.uid;
@@ -374,7 +377,7 @@ router.post("/:eid/split", async (req, res) => {
     
     // expecting sid in body, not OK if null
     // ADDITIONAL CHECK FOR GROUP_MANAGEMENT or SPLIT_MANAGEMENT
-    if(!permissionCheck(req, res, ["events_attendance"])) return;
+    if(! await permissionCheck(req, res, ["events_attendance"])) return;
 
     var eid = req.params.eid;
     var sid = req.body.sid;
@@ -405,12 +408,12 @@ router.post("/:eid/split", async (req, res) => {
     
 });
 
-router.post("/:eid/split/delete", (req, res) => {
+router.post("/:eid/split/delete", async (req, res) => {
     
     // expecting sid in body, not OK if null
 
     // ADDITIONAL CHECK FOR GROUP_MANAGEMENT or SPLIT_MANAGEMENT
-    if(!permissionCheck(req, res, ["events_attendance"])) return;
+    if(! await permissionCheck(req, res, ["events_attendance"])) return;
 
     var eid = req.params.eid;
     var sid = req.body.sid;
@@ -443,7 +446,7 @@ router.post("/create", async (req, res) => {
     // expecting show in body, OK if null, turn to 0
     // expecting etyid in body, not OK if null
 
-    if(!permissionCheck(req, res, ["events", "events_edit"])) return;
+    if(! await permissionCheck(req, res, ["events", "events_edit"])) return;
     
     var etid_used = req.body.etid_used;
     var name = req.body.name;
@@ -541,7 +544,7 @@ router.post("/create", async (req, res) => {
 
 })
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
 
     // expecting eid in body, not OK if null
     // expecting etyid in body, OK if null
@@ -555,7 +558,7 @@ router.post("/", (req, res) => {
     // expecting location in body, OK if null
     // expecting description in body, OK if null
 
-    if(!permissionCheck(req, res, ["events_edit"])) return;
+    if(! await permissionCheck(req, res, ["events_edit"])) return;
 
     var eid = req.body.eid;
     if(!eid){

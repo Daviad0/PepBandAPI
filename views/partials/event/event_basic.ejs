@@ -66,7 +66,12 @@
             <% } %>
         </div>
         <div class="flex center">
-            <button class="button-main info-bg" style="background-color: <%= eventType.color %>;" onclick="window.location = '/event/<%= event.eid %>'"><span class="button-text">View Event</span></button>
+            <% if(canEdit){ %>
+                <button class="button-main info-bg" style="background-color: <%= eventType.color %> !important;" onclick="window.location = '/event/<%= event.eid %>/edit'"><span class="button-text">Edit</span></button>
+                <button class="button-main info-bg" style="background-color: <%= eventType.color %> !important;" onclick="window.location = '/event/<%= event.eid %>'"><span class="button-text">View</span></button>
+            <% } else { %>
+                <button class="button-main info-bg" style="background-color: <%= eventType.color %>;" onclick="window.location = '/event/<%= event.eid %>'"><span class="button-text">View Event</span></button>
+            <% } %>
         </div>
     </div>
     

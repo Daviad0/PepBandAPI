@@ -84,9 +84,6 @@
     display: unset;
 }
 
-.header .small{
-    display: none;
-}
 
 .header-expand{
     overflow-y: none;

@@ -10,7 +10,10 @@ var db;
 async function permissionCheck(req, res, permissions_allowed){
 
     if(permissions_allowed.length == 0) return true;
-    if(!req.session.user) return false;
+    if(!req.session.user) {
+        res.status(403).send({message: "Access denied"});
+        return false;
+    }
 
     for(var i = 0; i < permissions_allowed.length; i++){
         if(permissions_allowed[i] == "LOGIN"){
@@ -18,7 +21,7 @@ async function permissionCheck(req, res, permissions_allowed){
                 return true;
             }
         }
-        if(await db.checkAccess(req.session.role.rid, permissions_allowed[i])){
+        if(await db.checkAccess(req.session.role, permissions_allowed[i])){
             return true;
         }
     }
@@ -29,7 +32,7 @@ async function permissionCheck(req, res, permissions_allowed){
 
 router.get("/permissions", async (req, res) => {
 
-    if(!permissionCheck(req, res, ["permissions_view"])) return;
+    if(! await permissionCheck(req, res, ["permissions_view"])) return;
 
     var permissions = (await db.getPermissions());
 
@@ -38,7 +41,7 @@ router.get("/permissions", async (req, res) => {
 
 router.get("/config", async (req, res) => {
 
-    if(!permissionCheck(req, res, ["config_view", "config"])) return;
+    if(! await permissionCheck(req, res, ["config_view", "config"])) return;
 
     var config = (await db.getConfig()).data;
 
@@ -47,7 +50,7 @@ router.get("/config", async (req, res) => {
 
 router.get("/config/:cid", async (req, res) => {
     
-    if(!permissionCheck(req, res, ["config_view", "config"])) return;
+    if(! await permissionCheck(req, res, ["config_view", "config"])) return;
     
     if(!cid){
         res.status(400).send({message: "Missing cid"});
@@ -68,7 +71,7 @@ router.post("/config/new", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["config"])) return;
+    if(! await permissionCheck(req, res, ["config"])) return;
 
     if(!req.session.user){
         res.status(403).send({message: "Not logged in"});
@@ -125,7 +128,7 @@ router.post("/config", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["config"])) return;
+    if(! await permissionCheck(req, res, ["config"])) return;
 
     if(!req.session.user){
         res.status(403).send({message: "Not logged in"});
@@ -160,7 +163,7 @@ router.post("/config/:uniq_name/delete", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["config_remove"])) return;
+    if(! await permissionCheck(req, res, ["config_remove"])) return;
 
     if(!req.params.uniq_name){
         res.status(400).send({message: "Missing uniq_name"});
@@ -182,6 +185,179 @@ router.post("/config/:uniq_name/delete", async (req, res) => {
     db.deleteConfig(req.params.uniq_name).then((result) => {
         res.send(result);
     });
+});
+
+router.get("/announcement/list", async (req, res) => {
+
+    if(! await permissionCheck(req, res, [])) return;
+
+    // check specific user permissions to see each announcement
+
+    var announcements = (await db.getAnnouncements()).data;
+
+    // only get announcements that are active
+    // active means between published and until the expiration date (if it exists)
+
+    announcements = announcements.filter((announcement) => {
+        var now = new Date();
+        var published = new Date(announcement.published);
+        var until = new Date(announcement.until);
+
+        if(until == "Invalid Date") {
+            until = new Date("9999-12-31");
+        }
+
+        if(now >= published && now <= until){
+            return true;
+        } else {
+            return false;
+        }
+    });
+
+    res.send(announcements);
+});
+
+router.get("/announcement/:aid", async (req, res) => {
+    
+    if(! await permissionCheck(req, res, [])) return;
+
+    if(!req.params.aid){
+        res.status(400).send({message: "Missing aid"});
+        return;
+    }
+
+    var announcement = (await db.getAnnouncement(req.params.aid)).data;
+
+    announcement.active = false;
+    let now = new Date();
+    let published = new Date(announcement.published);
+    let until = new Date(announcement.until);
+    if(until == "Invalid Date") {
+        until = new Date("9999-12-31");
+    }
+
+    if(now >= published && now <= until){
+        announcement.active = true;
+    }
+
+    res.send(announcement);
+    
+});
+
+router.get("/announcement/:uid/list", async (req, res) => {
+    
+    if(! await permissionCheck(req, res, [])) return;
+
+    if(!req.params.uid){
+        res.status(400).send({message: "Missing uid"});
+        return;
+    }
+
+    var announcements = (await db.getAnnouncements_uid(req.params.uid)).data;
+
+    // gets announcements that have been posted by the user
+    let now = new Date();
+
+    announcements.forEach((announcement) => {
+        announcement.active = false;
+        let published = new Date(announcement.published);
+        let until = new Date(announcement.until);
+        if(until == "Invalid Date") {
+            until = new Date("9999-12-31");
+        }
+    
+        if(now >= published && now <= until){
+            announcement.active = true;
+        }
+    });
+
+
+    res.send(announcements);
+    
+});
+
+router.post("/announcement/create", async (req, res) => {
+
+    // expecting name in body, not OK if null
+    // expecting content in body, not OK if null
+    // expecting icon in body, OK if null
+    // expecting published in body, not OK if null
+    // expecting until in body, OK if null
+
+    if(! await permissionCheck(req, res, ["announcements", "announcements_edit"])) return;
+
+    let name = req.body.name;
+    let content = req.body.content;
+    let icon = req.body.icon;
+    let published = req.body.published;
+    let until = req.body.until;
+    let uid = req.session.user.uid;
+
+    if(!name){
+        res.status(400).send({message: "Missing name"});
+        return;
+    }
+    if(!content){
+        res.status(400).send({message: "Missing content"});
+        return;
+    }
+    if(!published){
+        res.status(400).send({message: "Missing published"});
+        return;
+    }
+    if(!until){
+        until = null;
+    }
+    if(!icon){
+        icon = null;
+    }
+
+    db.setAnnouncement(null, name, content, icon, uid, published, until).then((result) => {
+        res.send(result);
+    });
+});
+
+router.post("/announcement", async (req, res) => {
+    
+    // expecting aid in body, not OK if null
+    // expecting name in body, OK if null
+    // expecting content in body, OK if null
+    // expecting icon in body, OK if null
+    // expecting published in body, OK if null
+    // expecting until in body, OK if null
+
+    if(! await permissionCheck(req, res, ["announcements_edit"])) return;
+
+    let aid = req.body.aid;
+    let name = req.body.name;
+    let content = req.body.content;
+    let icon = req.body.icon;
+    let published = req.body.published;
+    let until = req.body.until;
+
+    if(!aid){
+        res.status(400).send({message: "Missing aid"});
+        return;
+    }
+
+    db.setAnnouncement(aid, name, content, icon, null, published, until).then((result) => {
+        res.send(result);
+    });
+});
+
+router.post("/announcement/:aid/delete", async (req, res) => {
+        
+    if(! await permissionCheck(req, res, ["announcements_edit"])) return;
+
+    if(!req.params.aid){
+        res.status(400).send({message: "Missing aid"});
+        return;
+    }
+
+    db.deleteAnnouncement(req.params.aid).then((result) => {
+        res.send(result);
+    });
+    
 });
 
 module.exports = (useDb) => {

@@ -12,7 +12,10 @@ var db;
 async function permissionCheck(req, res, permissions_allowed){
 
     if(permissions_allowed.length == 0) return true;
-    if(!req.session.user) return false;
+    if(!req.session.user) {
+        res.status(403).send({message: "Access denied"});
+        return false;
+    }
 
     for(var i = 0; i < permissions_allowed.length; i++){
         if(permissions_allowed[i] == "LOGIN"){
@@ -20,7 +23,7 @@ async function permissionCheck(req, res, permissions_allowed){
                 return true;
             }
         }
-        if(await db.checkAccess(req.session.role.rid, permissions_allowed[i])){
+        if(await db.checkAccess(req.session.role, permissions_allowed[i])){
             return true;
         }
     }
@@ -44,8 +47,8 @@ function verifyPassword(password, hash, salt){
 
 
 
-router.get('/overrides', (req, res) => {
-    if(!permissionCheck(req, res, ["other_users"])) return;
+router.get('/overrides', async (req, res) => {
+    if(! await permissionCheck(req, res, ["other_users"])) return;
     
     if(req.session.user){
         db.getOverrides_uid(req.session.user.uid).then((result) => {
@@ -56,9 +59,9 @@ router.get('/overrides', (req, res) => {
     }
 })
 
-router.post('/override', (req, res) => {
+router.post('/override', async (req, res) => {
 
-    if(!permissionCheck(req, res, ["events_attend"])) return;
+    if(! await permissionCheck(req, res, ["events_attend"])) return;
 
     // expecting eid in body, not OK if null
     // expecting override in body, not OK if null
@@ -85,7 +88,7 @@ router.post('/override', (req, res) => {
 router.get("/users", async (req, res) => {
     
     
-    if(!permissionCheck(req, res, ["other_users"])) return;
+    if(! await permissionCheck(req, res, ["other_users"])) return;
 
     db.getIdentities().then((result) => {
         res.send(result);
@@ -95,7 +98,7 @@ router.get("/users", async (req, res) => {
 router.post("/users/:uid/role", async (req, res) => {
     // expecting rid in body, not OK if null
 
-    if(!permissionCheck(req, res, ["other_users", "other_roles_assign"])) return;
+    if(! await permissionCheck(req, res, ["other_users", "other_roles_assign"])) return;
 
     if(!req.params.uid){
         res.status(400).send({message: "Missing uid"});
@@ -133,7 +136,7 @@ router.post("/users/:uid/delete", async (req, res) => {
 
     // expecting uid in body, not OK if null
 
-    if(!permissionCheck(req, res, ["other_users_remove"])) return;
+    if(! await permissionCheck(req, res, ["other_users_remove"])) return;
 
     if(!req.params.uid){
         res.status(400).send({message: "Missing uid"});
@@ -149,7 +152,7 @@ router.post("/users/:uid/delete", async (req, res) => {
 });
 
 router.get("/find/:uid", async (req, res) => {
-    if(!permissionCheck(req, res, ["other_users"])) return;
+    if(! await permissionCheck(req, res, ["other_users"])) return;
 
     if(!req.params.uid){
         res.status(400).send({success: false, message: "Missing uid"});
@@ -162,7 +165,7 @@ router.get("/find/:uid", async (req, res) => {
 });
 
 router.get("/:uid/overrides", async (req, res) => {
-    if(!permissionCheck(req, res, ["other_users", "other_users_attendance"])) return;
+    if(! await permissionCheck(req, res, ["other_users", "other_users_attendance"])) return;
 
     if(!req.params.uid){
         res.status(400).send({message: "Missing uid"});
@@ -177,7 +180,7 @@ router.get("/:uid/overrides", async (req, res) => {
 
 
 router.get("/roles", async (req, res) => {
-    if(!permissionCheck(req, res, ["other_roles"])) return;
+    if(! await permissionCheck(req, res, ["other_roles"])) return;
 
     db.getRoles().then((result) => {
         res.send(result);
@@ -186,7 +189,7 @@ router.get("/roles", async (req, res) => {
 
 router.get("/roles/:rid", async (req, res) => {
     
-    if(!permissionCheck(req, res, ["other_roles"])) return;
+    if(! await permissionCheck(req, res, ["other_roles"])) return;
     
     if(!(await db.checkAccess(req.session.role, "other_roles"))){
         res.status(403).send({message: "Access denied"});
@@ -207,7 +210,7 @@ router.get("/roles/:rid", async (req, res) => {
 router.post("/roles/create", async (req, res) => {
     // expecting name in body, not OK if null
 
-    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
+    if(! await permissionCheck(req, res, ["other_roles_edit"])) return;
 
     let name = req.body.name;
     if(!name){
@@ -232,7 +235,7 @@ router.post("/roles/:rid/permission", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
+    if(! await permissionCheck(req, res, ["other_roles_edit"])) return;
 
     if(!req.params.rid){
         res.status(400).send({message: "Missing rid"});
@@ -240,6 +243,20 @@ router.post("/roles/:rid/permission", async (req, res) => {
     }
     if(!req.body.permission){
         res.status(400).send({message: "Missing permission"});
+        return;
+    }
+
+    let role = await db.getRole(req.params.rid);
+
+    if(role.data.length == 0){
+        res.status(400).send({message: "Invalid rid"});
+        return;
+    }
+
+    let power = role.data[0].power;
+    let userPower = req.session.role.power;
+    if(userPower <= power){
+        res.status(403).send({message: "Cannot add permission from role with power greater than or equal to your own"});
         return;
     }
 
@@ -260,7 +277,7 @@ router.post("/roles/:rid/permission/delete", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
+    if(! await permissionCheck(req, res, ["other_roles_edit"])) return;
 
     if(!req.params.rid){
         res.status(400).send({message: "Missing rid"});
@@ -268,6 +285,20 @@ router.post("/roles/:rid/permission/delete", async (req, res) => {
     }
     if(!req.body.permission){
         res.status(400).send({message: "Missing permission"});
+        return;
+    }
+
+    let role = await db.getRole(req.params.rid);
+
+    if(role.data.length == 0){
+        res.status(400).send({message: "Invalid rid"});
+        return;
+    }
+
+    let power = role.data[0].power;
+    let userPower = req.session.role.power;
+    if(userPower <= power){
+        res.status(403).send({message: "Cannot delete permission from role with power greater than or equal to your own"});
         return;
     }
 
@@ -287,7 +318,7 @@ router.post("/roles", async (req, res) => {
     // expecting rid in body, not OK if null
     // expecting description in body, OK if null
 
-    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
+    if(! await permissionCheck(req, res, ["other_roles_edit"])) return;
 
     let name = req.body.name;
     let power = req.body.power;
@@ -330,7 +361,7 @@ router.post("/roles/:rid/delete", async (req, res) => {
     
     // have to do some damage control to change roles of users with this role
 
-    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
+    if(! await permissionCheck(req, res, ["other_roles_edit"])) return;
 
     if(!req.params.rid){
         res.status(400).send({message: "Missing rid"});

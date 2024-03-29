@@ -13,9 +13,9 @@
     <% let default_role_item_data_danger_plural = {rid: "DEFAULT_RID", icon: "DEFAULT_ICON", name: "DEFAULT_NAME", power: "DEFAULT_POWER", description: "DEFAULT_DESCRIPTION", user_count: 2, permissions: [] } %>
     
     <script>
-        let role_item_template_safe = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_safe, myRole: role}) %>`;
-        let role_item_template_danger_1 = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_1, myRole: role}) %>`;
-        let role_item_template_danger_plural = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_plural, myRole: role}) %>`;
+        let role_item_template_safe = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_safe, myRole: role, canEdit: true}) %>`;
+        let role_item_template_danger_1 = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_1, myRole: role, canEdit: true}) %>`;
+        let role_item_template_danger_plural = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_plural, myRole: role, canEdit: true}) %>`;
     </script>
     
     <script src="/js/roles.js"></script>
@@ -29,36 +29,45 @@
                     
         
                     <span class="small spacing">Manage all of the roles that contain user permissions. Each user can only have one role with a "permission power", which can be defined to be more or less powerful based on the desired permissions.</span>
-                    <div class="message message-info">
-                        <span class="small message-content">You may only edit roles that <strong>contain less than your permission power</strong>. You may not make any role more powerful than your "permission power".</span>
-                    </div>
-                    <div class="message message-warning">
-                        <span class="small message-content">Any changes made to your role that downgrade its "permission power" are permanent. Exercise caution when changing your role's permission power.</span>
-                    </div>
-                    <div class="flex center">
-                        <span class="small spacing">Role Name</span>
-                        <input type="text" class="input small" placeholder="New Role Name" name="name" id="role-create-name" />
-                        <button class="button-main" onclick="createRole()" id="role-create"><span class="button-text">Create Role</span></button>
-                    </div>
+                    
+                    <% if(permissions.includes("other_roles_edit")) { %>
+                        <div class="message message-info">
+                            <span class="small message-content">You may only edit roles that <strong>contain less than your permission power</strong>. You may not make any role more powerful than your "permission power".</span>
+                        </div>
+                        <div class="message message-warning">
+                            <span class="small message-content">Any changes made to your role that downgrade its "permission power" are permanent. Exercise caution when changing your role's permission power.</span>
+                        </div>
+                        <div class="flex center">
+                            <span class="small spacing">Role Name</span>
+                            <input type="text" class="input small" placeholder="New Role Name" name="name" id="role-create-name" />
+                            <button class="button-main" onclick="createRole()" id="role-create"><span class="button-text">Create Role</span></button>
+                        </div>
+                    <% }else { %>
+                        <div class="message message-danger">
+                            <span class="small message-content">You do not have permission to create or manage roles.</span>
+                        </div>
+                    <% } %>
                     
                     
                     
                 </div>
                 <div id="role-list" class="flex center start role-list">
-                    <%- include('./partials/config/all_roles.ejs', {roles: roles, myRole: role}); %>
+                    <%- include('./partials/config/all_roles.ejs', {roles: roles, myRole: role, canEdit: permissions.includes("other_roles_edit")}); %>
                 </div>
-                <div class="role-footer">
-                    <div class="flex center">
-                        <span class="small spacing">Default User Role</span>
-                        <select onchange="setConfig_defaultRole(this)" class="input small" name="default_role" id="role-default-role">
-                            <option value="" disabled <% if(!default_role){ %>selected<% }%>>Select a Role</option>
-                            <% roles.forEach(function(r){ %>
-                                <option value="<%= r.rid %>" <% if(default_role == r.rid){ %>selected<% } %>><%= r.name %></option>
-                            <% }); %>
-                        </select>
-                        
+                <% if(permissions.includes("config_view") || permissions.includes("config")) { %>
+                    <div class="role-footer">
+                        <div class="flex center">
+                            <span class="small spacing">Default User Role</span>
+                            <select onchange="setConfig_defaultRole(this)" class="input small" name="default_role" id="role-default-role" <%= permissions.includes("config") ? "" : "disabled" %>>
+                                <option value="" disabled <% if(!default_role){ %>selected<% }%>>Select a Role</option>
+                                <% roles.forEach(function(r){ %>
+                                    <option value="<%= r.rid %>" <% if(default_role == r.rid){ %>selected<% } %>><%= r.name %></option>
+                                <% }); %>
+                            </select>
+                            
+                        </div>
                     </div>
-                </div>
+                <% } %>
             </div>
             
             

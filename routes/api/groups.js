@@ -10,7 +10,10 @@ var db;
 async function permissionCheck(req, res, permissions_allowed){
 
     if(permissions_allowed.length == 0) return true;
-    if(!req.session.user) return false;
+    if(!req.session.user) {
+        res.status(403).send({message: "Access denied"});
+        return false;
+    }
 
     for(var i = 0; i < permissions_allowed.length; i++){
         if(permissions_allowed[i] == "LOGIN"){
@@ -18,7 +21,7 @@ async function permissionCheck(req, res, permissions_allowed){
                 return true;
             }
         }
-        if(await db.checkAccess(req.session.role.rid, permissions_allowed[i])){
+        if(await db.checkAccess(req.session.role, permissions_allowed[i])){
             return true;
         }
     }
@@ -28,7 +31,7 @@ async function permissionCheck(req, res, permissions_allowed){
 }
 
 router.get("/groups", async (req, res) => {
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
     
     var groups = (await db.getGroups()).data;
 
@@ -37,7 +40,7 @@ router.get("/groups", async (req, res) => {
 
 router.get("/group/:gid", async (req, res) => {
    
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     if(!req.params.gid){
         res.status(400).send({message: "Missing gid"});
@@ -57,7 +60,7 @@ router.post("/group", async (req, res) => {
     // expecting description in body, OK if null
     // expecting extra_data in body, OK if null
 
-    if(!permissionCheck(req, res, ["groups"])) return;
+    if(! await permissionCheck(req, res, ["groups"])) return;
     
     if(!(await db.checkAccess(req.session.role, "groups"))){
         res.status(403).send({message: "Access denied"});
@@ -91,7 +94,7 @@ router.post("/group", async (req, res) => {
 router.post("/group/create", async (req, res) => {
     // maybe change this to be all one
 
-    if(!permissionCheck(req, res, ["groups"])) return;
+    if(! await permissionCheck(req, res, ["groups"])) return;
 
     let name = req.body.name;
 
@@ -107,7 +110,7 @@ router.post("/group/create", async (req, res) => {
 router.post("/group/clone", async (req, res) => {
     // expecting gid in body, not OK if null
 
-    if(!permissionCheck(req, res, ["groups"])) return;
+    if(! await permissionCheck(req, res, ["groups"])) return;
 
     var oldGid = req.body.gid;
     if(!oldGid){
@@ -175,7 +178,7 @@ router.post("/group/membership", async (req, res) => {
         //     return;
         // }
 
-        if(!permissionCheck(req, res, ["groups_join"])) return;
+        if(! await permissionCheck(req, res, ["groups_join"])) return;
 
         let group = await db.getGroup(gid);
         if(group.data.length == 0){
@@ -196,7 +199,7 @@ router.post("/group/membership", async (req, res) => {
     }else{
         
 
-        if(!permissionCheck(req, res, ["groups", "other_users_membership"])) return;
+        if(! await permissionCheck(req, res, ["groups", "other_users_membership"])) return;
 
         let group = await db.getGroup(gid);
         if(group.data.length == 0){
@@ -236,7 +239,7 @@ router.post("/group/membership/delete", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["groups", "other_users_membership"])) return;
+    if(! await permissionCheck(req, res, ["groups", "other_users_membership"])) return;
 
     let uid = req.body.uid;
     let gid = req.body.gid;
@@ -264,7 +267,7 @@ router.post("/group/:gid/leave", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["groups_join"])) return;
+    if(! await permissionCheck(req, res, ["groups_join"])) return;
 
     if(req.session.user == null){
         res.status(403).send({message: "Not logged in"});
@@ -294,7 +297,7 @@ router.post("/group/:gid/delete", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["groups"])) return;
+    if(! await permissionCheck(req, res, ["groups"])) return;
 
     var gid = req.params.gid;
 
@@ -312,7 +315,7 @@ router.post("/group/:gid/delete", async (req, res) => {
 
 router.get("/splits", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     var splits = (await db.getSplits()).data;
 
@@ -321,7 +324,7 @@ router.get("/splits", async (req, res) => {
 
 router.get("/split/:sid", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     if(!req.params.sid){
         res.status(400).send({message: "Missing sid"});
@@ -341,7 +344,7 @@ router.post("/split", async (req, res) => {
     // expecting uid_primary in body, OK if null
     // expecting extra_data in body, OK if null
 
-    if(!permissionCheck(req, res, ["splits"])) return;
+    if(! await permissionCheck(req, res, ["splits"])) return;
 
     let sid = req.body.sid;
     let name = req.body.name;
@@ -369,7 +372,7 @@ router.post("/split", async (req, res) => {
 router.post("/split/create", async (req, res) => {
     // maybe change this to be all one
 
-    if(!permissionCheck(req, res, ["splits", "groups"])) return;
+    if(! await permissionCheck(req, res, ["splits", "groups"])) return;
 
     let name = req.body.name;
     let gid = req.body.gid;
@@ -388,7 +391,7 @@ router.post("/split/create", async (req, res) => {
 router.post("/split/clone", async (req, res) => {
     // expecting sid in body, not OK if null
 
-    if(!permissionCheck(req, res, ["splits", "groups"])) return;
+    if(! await permissionCheck(req, res, ["splits", "groups"])) return;
 
     var oldSid = req.body.sid;
     if(!oldSid){
@@ -453,7 +456,7 @@ router.post("/split/membership", async (req, res) => {
         //     return;
         // }
 
-        if(!permissionCheck(req, res, ["splits_join"])) return;
+        if(! await permissionCheck(req, res, ["splits_join"])) return;
 
         let split = await db.getSplit(sid);
         if(split.data.length == 0){
@@ -473,7 +476,7 @@ router.post("/split/membership", async (req, res) => {
 
     }else{
         
-        if(!permissionCheck(req, res, ["splits", "other_users_membership"])) return;
+        if(! await permissionCheck(req, res, ["splits", "other_users_membership"])) return;
 
         let split = await db.getSplit(sid);
         if(split.data.length == 0){
@@ -511,7 +514,7 @@ router.post("/split/membership/delete", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["splits", "other_users_membership"])) return;
+    if(! await permissionCheck(req, res, ["splits", "other_users_membership"])) return;
 
     let uid = req.body.uid;
     let sid = req.body.sid;
@@ -539,7 +542,7 @@ router.post("/split/:sid/leave", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["splits_join"])) return;
+    if(! await permissionCheck(req, res, ["splits_join"])) return;
 
     if(req.session.user == null){
         res.status(403).send({message: "Not logged in"});
@@ -564,7 +567,7 @@ router.post("/split/:sid/delete", async (req, res) => {
     //     return;
     // }
 
-    if(!permissionCheck(req, res, ["splits", "groups"])) return;
+    if(! await permissionCheck(req, res, ["splits", "groups"])) return;
 
     var sid = req.params.sid;
 

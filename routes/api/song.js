@@ -10,7 +10,10 @@ var db;
 async function permissionCheck(req, res, permissions_allowed){
 
     if(permissions_allowed.length == 0) return true;
-    if(!req.session.user) return false;
+    if(!req.session.user) {
+        res.status(403).send({message: "Access denied"});
+        return false;
+    }
 
     for(var i = 0; i < permissions_allowed.length; i++){
         if(permissions_allowed[i] == "LOGIN"){
@@ -18,7 +21,7 @@ async function permissionCheck(req, res, permissions_allowed){
                 return true;
             }
         }
-        if(await db.checkAccess(req.session.role.rid, permissions_allowed[i])){
+        if(await db.checkAccess(req.session.role, permissions_allowed[i])){
             return true;
         }
     }
@@ -27,18 +30,18 @@ async function permissionCheck(req, res, permissions_allowed){
     return false;
 }
 
-router.get("/list", (req, res) => {
+router.get("/list", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     db.getSongs().then((result) => {
         res.send(result);
     })
 });
 
-router.get("/:soid", (req, res) => {
+router.get("/:soid", async (req, res) => {
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     if(!req.params.soid){
         res.status(400).send({message: "soid property required to get song"});
@@ -54,7 +57,7 @@ router.post("/create", async (req, res) => {
     // expecting name in body, OK if null
 
 
-    if(!permissionCheck(req, res, ["songs"])) return;
+    if(! await permissionCheck(req, res, ["songs"])) return;
 
     let name = req.body.name;
 
@@ -72,7 +75,7 @@ router.post("/create", async (req, res) => {
 router.post("/:soid/clone", async (req, res) => {
     // expecting soid in body, not OK if null
 
-    if(!permissionCheck(req, res, ["songs"])) return;
+    if(! await permissionCheck(req, res, ["songs"])) return;
 
     var oldSoid = req.params.soid;
     if(!oldSoid){
@@ -99,7 +102,7 @@ router.post("/:soid/clone", async (req, res) => {
 router.post("/:soid/delete", async (req, res) => {
     // expecting soid in body, not OK if null
 
-    if(!permissionCheck(req, res, ["songs_remove"])) return;
+    if(! await permissionCheck(req, res, ["songs_remove"])) return;
 
     var soid = req.params.soid;
     if(!soid){
@@ -116,7 +119,7 @@ router.post("/:soid/delete", async (req, res) => {
 router.get("/:soid/usage", async (req, res) => {
     // expecting soid in body, not OK if null
 
-    if(!permissionCheck(req, res, [])) return;
+    if(! await permissionCheck(req, res, [])) return;
 
     var soid = req.params.soid;
     if(!soid){
@@ -140,7 +143,7 @@ router.post("/", async (req, res) => {
     // expecting duration in body, OK if null
     // expecting source in body, OK if null
 
-    if(!permissionCheck(req, res, ["songs"])) return;
+    if(! await permissionCheck(req, res, ["songs"])) return;
 
     var soid = req.body.soid;
     if(!soid){

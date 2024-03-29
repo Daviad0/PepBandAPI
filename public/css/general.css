@@ -94,11 +94,11 @@ a .logo:hover{
     -webkit-filter: drop-shadow(0px 0px 8px rgba(0,0,0,0.7));
 }
 
-.header .large{
+.header .large-container{
     display: unset;
 }
 
-.header .small{
+.header .small-container{
     display: none;
 }
 
@@ -116,11 +116,11 @@ a .logo:hover{
 }
 
 @media screen and (max-width: 800px) {
-    .header .large{
+    .header .large-container{
         display: none;
     }
 
-    .header .small{
+    .header .small-container{
         display: unset;
     }
     
@@ -262,6 +262,12 @@ a .logo:hover{
     font-size: 12px;
     font-weight: 500;
     margin: 0px 5px;
+    cursor:pointer;
+    transition: 0.5s ease all;
+}
+
+.footer .item:hover{
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.7);
 }
 
 .manage{

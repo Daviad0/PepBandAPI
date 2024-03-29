@@ -1,5 +1,7 @@
 // any general methods that should be shared across pages
 
+
+
 function resolve(about, origValue, newValue, access){
 
     let elements = document.querySelectorAll(`span[data-about="${about}"][data-value="${origValue}"]`);
@@ -451,10 +453,11 @@ function showDialog(properties){
             dialog_title.innerHTML = title;
             dialog_icon.innerHTML = icon;
 
-            let dialog_icon_input = selectedOptionDiv.querySelector("#dialog-icon-input");
-            dialog_icon_input.value = "";
+            document.getElementById("dialog-icon-search-name").value = "";
+            if(current_dialog_data["icons"] == undefined) current_dialog_data["icons"] = [];
             current_dialog_data["onchoose"] = properties.onchoose || (() => {});
-            current_dialog_data["selected"] = null;
+            current_dialog_data["selected"] = [];
+            current_dialog_data["multiple"] = false;
             current_dialog_data["extra"] = properties.extra || {};
             preselectedButtons = [
                 {
@@ -489,6 +492,62 @@ function showDialog(properties){
                 }
                 button_element.onclick = button.onclick;
                 dialog_buttons_static_icon.appendChild(button_element);
+            });
+
+            dialog_getIcons();
+
+            
+            break;
+
+        case "image":
+
+            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
+            dialog_buttons_static.innerHTML = "";
+            title = properties.title;
+            icon = properties.icon;
+
+
+            dialog_title.innerHTML = title;
+            dialog_icon.innerHTML = icon;
+
+            
+            current_dialog_data["onchoose"] = properties.onchoose || (() => {});
+            current_dialog_data["selected"] = [];
+            current_dialog_data["multiple"] = false;
+            current_dialog_data["extra"] = properties.extra || {};
+            preselectedButtons = [
+                {
+                    text: "Cancel",
+                    class: "button-alternate",
+                    onclick: () => {
+                        hideDialog();
+                    }
+                },
+                {
+                    text: "Select",
+                    class: "button-main",
+                    onclick: () => {
+                        current_dialog_data["onchoose"](current_dialog_data["selected"]);
+                    }
+                }
+            ]
+
+            preselectedButtons.forEach((button) => {
+                // expecting text, class, and onclick
+                // background may be defined 
+                let button_element = document.createElement("button");
+                if(button.text == "Select"){
+                    button_element.setAttribute("disabled", "disabled");
+                    button_element.setAttribute("id", "dialog-icon-select");
+                }
+                button_element.innerHTML = button.text;
+                button_element.classList.add(button.class);
+                button_element.classList.add("dialog-button");
+                if(button.background){
+                    button_element.classList.add(button.background);
+                }
+                button_element.onclick = button.onclick;
+                dialog_buttons_static.appendChild(button_element);
             });
 
             
@@ -543,6 +602,40 @@ function dialog_icon_changeIcon(element){
         document.getElementById("dialog-icon-select").setAttribute("disabled", "disabled");
         return;
     }
+
+    document.getElementById("dialog-icon-select").removeAttribute("disabled");
+
+}
+
+function dialog_icon_toggleSelected(element){
+    let icon = element.getAttribute("data-icon");
+
+    if(current_dialog_data["selected"].find(s => s == icon)){
+        // remove from selected
+
+        let index = current_dialog_data["selected"].indexOf(icon);
+        current_dialog_data["selected"].splice(index, 1);
+
+        element.classList.remove("dialog-song-selected");
+
+        if(current_dialog_data["selected"].length == 0){
+            document.getElementById("dialog-icon-select").setAttribute("disabled", "disabled");
+        }
+        return;
+    }
+
+    if(!current_dialog_data["multiple"]){
+        // only one song can be selected
+        let selected = document.querySelectorAll(".dialog-song-selected");
+        selected.forEach((element) => {
+            element.classList.remove("dialog-song-selected");
+        })
+        current_dialog_data["selected"] = [];
+    }
+
+    current_dialog_data["selected"].push(icon);
+
+    element.classList.add("dialog-song-selected");
 
     document.getElementById("dialog-icon-select").removeAttribute("disabled");
 
@@ -660,6 +753,55 @@ function dialog_song_toggleSelected(element){
     document.getElementById("dialog-song-select").removeAttribute("disabled");
 }
 
+function dialog_icon_changeSearch(){
+    let name = document.getElementById("dialog-icon-search-name").value;
+
+    let icons = current_dialog_data["icons"];
+
+    let iconsLeftToShow = 100;
+
+    let parentDiv = document.getElementById("dialog-icon-parent");
+
+    parentDiv.innerHTML = "";
+
+    for(var i = 0; i < icons.length; i++){
+        if(iconsLeftToShow <= 0) break;
+
+        if(!(name == "" || icons[i].includes(name))) continue;
+
+        let option = document.createElement("div");
+        option.classList.add("floating-box");
+        option.classList.add("dialog-icon");
+
+        option.setAttribute("data-icon", icons[i]);
+        option.onclick = () => {
+            dialog_icon_toggleSelected(option);
+        }
+
+        option.innerHTML = `
+
+        <div class="flex center">
+            
+            <div class="fill">
+                <div class="flex center">
+                    <span class="material-symbols-rounded large">${icons[i]}</span>
+                    
+                </div>
+                
+                
+            </div>
+        
+        </div>
+
+        `;
+
+        parentDiv.appendChild(option);
+
+        iconsLeftToShow --;
+
+    }
+}
+
 function dialog_song_changeSearch(){
     let name = document.getElementById("dialog-song-search-name").value;
     let artist = document.getElementById("dialog-song-search-artist").value;
@@ -704,6 +846,39 @@ function dialog_user_changeSearch(){
     
     }
 
+}
+
+function dialog_getIcons(){
+
+    if(current_dialog_data["icons"].length > 0) {
+        dialog_icon_changeSearch();
+        return;
+    }
+
+    // stored on a txt file on the server /external/mat-symbols.txt
+    let url = "/external/mat-symbols.json";
+    apiGet(url, (result) => {
+        // data is a txt file each line being an icon
+        // first part of line before space is actual icon name
+        try{
+
+            default_material_icons = [];
+
+            result.icons.forEach(line => {
+                let icon = line.split(" ");
+                default_material_icons.push(icon[0]);
+            })
+
+            current_dialog_data["icons"] = default_material_icons;
+
+            dialog_icon_changeSearch();
+            
+        }catch(e){
+            console.log(e);
+        }
+
+        
+    })
 }
 
 function dialog_getPermissions(){

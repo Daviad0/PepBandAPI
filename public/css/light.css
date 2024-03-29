@@ -1,3 +1,66 @@
+.error{
+    color: #DB1A1A;
+}
+.success{
+    color: #00BE35;
+}
+.info{
+    color: #1D8BF1;
+}
+.warning{
+    color: #E98C00;
+}
+.white{
+    color: white;
+}
+
+.error-border{
+    border: 2px solid #DB1A1A;
+    border-color: #DB1A1A;
+}
+.success-border{
+    border: 2px solid #00BE35;
+    border-color: #00BE35;
+}
+.info-border{
+    border: 2px solid #1D8BF1;
+    border-color: #1D8BF1;
+}
+.warning-border{
+    border: 2px solid #E98C00;
+    border-color: #E98C00;
+}
+
+.error-bg{
+    background-color: #DB1A1A !important;
+    color: white;
+}
+.success-bg{
+    background-color: #00BE35 !important;
+    color: white;
+}
+.info-bg{
+    background-color: #1D8BF1 !important;
+    color: white;
+}
+.warning-bg{
+    background-color: #E98C00 !important;
+    color: white;
+}
+.main-bg{
+    background-color: #ffcd00 !important;
+    color: white;
+}
+.gray-bg{
+    background-color: #666666 !important;
+    color: white;
+
+}
+.white-bg{
+    background-color: white !important;
+    color: black;
+}
+
 .color-header{
     background-color: #ffcd00 !important;
 }
@@ -54,68 +117,7 @@ select{
     color: rgba(0,0,0,0.7);
 }
 
-.error{
-    color: #DB1A1A;
-}
-.success{
-    color: #00BE35;
-}
-.info{
-    color: #1D8BF1;
-}
-.warning{
-    color: #E98C00;
-}
-.white{
-    color: white;
-}
 
-.error-border{
-    border: 2px solid #DB1A1A;
-    border-color: #DB1A1A;
-}
-.success-border{
-    border: 2px solid #00BE35;
-    border-color: #00BE35;
-}
-.info-border{
-    border: 2px solid #1D8BF1;
-    border-color: #1D8BF1;
-}
-.warning-border{
-    border: 2px solid #E98C00;
-    border-color: #E98C00;
-}
-
-.error-bg{
-    background-color: #DB1A1A;
-    color: white;
-}
-.success-bg{
-    background-color: #00BE35;
-    color: white;
-}
-.info-bg{
-    background-color: #1D8BF1;
-    color: white;
-}
-.warning-bg{
-    background-color: #E98C00;
-    color: white;
-}
-.main-bg{
-    background-color: #ffcd00;
-    color: white;
-}
-.gray-bg{
-    background-color: #666666;
-    color: white;
-
-}
-.white-bg{
-    background-color: white;
-    color: black;
-}
 
 .message-error{
     /*#DB1A1A

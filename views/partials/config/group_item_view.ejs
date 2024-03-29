@@ -1,4 +1,4 @@
-<div class="group" data-gid="<%= group.gid %>" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
+<div class="group" onclick="window.location = '/group/<%= group.gid %>'" data-gid="<%= group.gid %>" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
     <div class="flex apart">
         <div class="flex center">
             <span class="medium material-symbols-rounded"><%= group.icon %></span>

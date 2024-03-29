@@ -57,26 +57,25 @@
                             <img class="icon no-display" id="announcement-create-image"/>
                         </div>
                         <div class="flex apart">
-                            <span class="tiny announcement-create-detail-tag">Event Icon</span>
+                            <span class="tiny announcement-create-detail-tag">Announcement Icon</span>
                         </div>
                         <div class="flex apart">
-                            <input name="location" type="text" class="input announcement-create-detail-value" placeholder="Location"/>
+                            <input name="icon" type="text" hidden disabled class="input announcement-create-detail-value" placeholder="Icon"/>
                         </div>
+                    </div>
+                    <div class="flex center">
+                        <button onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
+                        <button onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Choose Image</span></button>
                     </div>
                 </div>
 
-                <div id="announcement-template-warning" class="no-display">
-                    <div class="message message-warning">
-                        <span class="small message-content">The event template you selected does not match the selected event type. This won't stop the event from being created, but the data may not be similar to other events.</span>
-                    </div>
-                </div>
 
                 <div class="flex center spacing">
                     <span class="small no-display error error-message" name="error" id="announcement-create-error"></span>
                 </div>
 
                 <div class="flex center">
-                    <button class="button-main" onclick="submitEventForCreation()"><span class="button-text">Create Event</span></button>
+                    <button class="button-main" onclick="submitEventForCreation()"><span class="button-text">Post Announcement</span></button>
                 </div>
 
             </div>

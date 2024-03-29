@@ -12,11 +12,11 @@
     <% let default_config_item_data_date = {cid: "DEFAULT_CID", name: "DEFAULT_NAME", uniq_name: "DEFAULT_UNIQ_NAME", value: "DEFAULT_VALUE", uid: "DEFAULT_UID", type: "date"} %>
     <% let default_config_item_data_datetime = {cid: "DEFAULT_CID", name: "DEFAULT_NAME", uniq_name: "DEFAULT_UNIQ_NAME", value: "DEFAULT_VALUE", uid: "DEFAULT_UID", type: "datetime"} %>
     <script>
-        let config_item_template_string = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_string}) %>`;
-        let config_item_template_number = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_number}) %>`;
-        let config_item_template_boolean = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_boolean}) %>`;
-        let config_item_template_date = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_date}) %>`;
-        let config_item_template_datetime = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_datetime}) %>`;
+        let config_item_template_string = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_string, canEdit: true}) %>`;
+        let config_item_template_number = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_number, canEdit: true}) %>`;
+        let config_item_template_boolean = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_boolean, canEdit: true}) %>`;
+        let config_item_template_date = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_date, canEdit: true}) %>`;
+        let config_item_template_datetime = `<%- include('./partials/config/config_item.ejs', {config: default_config_item_data_datetime, canEdit: true}) %>`;
     </script>
     <%- include('./partials/header.ejs'); %>
     <script src="/js/config.js"></script>
@@ -30,29 +30,36 @@
                     
     
                     <span class="small spacing">Manage all of the existing configuration for the entire pep band website.</span>
-                    <div class="message message-warning">
-                        <span class="small message-content">This configuration applies for all users of the website. If you would like to edit your own configuration, please go <strong>here.</strong></span>
-                        <span class="small message-content"><i>All edits to the site configuration are logged!</i></span>
-                    </div>
-                    <div class="flex center">
-                        <span class="small spacing">Unique Config Name</span>
-                        <input type="text" class="input small" placeholder="Config_Name" name="name" id="config-create-uniq_name" />
-                        <select class="input small" name="type" id="config-create-type">
-                            <option value="" disabled selected>Config Type</option>
-                            <option value="string">String</option>
-                            <option value="number">Number</option>
-                            <option value="boolean">Boolean</option>
-                            <option value="date">Date</option>
-                            <option value="datetime">Datetime</option>
-                        </select>
-                        <button class="button-main" onclick="createConfig()" id="config-create"><span class="button-text">Create Config</span></button>
-                    </div>
+                    
+                    <% if(permissions.includes("config")) { %>
+                        <div class="message message-warning">
+                            <span class="small message-content">This configuration applies for all users of the website. If you would like to edit your own configuration, please go <strong>here.</strong></span>
+                            <span class="small message-content"><i>All edits to the site configuration are logged!</i></span>
+                        </div>
+                        <div class="flex center">
+                            <span class="small spacing">Unique Config Name</span>
+                            <input type="text" class="input small" placeholder="Config_Name" name="name" id="config-create-uniq_name" />
+                            <select class="input small" name="type" id="config-create-type">
+                                <option value="" disabled selected>Config Type</option>
+                                <option value="string">String</option>
+                                <option value="number">Number</option>
+                                <option value="boolean">Boolean</option>
+                                <option value="date">Date</option>
+                                <option value="datetime">Datetime</option>
+                            </select>
+                            <button class="button-main" onclick="createConfig()" id="config-create"><span class="button-text">Create Config</span></button>
+                        </div>
+                    <% } else { %>
+                        <div class="message message-danger">
+                            <span class="small message-content">You do not have permission to create or manage configuration items.</span>
+                        </div>
+                    <% } %>
                     
                     
                     
                 </div>
                 <div id="config-list" class="config-list">
-                    <%- include('./partials/config/all_config.ejs', {config: config}); %>
+                    <%- include('./partials/config/all_config.ejs', {config: config, canEdit: permissions.includes("config")}); %>
                 </div>
             </div>
             
