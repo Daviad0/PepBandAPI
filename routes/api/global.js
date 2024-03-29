@@ -4,9 +4,32 @@ const router = express.Router("/api/global");
 
 var db;
 
+/*
+ LOGIN - user must be logged in
+*/
+async function permissionCheck(req, res, permissions_allowed){
+
+    if(permissions_allowed.length == 0) return true;
+    if(!req.session.user) return false;
+
+    for(var i = 0; i < permissions_allowed.length; i++){
+        if(permissions_allowed[i] == "LOGIN"){
+            if(req.session.user){
+                return true;
+            }
+        }
+        if(await db.checkAccess(req.session.role.rid, permissions_allowed[i])){
+            return true;
+        }
+    }
+
+    res.status(403).send({message: "Access denied"});
+    return false;
+}
+
 router.get("/permissions", async (req, res) => {
 
-    // check for permissions to see this
+    if(!permissionCheck(req, res, ["permissions_view"])) return;
 
     var permissions = (await db.getPermissions());
 
@@ -14,12 +37,18 @@ router.get("/permissions", async (req, res) => {
 });
 
 router.get("/config", async (req, res) => {
+
+    if(!permissionCheck(req, res, ["config_view", "config"])) return;
+
     var config = (await db.getConfig()).data;
 
     res.send(config);
 });
 
 router.get("/config/:cid", async (req, res) => {
+    
+    if(!permissionCheck(req, res, ["config_view", "config"])) return;
+    
     if(!cid){
         res.status(400).send({message: "Missing cid"});
         return;
@@ -38,6 +67,8 @@ router.post("/config/new", async (req, res) => {
     //     res.status(403).send({message: "Access denied"});
     //     return;
     // }
+
+    if(!permissionCheck(req, res, ["config"])) return;
 
     if(!req.session.user){
         res.status(403).send({message: "Not logged in"});
@@ -94,6 +125,8 @@ router.post("/config", async (req, res) => {
     //     return;
     // }
 
+    if(!permissionCheck(req, res, ["config"])) return;
+
     if(!req.session.user){
         res.status(403).send({message: "Not logged in"});
         return;
@@ -126,6 +159,8 @@ router.post("/config/:uniq_name/delete", async (req, res) => {
     //     res.status(403).send({message: "Access denied"});
     //     return;
     // }
+
+    if(!permissionCheck(req, res, ["config_remove"])) return;
 
     if(!req.params.uniq_name){
         res.status(400).send({message: "Missing uniq_name"});

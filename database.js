@@ -437,7 +437,7 @@ class Database {
         let rolePermissions = await this.getPermissions_rid(rid);
         if(rolePermissions.success){
             for(var i = 0; i < rolePermissions.data.length; i++){
-                if(rolePermissions.data[i].permission_uniq_name == "permission_" + permission_name){
+                if(rolePermissions.data[i].permission_uniq_name == permission_name){
                     return true;
                 }
             }

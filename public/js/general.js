@@ -714,6 +714,11 @@ function dialog_getPermissions(){
         if(result.success){
             let permissions = result.data;
 
+            if(current_dialog_data["exclude"]){
+                permissions = permissions.filter((permission) => {
+                    return !current_dialog_data["exclude"].includes(permission.permission_uniq_name);
+                });
+            }
             current_dialog_data["permissions"] = permissions;
             dialog_permissions.innerHTML = "";
             permissions.forEach((permission) => {

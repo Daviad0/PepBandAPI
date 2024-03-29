@@ -60,6 +60,32 @@ async function participatingInEvent(req, eid){
     return false;
 }
 
+/*
+ LOGIN - user must be logged in
+*/
+async function permissionCheck(req, res, permissions_allowed){
+
+    if(permissions_allowed.length == 0) return true;
+    if(!req.session.user) return false;
+
+    for(var i = 0; i < permissions_allowed.length; i++){
+        if(permissions_allowed[i] == "LOGIN"){
+            if(req.session.user){
+                return true;
+            }
+        }
+        if(await db.checkAccess(req.session.role.rid, permissions_allowed[i])){
+            return true;
+        }
+    }
+
+    res.status(403).render("special/error", {user: req.session.user, role: req.session.role, error: {
+        code: 403,
+        message: "Access denied" + (req.session.user ? "" : " (are you signed in?)")
+    }});
+    return false;
+}
+
 router.get("/authenticate", (req, res) => {
     res.redirect("/account/authenticate");
 })
@@ -91,7 +117,9 @@ async function generateImagesList(config_name){
 }
 
 router.get("/", async (req, res) => {
-    console.log(req.session.user);
+    
+
+    if(!permissionCheck(req, res, [])) return;
 
     
 
@@ -108,7 +136,9 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/login", async (req, res) => {
-    console.log(req.session.user);
+    
+
+    if(!permissionCheck(req, res, [])) return;
 
     
 
@@ -125,6 +155,8 @@ router.get("/login", async (req, res) => {
 });
 
 router.get("/events", async (req, res) => {
+
+    if(!permissionCheck(req, res, [])) return;
 
     var images = await generateImagesList("corner_images");
     var events = (await db.getEvents()).data;
@@ -174,6 +206,9 @@ router.get("/events", async (req, res) => {
 
 
 router.get("/config", async (req, res) => {
+    
+    if(!permissionCheck(req, res, ["config_view", "config"])) return;
+   
     var images = await generateImagesList("corner_images");
     var config = (await db.getConfig()).data;
 
@@ -182,6 +217,9 @@ router.get("/config", async (req, res) => {
 });
 
 router.get("/roles", async (req, res) => {
+
+    if(!permissionCheck(req, res, ["other_roles", "other_roles_edit"])) return;
+
     var images = await generateImagesList("corner_images");
     var roles = (await db.getRoles()).data;
     var default_role = (await db.getConfigProperty_uniq_name("registered_default_rid_mtu"));
@@ -211,6 +249,9 @@ router.get("/roles", async (req, res) => {
 });
 
 router.get("/users", async (req, res) => {
+
+    if(!permissionCheck(req, res, ["other_users", "other_roles_assign", "other_users_remove"])) return;
+
     var images = await generateImagesList("corner_images");
     var roles = (await db.getRoles()).data;
 
@@ -230,6 +271,9 @@ router.get("/users", async (req, res) => {
 });
 
 router.get("/event/create", async (req, res) => {
+
+    if(!permissionCheck(req, res, ["events", "events_edit"])) return;
+
     var images = await generateImagesList("corner_images");
         // access control for later :)
 
@@ -250,6 +294,8 @@ router.get("/event/create", async (req, res) => {
 
 router.get("/event/types", async (req, res) => {
 
+    if(!permissionCheck(req, res, ["events_types", "events_types_remove"])) return;
+
     var images = await generateImagesList("corner_images");
     // access control for later :)
 
@@ -267,6 +313,9 @@ router.get("/event/types", async (req, res) => {
 });
 
 router.get("/event/:eid/edit", async (req, res) => {
+
+    if(!permissionCheck(req, res, ["events_edit", "events_attendance"])) return;
+
     var images = await generateImagesList("corner_images");
     // access control for later :)
 
@@ -345,6 +394,8 @@ router.get("/event/template", async (req, res) => {
 
 router.get("/event/templates", async (req, res) => {
     
+    if(!permissionCheck(req, res, [])) return;
+
     var images = await generateImagesList("corner_images");
     // access control for later :)
 
@@ -362,7 +413,9 @@ router.get("/event/templates", async (req, res) => {
 });
 
 router.get("/event/template/:etid", async (req, res) => {
-        
+    
+    if(!permissionCheck(req, res, ["events_templates"])) return;
+
     var images = await generateImagesList("corner_images");
     // access control for later :)
 
@@ -417,6 +470,9 @@ router.get("/event/template/:etid", async (req, res) => {
 });
 
 router.get("/groups", async (req, res) => {
+    
+    if(!permissionCheck(req, res, [])) return;
+    
     var images = await generateImagesList("corner_images");
 
     let groups = (await db.getGroups()).data;
@@ -457,6 +513,8 @@ router.get("/groups", async (req, res) => {
 });
 
 router.get("/split/:sid", async (req, res) => {
+    if(!permissionCheck(req, res, [])) return;
+    
     var images = await generateImagesList("corner_images");
 
     let sid = req.params.sid;
@@ -550,6 +608,9 @@ router.get("/split/:sid", async (req, res) => {
 });
 
 router.get("/group/:gid", async (req, res) => {
+    
+    if(!permissionCheck(req, res, [])) return;
+    
     var images = await generateImagesList("corner_images");
 
     let gid = req.params.gid;
@@ -666,6 +727,9 @@ router.get("/group/:gid", async (req, res) => {
 });
 
 router.get("/group/:gid/edit", async (req, res) => {
+    
+    if(!permissionCheck(req, res, ["groups"])) return;
+    
     var images = await generateImagesList("corner_images");
 
     let gid = req.params.gid;
@@ -761,6 +825,9 @@ router.get("/group/:gid/edit", async (req, res) => {
 });
 
 router.get("/split/:sid/edit", async (req, res) => {
+    
+    if(!permissionCheck(req, res, ["splits", "groups"])) return;
+    
     var images = await generateImagesList("corner_images");
 
     let sid = req.params.sid;
@@ -837,6 +904,8 @@ router.get("/split/:sid/edit", async (req, res) => {
 });
 
 router.get("/event/:eid", async (req, res) => {
+
+    if(!permissionCheck(req, res, [])) return;
 
     // check if eid is number
     if(isNaN(req.params.eid)){
@@ -990,6 +1059,8 @@ router.get("/event/:eid", async (req, res) => {
 
 router.get("/report/songs", async (req, res) => {
 
+    if(!permissionCheck(req, res, [])) return;
+
     // start and end date are optional
     // in the format YYYY-MM-DD
 
@@ -1052,6 +1123,8 @@ router.get("/report/songs", async (req, res) => {
 
 router.get("/report/overrides", async (req, res) => {
 
+    if(!permissionCheck(req, res, ["other_users", "other_users_attendance"])) return;
+
     // start and end date are optional
     // in the format YYYY-MM-DD
 
@@ -1075,6 +1148,9 @@ router.get("/report/overrides", async (req, res) => {
 });
 
 router.get("/songs", async (req, res) => {
+    
+    if(!permissionCheck(req, res, ["songs", "songs_remove"])) return;
+    
     var images = await generateImagesList("corner_images");
     var songs = (await db.getSongs()).data;
 
@@ -1083,6 +1159,8 @@ router.get("/songs", async (req, res) => {
 });
 
 router.get("/splits/edit", async (req, res) => {
+    if(!permissionCheck(req, res, ["splits", "groups"])) return;
+    
     var images = await generateImagesList("corner_images");
     var splits = (await db.getSplits()).data;
     var groups = (await db.getGroups()).data;
@@ -1096,6 +1174,8 @@ router.get("/splits/edit", async (req, res) => {
 });
 
 router.get("/groups/edit", async (req, res) => {
+    if(!permissionCheck(req, res, ["groups"])) return;
+    
     var images = await generateImagesList("corner_images");
     var groups = (await db.getGroups()).data;
 
@@ -1110,6 +1190,8 @@ router.get("/groups/edit", async (req, res) => {
 });
 
 router.get("/account", async (req, res) => {
+    if(!permissionCheck(req, res, ["LOGIN"])) return;
+    
     var images = await generateImagesList("corner_images");
 
     if(!req.session.user){

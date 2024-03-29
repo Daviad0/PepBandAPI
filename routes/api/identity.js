@@ -6,6 +6,29 @@ const router = express.Router("/api/identity");
 
 var db;
 
+/*
+ LOGIN - user must be logged in
+*/
+async function permissionCheck(req, res, permissions_allowed){
+
+    if(permissions_allowed.length == 0) return true;
+    if(!req.session.user) return false;
+
+    for(var i = 0; i < permissions_allowed.length; i++){
+        if(permissions_allowed[i] == "LOGIN"){
+            if(req.session.user){
+                return true;
+            }
+        }
+        if(await db.checkAccess(req.session.role.rid, permissions_allowed[i])){
+            return true;
+        }
+    }
+
+    res.status(403).send({message: "Access denied"});
+    return false;
+}
+
 
 function hashPassword(password){
     let salt = crypto.randomBytes(16).toString('hex');
@@ -22,6 +45,8 @@ function verifyPassword(password, hash, salt){
 
 
 router.get('/overrides', (req, res) => {
+    if(!permissionCheck(req, res, ["other_users"])) return;
+    
     if(req.session.user){
         db.getOverrides_uid(req.session.user.uid).then((result) => {
             res.send(result.data);
@@ -32,6 +57,8 @@ router.get('/overrides', (req, res) => {
 })
 
 router.post('/override', (req, res) => {
+
+    if(!permissionCheck(req, res, ["events_attend"])) return;
 
     // expecting eid in body, not OK if null
     // expecting override in body, not OK if null
@@ -56,10 +83,9 @@ router.post('/override', (req, res) => {
 });
 
 router.get("/users", async (req, res) => {
-    if(!(await db.checkAccess(req.session.role, "other_users"))){
-        res.status(403).send({message: "Access denied"});
-        return;
-    }
+    
+    
+    if(!permissionCheck(req, res, ["other_users"])) return;
 
     db.getIdentities().then((result) => {
         res.send(result);
@@ -69,10 +95,7 @@ router.get("/users", async (req, res) => {
 router.post("/users/:uid/role", async (req, res) => {
     // expecting rid in body, not OK if null
 
-    if(!(await db.checkAccess(req.session.role, "other_users"))){
-        res.status(403).send({message: "Access denied"});
-        return;
-    }
+    if(!permissionCheck(req, res, ["other_users", "other_roles_assign"])) return;
 
     if(!req.params.uid){
         res.status(400).send({message: "Missing uid"});
@@ -85,9 +108,9 @@ router.post("/users/:uid/role", async (req, res) => {
 
     // we need to see if the user giving the role has permission greater or equal to the role they have
     try{
-        let userPermission = req.session.role.permission;
+        let userPermission = req.session.role.power;
         let givingRole = await db.getRole(req.body.rid);
-        if(userPermission <= givingRole.data[0].permission){
+        if(userPermission <= givingRole.data[0].power){
             res.status(403).send({message: "Cannot set role higher than or equal to your own"});
             return;
         }
@@ -110,10 +133,7 @@ router.post("/users/:uid/delete", async (req, res) => {
 
     // expecting uid in body, not OK if null
 
-    if(!(await db.checkAccess(req.session.role, "other_users_remove"))){
-        res.status(403).send({message: "Access denied"});
-        return;
-    }
+    if(!permissionCheck(req, res, ["other_users_remove"])) return;
 
     if(!req.params.uid){
         res.status(400).send({message: "Missing uid"});
@@ -129,10 +149,7 @@ router.post("/users/:uid/delete", async (req, res) => {
 });
 
 router.get("/find/:uid", async (req, res) => {
-    if(!(await db.checkAccess(req.session.role, "other_users"))){
-        res.status(403).send({success:false, message: "Access denied"});
-        return;
-    }
+    if(!permissionCheck(req, res, ["other_users"])) return;
 
     if(!req.params.uid){
         res.status(400).send({success: false, message: "Missing uid"});
@@ -145,10 +162,7 @@ router.get("/find/:uid", async (req, res) => {
 });
 
 router.get("/:uid/overrides", async (req, res) => {
-    if(!(await db.checkAccess(req.session.role, "other_users_membership"))){
-        res.status(403).send({message: "Access denied"});
-        return;
-    }
+    if(!permissionCheck(req, res, ["other_users", "other_users_attendance"])) return;
 
     if(!req.params.uid){
         res.status(400).send({message: "Missing uid"});
@@ -163,10 +177,7 @@ router.get("/:uid/overrides", async (req, res) => {
 
 
 router.get("/roles", async (req, res) => {
-    if(!(await db.checkAccess(req.session.role, "other_roles"))){
-        res.status(403).send({message: "Access denied"});
-        return;
-    }
+    if(!permissionCheck(req, res, ["other_roles"])) return;
 
     db.getRoles().then((result) => {
         res.send(result);
@@ -174,6 +185,9 @@ router.get("/roles", async (req, res) => {
 });
 
 router.get("/roles/:rid", async (req, res) => {
+    
+    if(!permissionCheck(req, res, ["other_roles"])) return;
+    
     if(!(await db.checkAccess(req.session.role, "other_roles"))){
         res.status(403).send({message: "Access denied"});
         return;
@@ -193,10 +207,7 @@ router.get("/roles/:rid", async (req, res) => {
 router.post("/roles/create", async (req, res) => {
     // expecting name in body, not OK if null
 
-    if(!(await db.checkAccess(req.session.role, "other_roles_edit"))){
-        res.status(403).send({message: "Access denied"});
-        return;
-    }
+    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
 
     let name = req.body.name;
     if(!name){
@@ -220,6 +231,8 @@ router.post("/roles/:rid/permission", async (req, res) => {
     //     res.status(403).send({message: "Access denied"});
     //     return;
     // }
+
+    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
 
     if(!req.params.rid){
         res.status(400).send({message: "Missing rid"});
@@ -247,6 +260,8 @@ router.post("/roles/:rid/permission/delete", async (req, res) => {
     //     return;
     // }
 
+    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
+
     if(!req.params.rid){
         res.status(400).send({message: "Missing rid"});
         return;
@@ -272,10 +287,7 @@ router.post("/roles", async (req, res) => {
     // expecting rid in body, not OK if null
     // expecting description in body, OK if null
 
-    if(!(await db.checkAccess(req.session.role, "other_roles_edit"))){
-        res.status(403).send({message: "Access denied"});
-        return;
-    }
+    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
 
     let name = req.body.name;
     let power = req.body.power;
@@ -318,15 +330,14 @@ router.post("/roles/:rid/delete", async (req, res) => {
     
     // have to do some damage control to change roles of users with this role
 
+    if(!permissionCheck(req, res, ["other_roles_edit"])) return;
+
     if(!req.params.rid){
         res.status(400).send({message: "Missing rid"});
         return;
     }
 
-        if(!(await db.checkAccess(req.session.role, "other_roles_remove"))){
-            res.status(403).send({message: "Access denied"});
-            return;
-        }
+    
 
         let usersWithRole = await db.getUsersWithRole(req.params.rid);
 

@@ -178,12 +178,19 @@ function iconChoose(element){
 
 function addPermission(element){
     let rid = element.getAttribute("data-rid");
+
+    let currentPermissions = document.querySelectorAll(`.permissions[data-rid="${rid}"] .permission`);
+    let currentPermissionNames = [];
+    currentPermissions.forEach((permission) => {
+        currentPermissionNames.push(permission.getAttribute("data-permission"));
+    });
     
     showDialog({
         title: "Add Permission(s) to Role",
         description: "Permission",
         type: "permission",
         icon: "person_add",
+        exclude: currentPermissionNames,
         multiple: true,
         onchoose: () => {
             let url = "/api/identity/roles/" + rid + "/permission";
@@ -213,4 +220,48 @@ function addPermission(element){
             hideDialog();
         },
     })
+}
+
+function removePermission(element){
+    let permission = element.getAttribute("data-permission");
+    let rid = element.getAttribute("data-rid");
+
+
+
+    
+    showDialog({
+        title: "Remove " + permission + " from Role?",
+        description: "Are you sure that you want to remove " + permission + " from this role? All users with this role will no longer be able to access any links, buttons, or other features that require this permission.",
+        type: "buttons",
+        icon: "delete",
+        buttons: [
+            {
+                text: "Remove Permission",
+                class: "button-main",
+                background: "error-bg",
+                onclick: () => {
+                    
+                    let url = "/api/identity/roles/" + rid + "/permission/delete";
+                    let data = {permission: permission};
+
+                    apiPost(url, data, (result) => {
+                        if(result.success){
+                            let permissions = document.querySelector(`.permissions[data-rid="${rid}"]`);
+                            element.remove();
+                        }
+                    });
+
+                    hideDialog();
+
+                }
+            },
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    });
 }

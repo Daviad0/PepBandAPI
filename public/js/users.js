@@ -83,6 +83,7 @@ function addUser(user){
     let select = user_item.querySelector("select[name='role']");
     if(select != null){
         select.value = user.rid;
+        select.setAttribute("data-initvalue", user.rid);
     }
     
 
@@ -239,10 +240,12 @@ function editUserRole(element){
                         apiPost(url, data, (result) => {
                             if(result.success){
                                 element.classList.remove("input-error");
+                                element.setAttribute("data-initvalue", value);
                                 showError(error_span, "");
                             }
                             else{
                                 element.classList.add("input-error");
+                                element.value = element.getAttribute("data-initvalue");
                                 showError(error_span, result.message);
                             }
                         });
@@ -256,6 +259,9 @@ function editUserRole(element){
                     text: "Cancel",
                     class: "button-alternate",
                     onclick: () => {
+
+                        element.value = element.getAttribute("data-initvalue");
+
                         hideDialog();
                     }
                 }
