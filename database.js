@@ -43,7 +43,13 @@ class Database {
         var required_config = process.env.REQUIRED_CONFIG.split(",")
             var default_values = process.env.REQUIRED_CONFIG_DEFAULT.split(",")
 
-        var required_permissions = process.env.REQUIRED_PERMISSIONS.split(",");
+            var required_permissions = [];
+        try{
+            required_permissions = process.env.REQUIRED_PERMISSIONS.split(",");
+        }catch(e){
+            
+        }
+        
 
             for (var i = 0; i < required_config.length; i++) {
                 // ensure that this_config will persist through the loop so that the correct value is used

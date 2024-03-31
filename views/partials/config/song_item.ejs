@@ -142,7 +142,9 @@
             
             
             <div class="song-detail-item">
-                <button data-soid="<%= song.soid %>" onclick="deleteSong(this)" class="button-alternate error-bg"><span class="button-text">Delete</span></button>
+                <% if(canRemove) { %>
+                    <button data-soid="<%= song.soid %>" onclick="deleteSong(this)" class="button-alternate error-bg"><span class="button-text">Delete</span></button>
+                <% } %>
                 <button data-soid="<%= song.soid %>" onclick="cloneSong(this)" class="button-alternate"><span class="button-text">Duplicate</span></button>
             </div>
         </div>

@@ -35,15 +35,16 @@
                                     <span class="tiny split-detail-tag">Color</span>
                                 </div>
                                 <div class="flex apart">
-                                    <input name="color" type="color" class="input split-detail-value permission-input" onchange="colorChange(this)" value="<%= split.color %>"/>
+                                    <input name="color" type="color" class="input split-detail-value permission-input" onchange="colorChange(this)" value="<%= split.color %>" <%= permissions.includes("groups") || permissions.includes("splits") || elevated ? "" : "disabled" %>/>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="flex center buttons spacing-bottom">
-                            <button class="button-main white-bg" onclick="iconChoose()"><span class="button-text split-color" style="color: <%= split.color %>">Change Icon</span></button>
-                            <button class="button-main white-bg" onclick="imageChoose()"><span class="button-text split-color" style="color: <%= split.color %>">Change Image</span></button>
-                        </div>
+                        <% if(permissions.includes("groups") || permissions.includes("splits") || elevated) { %>
+                            <div class="flex center buttons spacing-bottom">
+                                <button class="button-main white-bg" onclick="iconChoose()"><span class="button-text split-color" style="color: <%= split.color %>">Change Icon</span></button>
+                                <button class="button-main white-bg" onclick="imageChoose()"><span class="button-text split-color" style="color: <%= split.color %>">Change Image</span></button>
+                            </div>
+                        <% } %>
                         
                     </div>
                     <div class="spacing">
@@ -52,7 +53,7 @@
                                 <span class="small split-detail-tag">SPLIT</span>
                             </div>
                             <div class="flex apart">
-                                <input class="large input" onchange="changeName(this)" value="<%= split.name %>" placeholder="Split Name">
+                                <input class="large input" onchange="changeName(this)" value="<%= split.name %>" placeholder="Split Name" <%= permissions.includes("groups") || permissions.includes("splits") || elevated ? "" : "disabled" %>>
                             </div>
                         </div>
                         
@@ -62,7 +63,9 @@
                 </div>
                 <div class="flex center">
                     <span class="large material-symbols-rounded" id="split-open-icon"><%= split.open ? 'lock_open' : 'lock' %></span>
-                    <button class="button-main white-bg" data-open="<%= split.open %>" onclick="openChange(this)"><span class="button-text split-color" style="color: <%= split.color %>"><%= split.open ? 'Lock / Close Split' : 'Unlock / Open Split' %></span></button>
+                    <% if(permissions.includes("groups") || permissions.includes("splits") || elevated) { %>
+                        <button class="button-main white-bg" data-open="<%= split.open %>" onclick="openChange(this)"><span class="button-text split-color" style="color: <%= split.color %>"><%= split.open ? 'Lock / Close Split' : 'Unlock / Open Split' %></span></button>
+                    <% } %>
                 </div>
             </div>
             <div class="flex apart">
@@ -90,7 +93,7 @@
                                 <% applicableEventType = defaultEventType; %>
                             <% } %>
                             <% let attending = eventParticipation.find(ep => ep.eid == e.eid); %>
-                            <%- include('./partials/event/event_basic_split.ejs', {event: e, eventType: applicableEventType, attending: attending != undefined, edit:true}); %>
+                            <%- include('./partials/event/event_basic_split.ejs', {event: e, eventType: applicableEventType, attending: attending != undefined, edit: permissions.includes("groups") || permissions.includes("splits") || elevated}); %>
                         <% }); %>
                     </div>
                 </div>
@@ -107,13 +110,14 @@
                     
                     <div class="flex center">
                         <span class="large spacing">Members</span>
-                        <span class="button large material-symbols-rounded" onclick="addUsers(this)">person_add</span>
-                       
+                        <% if(permissions.includes("groups") || permissions.includes("splits") || elevated || permissions.includes("other_users_membership")) { %>
+                            <span class="button large material-symbols-rounded" onclick="addUsers(this)">person_add</span>
+                        <% } %>
                     </div>
                     <div class="flex center wrap" id="split-members">
                         <% for(let i = 0; i < users.length; i++) { %>
                             <% let u = users[i] %>
-                            <div class="user resolve-further flex center" onclick="manageUser(this)" data-uid="<%= u.uid %>" data-elevated="<%= u.elevated %>" data-username="<%= u.mtu_id %>">
+                            <div class="user resolve-further flex center" <%= permissions.includes("groups") || permissions.includes("splits") || elevated || permissions.includes("other_users_membership") ? 'onclick="manageUser(this)"' : '' %>  data-uid="<%= u.uid %>" data-elevated="<%= u.elevated %>" data-username="<%= u.mtu_id %>">
                                 <span class="medium"><%= u.full_name %></span>
                                 <% if(u.elevated) { %>
                                     <span class="spacing-left material-symbols-rounded">star</span>

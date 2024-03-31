@@ -31,15 +31,21 @@
                 </div>
                 <div class="flex center">
                     <% if(user) { %>
-                        <% if(elevated) { %>
+                        <% if(elevated || permissions.include("splits") || permissions.include("groups") || permissions.include("other_users_membership")) { %>
                             <button class="button-main white-bg" onclick="window.location = '/split/<%= split.sid %>/edit'"><span class="button-text" style="color: <%= split.color %>">Edit Split</span></button>
                         <% } %>
                         <% let membership = users.find(u => u.uid == user.uid) %>
                         <% if(membership) { %>
-                            <button class="button-main white-bg" onclick="leaveSplit()"><span class="button-text" style="color: <%= split.color %>">Leave Split</span></button>
+                            <% if(permissions.includes("splits_join")) { %>
+                                <button class="button-main white-bg" onclick="leaveSplit()"><span class="button-text" style="color: <%= split.color %>">Leave Split</span></button>
+                            <% } %>
+                            
                             
                         <% } else { %>
-                            <button class="button-main white-bg" onclick="joinSplit()"><span class="button-text" style="color: <%= split.color %>" <%= split.open ? "" : "disabled" %>>Join Split</span></button>
+                            <% if(permissions.includes("splits_join")) { %>
+                                <button class="button-main white-bg" onclick="joinSplit()"><span class="button-text" style="color: <%= split.color %>" <%= split.open ? "" : "disabled" %>>Join Split</span></button>
+                            <% } %>
+                            
                         <% } %> 
 
                     <% } else { %>
@@ -78,7 +84,7 @@
                             <% if(applicableEventType == null) { %>
                                 <% applicableEventType = defaultEventType; %>
                             <% } %>
-                            <%- include('./partials/event/event_basic.ejs', {event: e, eventType: applicableEventType}); %>
+                            <%- include('./partials/event/event_basic.ejs', {event: e, eventType: applicableEventType, canEdit: permissions.includes("events_edit") }); %>
                         <% } %> 
                     </div>
                 </div>

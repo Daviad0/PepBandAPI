@@ -45,10 +45,12 @@
                                     </div>
                                 <% } %>
                             </div>
-                            <div class="flex center">
-                                <button class="button-main white-bg" onclick="window.location = '/event/<%= event.eid %>/edit'"><span class="button-text" style="color: <%= event.color %>">Edit Event</span></button>
-                                <button class="button-main white-bg" onclick="<%= event.show ? 'hideEvent()' : 'showEvent()' %>"><span class="button-text" style="color: <%= event.color %>"><%= event.show ? 'Hide' : 'Show' %> Event</span></button>
-                            </div>
+                            <% if(permissions.includes("events_edit")) { %>
+                                <div class="flex center">
+                                    <button class="button-main white-bg" onclick="window.location = '/event/<%= event.eid %>/edit'"><span class="button-text" style="color: <%= event.color %>">Edit Event</span></button>
+                                    <button class="button-main white-bg" onclick="<%= event.show ? 'hideEvent()' : 'showEvent()' %>"><span class="button-text" style="color: <%= event.color %>"><%= event.show ? 'Hide' : 'Show' %> Event</span></button>
+                                </div>
+                            <% } %>
                         </div>
                         
                         <div class="flex apart">
@@ -100,7 +102,7 @@
                     
                 </div>
                 <div class="content-right">
-                    <% if(user != null) { %>
+                    <% if(user != null && permissions.includes("events_attendance")) { %>
                         <div class="user-attending">
                             <div class="flex center">
                                 <span class="large spacing">You're Attending?</span>

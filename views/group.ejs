@@ -37,7 +37,7 @@
                 </div>
                 <div class="flex center">
                     <% if(user) { %>
-                        <% if(elevated) { %>
+                        <% if(elevated || permissions.include("groups") || permissions.include("other_users_membership")) { %>
                             <button class="button-main white-bg" onclick="window.location = '/group/<%= group.gid %>/edit'"><span class="button-text" style="color: <%= group.color %>">Edit Group</span></button>
                         <% } %>
                         <% if(membership) { %>

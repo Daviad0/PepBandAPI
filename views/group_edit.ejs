@@ -36,15 +36,19 @@
                                     <span class="tiny group-detail-tag">Color</span>
                                 </div>
                                 <div class="flex apart">
-                                    <input name="color" type="color" class="input group-detail-value permission-input" onchange="colorChange(this)" value="<%= group.color %>"/>
+                                    <input name="color" type="color" class="input group-detail-value permission-input" onchange="colorChange(this)" value="<%= group.color %>" <%= permissions.includes("groups") || elevated ? "" : "disabled" %> />
                                 </div>
                             </div>
                         </div>
+
+                        <% if(permissions.includes("groups") || elevated) { %>
                         
-                        <div class="flex center buttons spacing-bottom">
-                            <button class="button-main white-bg" onclick="iconChoose()"><span class="button-text group-color" style="color: <%= group.color %>">Change Icon</span></button>
-                            <button class="button-main white-bg" onclick="imageChoose()"><span class="button-text group-color" style="color: <%= group.color %>">Change Image</span></button>
-                        </div>
+                            <div class="flex center buttons spacing-bottom">
+                                <button class="button-main white-bg" onclick="iconChoose()"><span class="button-text group-color" style="color: <%= group.color %>">Change Icon</span></button>
+                                <button class="button-main white-bg" onclick="imageChoose()"><span class="button-text group-color" style="color: <%= group.color %>">Change Image</span></button>
+                            </div>
+
+                        <% } %>
                         
                     </div>
                     <div class="spacing">
@@ -53,7 +57,7 @@
                                 <span class="small group-detail-tag">GROUP</span>
                             </div>
                             <div class="flex apart">
-                                <input class="large input" onchange="changeName(this)" value="<%= group.name %>" placeholder="Group Name">
+                                <input class="large input" onchange="changeName(this)" value="<%= group.name %>" placeholder="Group Name" <%= permissions.includes("groups") || elevated ? "" : "disabled" %>>
                             </div>
                         </div>
                     </div>
@@ -61,7 +65,9 @@
                 </div>
                 <div class="flex center">
                     <span class="large material-symbols-rounded" id="group-open-icon"><%= group.open ? 'lock_open' : 'lock' %></span>
-                    <button class="button-main white-bg" data-open="<%= group.open %>" onclick="openChange(this)"><span class="button-text group-color" style="color: <%= group.color %>"><%= group.open ? 'Lock / Close Group' : 'Unlock / Open Group' %></span></button>
+                    <% if(permissions.includes("groups") || elevated) { %>
+                        <button class="button-main white-bg" data-open="<%= group.open %>" onclick="openChange(this)"><span class="button-text group-color" style="color: <%= group.color %>"><%= group.open ? 'Lock / Close Group' : 'Unlock / Open Group' %></span></button>
+                    <% } %>
                 </div>
             </div>
             <div class="flex apart">
@@ -83,7 +89,7 @@
                             <% if(applicableEventType == null) { %>
                                 <% applicableEventType = defaultEventType; %>
                             <% } %>
-                            <%- include('./partials/event/event_basic.ejs', {event: e, eventType: applicableEventType}); %>
+                            <%- include('./partials/event/event_basic.ejs', {event: e, eventType: applicableEventType, canEdit: permissions.includes("events_edit")}); %>
                         <% }); %>
                     </div>
                 </div>
@@ -92,7 +98,9 @@
                     <div>
                         <div class="flex center spacing-bottom">
                             <span class="large spacing">Splits</span>
-                            <span class="button large material-symbols-rounded" onclick="createSplit()">add</span>
+                            <% if(permissions.includes("groups") || permissions.includes("splits") || elevated) { %>
+                                <span class="button large material-symbols-rounded" onclick="createSplit()">add</span>
+                            <% } %>
                         </div>
                         
                         <div class="spacing-top">
@@ -108,13 +116,14 @@
                     
                     <div class="flex center">
                         <span class="large spacing">Members</span>
-                        <span class="button large material-symbols-rounded" onclick="addUsers(this)">person_add</span>
-                       
+                        <% if(permissions.includes("groups") || permissions.includes("other_users_membership") || elevated) { %>
+                            <span class="button large material-symbols-rounded" onclick="addUsers(this)">person_add</span>
+                        <% } %>
                     </div>
                     <div class="flex center wrap" id="group-members">
                         <% for(let i = 0; i < users.length; i++) { %>
                             <% let u = users[i] %>
-                            <div class="user resolve-further flex center" onclick="manageUser(this)" data-uid="<%= u.uid %>" data-elevated="<%= u.elevated %>" data-username="<%= u.mtu_id %>">
+                            <div class="user resolve-further flex center" <%= permissions.includes("groups") || permissions.includes("other_users_membership") || elevated ? 'onclick="manageUser(this)"' : '' %>  data-uid="<%= u.uid %>" data-elevated="<%= u.elevated %>" data-username="<%= u.mtu_id %>">
                                 <span class="medium"><%= u.full_name %></span>
                                 <% if(u.elevated) { %>
                                     <span class="spacing-left material-symbols-rounded">star</span>

@@ -8,8 +8,9 @@
   <body>
     <% let default_song = {soid: "DEFAULT_SOID", name: "DEFAULT_NAME", artist: "DEFAULT_ARTIST", friendly_name: "DEFAULT_FRIENDLYNAME", modification: "DEFAULT_MODIFICATION", updated: "DEFAULT_UPDATED", duration: "DEFAULT_DURATION", source: "DEFAULT_SOURCE", category: "DEFAULT_CATEGORY" } %>
     <script>
-        let song_template = `<%- include('./partials/config/song_item.ejs', {song: default_song}) %>`;
-        
+        let song_template = `<%- include('./partials/config/song_item.ejs', {song: default_song, canRemove: permissions.includes("songs_remove")}) %>`;
+        let canRemoveSongs = `<%= permissions.includes("songs_remove") %>`;
+        canRemoveSongs = canRemoveSongs == "true";
     </script>
     <%- include('./partials/header.ejs'); %>
     <script src="/js/song.js"></script>

@@ -488,6 +488,8 @@ router.get("/event/template/:etid", async (req, res) => {
 router.get("/groups", async (req, res) => {
     
     if(! await permissionCheck(req, res, [])) return;
+
+    var permissionsToPass = (await permissionsRequest(req, ["splits_join", "groups_join", "groups"]));
     
     var images = await generateImagesList("corner_images");
 
@@ -531,6 +533,8 @@ router.get("/groups", async (req, res) => {
 router.get("/split/:sid", async (req, res) => {
     if(! await permissionCheck(req, res, [])) return;
     
+    var permissionsToPass = (await permissionsRequest(req, ["events", "events_edit", "groups", "splits", "splits_join", "other_users_membership"]));
+    
     var images = await generateImagesList("corner_images");
 
     let sid = req.params.sid;
@@ -561,6 +565,7 @@ router.get("/split/:sid", async (req, res) => {
 
     let allMembership = (await db.getSplitMembers(sid)).data;
     let group = (await db.getGroup(split.gid)).data[0];
+
 
     var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
 
@@ -606,11 +611,7 @@ router.get("/split/:sid", async (req, res) => {
 
     let elevated = false;
     if(req.session.user){
-        elevated = (await db.checkAccess(req.session.role, "other_splits"));
-
-        if((await db.checkAccess(req.session.role, "other_groups"))){
-            elevated = true;
-        }
+        elevated = permissions.includes("splits") || permissions.includes("groups");
 
         let membership = allMembership.find(m => m.uid == req.session.user.uid)
         if(membership != undefined && membership.elevated){
@@ -619,7 +620,7 @@ router.get("/split/:sid", async (req, res) => {
     }
     
 
-    res.render("split", {user: req.session.user, role: req.session.role, group: group, users: allMembership, split: split, images: images, events: events, eventTypes: eventTypes, elevated: elevated});
+    res.render("split", {user: req.session.user, role: req.session.role, group: group, users: allMembership, split: split, images: images, events: events, eventTypes: eventTypes, elevated: elevated, permissions: permissionsToPass});
 
 });
 
@@ -627,7 +628,7 @@ router.get("/group/:gid", async (req, res) => {
     
     if(! await permissionCheck(req, res, [])) return;
 
-    var permissionsToPass = (await permissionsRequest(req, ["events", "events_edit", "groups", "groups_join"]));
+    var permissionsToPass = (await permissionsRequest(req, ["events", "events_edit", "groups", "groups_join", "other_users_membership"]));
     
     var images = await generateImagesList("corner_images");
 
@@ -728,7 +729,7 @@ router.get("/group/:gid", async (req, res) => {
 
     let elevated = false;
     if(req.session.user){
-        elevated = (await db.checkAccess(req.session.role, "other_groups"));
+        elevated = permissionsToPass.includes("groups");
 
         let membership = allMembership.find(m => m.uid == req.session.user.uid)
         if(membership != undefined && membership.elevated){
@@ -746,7 +747,9 @@ router.get("/group/:gid", async (req, res) => {
 
 router.get("/group/:gid/edit", async (req, res) => {
     
-    if(! await permissionCheck(req, res, ["groups"])) return;
+    if(! await permissionCheck(req, res, ["groups", "other_users_membership"])) return;
+
+    var permissionsToPass = (await permissionsRequest(req, ["events", "events_edit", "groups", "splits", "other_users_membership"]));
     
     var images = await generateImagesList("corner_images");
 
@@ -780,6 +783,8 @@ router.get("/group/:gid/edit", async (req, res) => {
 
     let allMembership = (await db.getGroupMembers(gid)).data;
     let splits = (await db.getSplits(gid)).data;
+
+    let isElevated = allMembership.find(m => m.uid == req.session.user.uid && m.elevated);
 
     var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
 
@@ -838,14 +843,16 @@ router.get("/group/:gid/edit", async (req, res) => {
 
     var eventTypes = (await db.getEventTypes()).data;
 
-    res.render("group_edit", {user: req.session.user, role: req.session.role, group: group, users: allMembership, splits: splits, images: images, eventParticipation: eventParticipation, events: events, eventTypes: eventTypes});
+    res.render("group_edit", {user: req.session.user, role: req.session.role, group: group, users: allMembership, splits: splits, images: images, eventParticipation: eventParticipation, events: events, eventTypes: eventTypes, permissions: permissionsToPass, elevated: isElevated});
 
 });
 
 router.get("/split/:sid/edit", async (req, res) => {
     
-    if(! await permissionCheck(req, res, ["splits", "groups"])) return;
+    if(! await permissionCheck(req, res, ["splits", "groups", "other_users_membership"])) return;
     
+    var permissionsToPass = (await permissionsRequest(req, ["events", "events_edit", "groups", "splits", "other_users_membership"]));
+
     var images = await generateImagesList("corner_images");
 
     let sid = req.params.sid;
@@ -877,6 +884,8 @@ router.get("/split/:sid/edit", async (req, res) => {
     let allMembership = (await db.getSplitMembers(sid)).data;
     let group = (await db.getGroup(split.gid)).data[0];
 
+    let isElevated = allMembership.find(m => m.uid == req.session.user.uid && m.elevated);
+
     var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
 
     if(gradientBackground.length > 0){
@@ -896,7 +905,7 @@ router.get("/split/:sid/edit", async (req, res) => {
     if(gradientBackground.length > 0){
         split.gradientBackground = gradientBackground[0].value;
     }
-    // check if color is in hex format
+    // check if color is in hex for30mat
     if(split.color.match(/^#[0-9A-F]{6}$/i)){
         // generate RGBA representation
         var colorA = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",0.7)";
@@ -917,13 +926,15 @@ router.get("/split/:sid/edit", async (req, res) => {
 
     let eventTypes = (await db.getEventTypes()).data;
 
-    res.render("split_edit", {user: req.session.user, role: req.session.role, group: group, users: allMembership, split: split, images: images, eventParticipation: eventParticipation, events: events, eventTypes: eventTypes});
+    res.render("split_edit", {user: req.session.user, role: req.session.role, group: group, users: allMembership, split: split, images: images, eventParticipation: eventParticipation, events: events, eventTypes: eventTypes, permissions: permissionsToPass, elevated: isElevated});
 
 });
 
 router.get("/event/:eid", async (req, res) => {
 
     if(! await permissionCheck(req, res, [])) return;
+
+    var permissionsToPass = (await permissionsRequest(req, ["events", "events_edit", "events_attendance"]));
 
     // check if eid is number
     if(isNaN(req.params.eid)){
@@ -1072,12 +1083,13 @@ router.get("/event/:eid", async (req, res) => {
     }
 
 
-    res.render("event", {user: req.session.user, role: req.session.role, event: event, images: images, override: participationOverride, groups: groups});
+    res.render("event", {user: req.session.user, role: req.session.role, event: event, images: images, override: participationOverride, groups: groups, permissions: permissionsToPass});
 });
 
 router.get("/report/songs", async (req, res) => {
 
     if(! await permissionCheck(req, res, [])) return;
+
 
     // start and end date are optional
     // in the format YYYY-MM-DD
@@ -1143,6 +1155,7 @@ router.get("/report/overrides", async (req, res) => {
 
     if(! await permissionCheck(req, res, ["other_users", "other_users_attendance"])) return;
 
+    
     // start and end date are optional
     // in the format YYYY-MM-DD
 
@@ -1169,16 +1182,20 @@ router.get("/songs", async (req, res) => {
     
     if(! await permissionCheck(req, res, ["songs", "songs_remove"])) return;
     
+    var permissionsToPass = (await permissionsRequest(req, ["songs", "songs_remove"]));
+
     var images = await generateImagesList("corner_images");
     var songs = (await db.getSongs()).data;
 
-    res.render("songs", {user: req.session.user, role: req.session.role, songs: songs, images: images});
+    res.render("songs", {user: req.session.user, role: req.session.role, songs: songs, images: images, permissions: permissionsToPass});
 
 });
 
 router.get("/splits/edit", async (req, res) => {
     if(! await permissionCheck(req, res, ["splits", "groups"])) return;
     
+    var permissionsToPass = (await permissionsRequest(req, ["splits", "groups"]));
+
     var images = await generateImagesList("corner_images");
     var splits = (await db.getSplits()).data;
     var groups = (await db.getGroups()).data;
@@ -1188,12 +1205,14 @@ router.get("/splits/edit", async (req, res) => {
         splits[i].managers = splitManagers;
     }
 
-    res.render("splits_edit", {user: req.session.user, role: req.session.role, splits: splits, images: images, groups: groups});
+    res.render("splits_edit", {user: req.session.user, role: req.session.role, splits: splits, images: images, groups: groups, permissions: permissionsToPass});
 });
 
 router.get("/groups/edit", async (req, res) => {
     if(! await permissionCheck(req, res, ["groups"])) return;
     
+    var permissionsToPass = (await permissionsRequest(req, ["groups"]));
+
     var images = await generateImagesList("corner_images");
     var groups = (await db.getGroups()).data;
 
@@ -1204,11 +1223,13 @@ router.get("/groups/edit", async (req, res) => {
         groups[i].managers = groupManagers;
     }
     
-    res.render("groups_edit", {user: req.session.user, role: req.session.role, groups: groups, images: images});
+    res.render("groups_edit", {user: req.session.user, role: req.session.role, groups: groups, images: images, permissions: permissionsToPass});
 });
 
 router.get("/account", async (req, res) => {
     if(! await permissionCheck(req, res, ["LOGIN"])) return;
+
+    var permissionsToPass = (await permissionsRequest(req, ["splits_join", "groups_join"]));
     
     var images = await generateImagesList("corner_images");
 
