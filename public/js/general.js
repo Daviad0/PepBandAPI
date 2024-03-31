@@ -1056,3 +1056,37 @@ function changeTimezone(date, ianatz) {
     return new Date(date.getTime() - diff); // needs to substract
   
   }
+
+function showTermsOfUse(){
+    showDialog({
+        title: "Terms of Use",
+        description: "The Huskies Pep Band web service is currently under development. Users who use this website agree to the storage of their Michigan Tech username, their Michigan Tech email, their Michigan Tech unique user ID, and any other information that they voluntarily provide with their usage on this website. Neither the Huskies Pep Band nor Michigan Tech are directly responsible for any data loss or content shown on this website. Users who refuse these initial terms during the website's beta period may choose to remove all data associated with their account (including but not limited to: Michigan Tech account associations, announcements, group and split identities, and any other places where a user's unique identifier is stored) through their account page.",
+        icon: "check",
+        buttons: [
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    })
+}
+
+function showPrivacyPolicy(){
+    showDialog({
+        title: "Privacy Policy",
+        description: "The only user data that is stored in correlation with Michigan Tech is their Michigan Tech username, Michigan Tech email, Michigan Tech unique identifier, and any other information that the user voluntarily and knowingly provides through their usage of this website. Users who create an account through the manual login system will have their email, full name, and authentication method stored alongside all other users. If a user wishes to have their data removed from the system, they may do so by visiting their account page and selecting the option to remove their account. This will remove all data associated with their account, including but not limited to: Michigan Tech account associations, announcements, group and split identities, and any other places where a user's unique identifier is stored.",
+        icon: "check",
+        buttons: [
+            {
+                text: "Cancel",
+                class: "button-alternate",
+                onclick: () => {
+                    hideDialog();
+                }
+            }
+        ]
+    })
+}

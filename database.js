@@ -712,7 +712,7 @@ class Database {
         return this.query("SELECT * FROM identity_management WHERE rid = " + rid)
     }
 
-    async setRole(rid, name, power, description){
+    async setRole(rid, name, power, description, icon){
         let existing_role = await this.getRole(rid)
 
         if(existing_role.success && existing_role.data.length > 0){
@@ -721,15 +721,16 @@ class Database {
             if(name == null) name = role.name
             if(power == null) power = role.power
             if(description == null) description = role.description
+            if(icon == null) icon = role.icon
 
-            return this.edit("UPDATE identity_management_roles SET name = '" + name + "', power = " + power + ", description = '" + description + "', updated = CURRENT_TIMESTAMP WHERE rid = " + rid)
+            return this.edit("UPDATE identity_management_roles SET name = '" + name + "', power = " + power + ", description = '" + description + "', icon = '" + icon + "', updated = CURRENT_TIMESTAMP WHERE rid = " + rid)
         }else{
 
             if(name == null) name = name;
             if(power == null) power = 0
             if(description == null) description = ""
             // modify to send back the role that was created (or at least the rid)
-            return this.edit("INSERT INTO identity_management_roles (name, power, updated, description) VALUES ('" + name + "', " + power + ", CURRENT_TIMESTAMP, '" + description + "') RETURNING *")
+            return this.edit("INSERT INTO identity_management_roles (name, power, updated, description, icon) VALUES ('" + name + "', " + power + ", CURRENT_TIMESTAMP, '" + description + "', 'bolt') RETURNING *")
         }
     }
 

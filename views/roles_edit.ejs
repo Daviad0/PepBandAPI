@@ -13,9 +13,9 @@
     <% let default_role_item_data_danger_plural = {rid: "DEFAULT_RID", icon: "DEFAULT_ICON", name: "DEFAULT_NAME", power: "DEFAULT_POWER", description: "DEFAULT_DESCRIPTION", user_count: 2, permissions: [] } %>
     
     <script>
-        let role_item_template_safe = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_safe, myRole: role, canEdit: true}) %>`;
-        let role_item_template_danger_1 = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_1, myRole: role, canEdit: true}) %>`;
-        let role_item_template_danger_plural = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_plural, myRole: role, canEdit: true}) %>`;
+        let role_item_template_safe = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_safe, myRole: role, canEdit: true, hasPower: true}) %>`;
+        let role_item_template_danger_1 = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_1, myRole: role, canEdit: true, hasPower: true}) %>`;
+        let role_item_template_danger_plural = `<%- include('./partials/config/role_item.ejs', {role: default_role_item_data_danger_plural, myRole: role, canEdit: true, hasPower: true}) %>`;
     </script>
     
     <script src="/js/roles.js"></script>
@@ -52,7 +52,7 @@
                     
                 </div>
                 <div id="role-list" class="flex center start role-list">
-                    <%- include('./partials/config/all_roles.ejs', {roles: roles, myRole: role, canEdit: permissions.includes("other_roles_edit")}); %>
+                    <%- include('./partials/config/all_roles.ejs', {roles: roles, myRole: role, canEdit: permissions.includes("other_roles_edit"), power: power}); %>
                 </div>
                 <% if(permissions.includes("config_view") || permissions.includes("config")) { %>
                     <div class="role-footer">

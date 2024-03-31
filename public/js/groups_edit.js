@@ -255,6 +255,13 @@ function removeManager(element){
 }
 
 function addManager(element){
+
+    let existingManagers = document.querySelectorAll(`.manager[data-gid="${element.getAttribute("data-gid")}"]`);
+    let existingUids = [];
+    existingManagers.forEach(manager => {
+        existingUids.push(manager.getAttribute("data-uid"));
+    });
+
     let gid = element.getAttribute("data-gid");
     
     showDialog({
@@ -262,6 +269,7 @@ function addManager(element){
         description: "User",
         type: "user",
         icon: "person_add",
+        exclude: existingUids,
         multiple: false,
         onchoose: () => {
             let url = "/api/groups/group/membership";

@@ -305,10 +305,17 @@ function removeManager(element){
 }
 
 function addManager(element){
+
+    let existingManagers = document.querySelectorAll(`.manager[data-gid="${element.getAttribute("data-gid")}"]`);
+    let existingUids = [];
+    existingManagers.forEach(manager => {
+        existingUids.push(manager.getAttribute("data-uid"));
+    });
+
     let gid = element.getAttribute("data-gid");
     
     showDialog({
-        title: "Add Manager to Group",
+        title: "Add Manager to Split",
         description: "User",
         type: "user",
         icon: "person_add",
@@ -441,12 +448,20 @@ function removeManager(element){
 }
 
 function addManager(element){
+
+    let existingManagers = document.querySelectorAll(`.manager[data-sid="${element.getAttribute("data-sid")}"]`);
+    let existingUids = [];
+    existingManagers.forEach(manager => {
+        existingUids.push(manager.getAttribute("data-uid"));
+    });
+
     let sid = element.getAttribute("data-sid");
     
     showDialog({
-        title: "Add Manager to Group",
+        title: "Add Manager to Split",
         description: "User",
         type: "user",
+        exclude: existingUids,
         icon: "person_add",
         multiple: false,
         onchoose: () => {

@@ -16,6 +16,7 @@
                 
                 
                 <% if(user) { %>
+                    <span class="small white">Hey, <%= user.mtu_id %></span>
                     <a onclick="log_out_click()" class="option">Log Out</a>
                     <div style="width:65px;height:10px"></div>
                     
@@ -32,7 +33,7 @@
         </div>
     </div>
     <% if(user) { %>
-        <div class="account-dot flex center">
+        <div class="account-dot flex center" onclick="window.location = '/account'">
             <span class="material-symbols-rounded role-icon">
                 <%= role ? role.icon : "music_note" %>
             </span>

@@ -35,7 +35,7 @@
                 <span class="tiny role-detail-tag">Visible Name</span>
             </div>
             <div class="flex apart">
-                <input data-rid="<%= role.rid %>" onchange="editRole(this)" name="name" type="text" class="input role-detail-value" placeholder="Role Name" value="<%= role.name %>" <%= canEdit ? "" : "disabled" %>/>
+                <input data-rid="<%= role.rid %>" onchange="editRole(this)" name="name" type="text" class="input role-detail-value" placeholder="Role Name" value="<%= role.name %>" <%= canEdit && hasPower ? "" : "disabled" %>/>
             </div>
         </div>
         <div class="role-detail-item">
@@ -48,7 +48,7 @@
                 
             </div>
             <div class="flex apart">
-                <input data-rid="<%= role.rid %>" onchange="editRole(this)" name="power" type="number" class="input role-detail-value permission-input" placeholder="Power" value="<%= role.power %>" <%= canEdit ? "" : "disabled" %>/>
+                <input data-rid="<%= role.rid %>" onchange="editRole(this)" name="power" type="number" class="input role-detail-value permission-input" placeholder="Power" value="<%= role.power %>" <%= canEdit && hasPower ? "" : "disabled" %>/>
             </div>
         </div>
         <div>
@@ -66,8 +66,8 @@
             </div>
             <% if(canEdit){ %>
                 <div class="flex center">
-                    <button data-rid="<%= role.rid %>" onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
-                    <button data-rid="<%= role.rid %>" onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Choose Image</span></button>
+                    <button data-rid="<%= role.rid %>" <%= hasPower ? '' : 'disabled' %> onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
+                    <button data-rid="<%= role.rid %>" <%= hasPower ? '' : 'disabled' %> onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Choose Image</span></button>
                 </div>
             <% } %>
         </div>
@@ -78,7 +78,7 @@
                 <span class="tiny role-detail-tag">Description</span>
             </div>
             <div class="flex apart">
-                <textarea data-rid="<%= role.rid %>" onchange="editRole(this)" name="description" class="input small role-detail-value" <%= canEdit ? "" : "disabled" %>><%= role.description %></textarea>
+                <textarea data-rid="<%= role.rid %>" onchange="editRole(this)" name="description" class="input small role-detail-value" <%= canEdit && hasPower ? "" : "disabled" %>><%= role.description %></textarea>
             </div>
         </div>
     </div>
@@ -89,10 +89,10 @@
             </div>
             <div class="flex center permissions wrap" data-rid="<%= role.rid %>">
                 <% for(var i = 0; i < role.permissions.length; i++) { %>
-                    <span class="tiny config-detail-value config-main-info resolve-further permission" data-permission="<%= role.permissions[i].permission_uniq_name %>" data-rid="<%= role.rid %>"  <%= canEdit ? "onclick='removePermission(this)'" : "" %>><%= role.permissions[i].permission_uniq_name %></span>
+                    <span class="tiny config-detail-value config-main-info resolve-further permission" data-permission="<%= role.permissions[i].permission_uniq_name %>" data-rid="<%= role.rid %>"  <%= canEdit && hasPower ? "onclick='removePermission(this)'" : "" %>><%= role.permissions[i].permission_uniq_name %></span>
                 <% } %>
                 <% if(canEdit) { %>
-                    <button class="button-alternate permission-add" onclick="addPermission(this)" data-rid="<%= role.rid %>"><span class="button-text">+</span></button>
+                    <button class="button-alternate permission-add" <%= hasPower ? '' : 'disabled' %> onclick="addPermission(this)" data-rid="<%= role.rid %>"><span class="button-text">+</span></button>
                 <% } %>
             </div>
         </div>
@@ -102,7 +102,7 @@
     </div>
     <div class="flex apart">
         <div class="flex center">
-            <button data-rid="<%= role.rid %>" <%= role.user_count > 0 ? 'disabled' : '' %> onclick="deleteRole(this)" class="button-alternate" <%= canEdit ? "" : "disabled" %>><span class="button-text">Remove</span></button>
+            <button data-rid="<%= role.rid %>" <%= role.user_count > 0 ? 'disabled' : '' %> onclick="deleteRole(this)" class="button-alternate" <%= canEdit && hasPower ? "" : "disabled" %>><span class="button-text">Remove</span></button>
         </div>
     </div>
 </div>

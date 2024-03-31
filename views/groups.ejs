@@ -16,6 +16,19 @@
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
 
+            <% if(permissions.includes("groups") || permissions.includes("splits")) { %>
+                <div class="spacing-bottom flex center">
+                    <% if(permissions.includes("groups")) { %>
+                        <button onclick="window.location = '/groups/edit'" class="button-alternate"><span class="button-text">Manage All Groups</span></button>
+                    <% } %>
+                    <button onclick="window.location = '/splits/edit'" class="button-alternate"><span class="button-text">Manage All Splits</span></button>
+                </div>
+            <% } %>
+
+            <div class="flex center spacing">
+                <span class="large">All Groups</span>
+            </div>
+
             <% for(let i = 0; i < groups.length; i++) { %>
                 <% let group = groups[i] %>
                 <% let membership = group.membership %>

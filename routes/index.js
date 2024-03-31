@@ -260,7 +260,9 @@ router.get("/roles", async (req, res) => {
     //     return;
     // }
 
-    res.render("roles_edit", {user: req.session.user, role: req.session.role, roles: roles, default_role: default_role, images: images, permissions: permissionsToPass});
+    let userPower = req.session.role.power;
+
+    res.render("roles_edit", {user: req.session.user, role: req.session.role, roles: roles, default_role: default_role, images: images, permissions: permissionsToPass, power: userPower});
 
 });
 
@@ -489,7 +491,7 @@ router.get("/groups", async (req, res) => {
     
     if(! await permissionCheck(req, res, [])) return;
 
-    var permissionsToPass = (await permissionsRequest(req, ["splits_join", "groups_join", "groups"]));
+    var permissionsToPass = (await permissionsRequest(req, ["splits_join", "groups_join", "groups", "splits"]));
     
     var images = await generateImagesList("corner_images");
 
@@ -520,13 +522,14 @@ router.get("/groups", async (req, res) => {
             group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
         }else{
             group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+            group.color = "#000000";
         }
 
 
     }
 
 
-    res.render("groups", {user: req.session.user, role: req.session.role, groups: groups, images: images});
+    res.render("groups", {user: req.session.user, role: req.session.role, groups: groups, images: images, permissions: permissionsToPass});
 
 });
 
@@ -581,6 +584,7 @@ router.get("/split/:sid", async (req, res) => {
         group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
     }else{
         group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+        group.color = "#000000";
     }
 
     if(gradientBackground.length > 0){
@@ -611,7 +615,7 @@ router.get("/split/:sid", async (req, res) => {
 
     let elevated = false;
     if(req.session.user){
-        elevated = permissions.includes("splits") || permissions.includes("groups");
+        elevated = permissionsToPass.includes("splits") || permissionsToPass.includes("groups");
 
         let membership = allMembership.find(m => m.uid == req.session.user.uid)
         if(membership != undefined && membership.elevated){
@@ -660,6 +664,7 @@ router.get("/group/:gid", async (req, res) => {
 
     let allMembership = (await db.getGroupMembers(gid)).data;
     let splits = (await db.getSplits(gid)).data;
+    splits = splits.filter(s => s.gid == group.gid);
 
     var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
 
@@ -675,6 +680,7 @@ router.get("/group/:gid", async (req, res) => {
         group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
     }else{
         group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+        group.color = "#000000";
     }
 
     let events = (await db.getEvents()).data;
@@ -783,6 +789,7 @@ router.get("/group/:gid/edit", async (req, res) => {
 
     let allMembership = (await db.getGroupMembers(gid)).data;
     let splits = (await db.getSplits(gid)).data;
+    splits = splits.filter(s => s.gid == group.gid);
 
     let isElevated = allMembership.find(m => m.uid == req.session.user.uid && m.elevated);
 
@@ -800,6 +807,7 @@ router.get("/group/:gid/edit", async (req, res) => {
         group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
     }else{
         group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+        group.color = "#000000";
     }
 
     for(var i = 0; i < splits.length; i++){
@@ -900,6 +908,7 @@ router.get("/split/:sid/edit", async (req, res) => {
         group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
     }else{
         group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+        group.color = "#000000";
     }
 
     if(gradientBackground.length > 0){

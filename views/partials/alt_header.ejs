@@ -30,7 +30,7 @@
         </div>
     </div>
     <% if(user) { %>
-        <div class="account-dot flex center">
+        <div class="account-dot flex center" onclick="window.location = '/account'">
             <span class="material-symbols-rounded role-icon">
                 <%= role ? role.icon : "music_note" %>
             </span>

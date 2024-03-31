@@ -218,7 +218,7 @@ router.post("/roles/create", async (req, res) => {
         return;
     }
 
-    db.setRole(null, req.body.name, null, null).then((result) => {
+    db.setRole(null, req.body.name, null, null, null).then((result) => {
         let rid = result.data[0].rid;
         // we also want to get the role we just created to send back (with rid)
         db.getRole(rid).then((result) => {
@@ -324,11 +324,13 @@ router.post("/roles", async (req, res) => {
     let power = req.body.power;
     let rid = req.body.rid;
     let description = req.body.description;
+    let icon = req.body.icon;
     if(!name) name = null;
     if(!power) power = null;
+    if(!icon) icon = null;
     if(power){
         let userPower = req.session.role.power;
-        if(userPermission <= power){
+        if(userPower <= power){
             res.status(403).send({message: "Cannot set power higher than or equal to your own"});
             return;
         }
@@ -352,7 +354,7 @@ router.post("/roles", async (req, res) => {
         return;
     }
 
-    db.setRole(rid, name, power, description).then((result) => {
+    db.setRole(rid, name, power, description, icon).then((result) => {
         res.send(result);
     })
 });

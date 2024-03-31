@@ -1,4 +1,4 @@
 
 <% roles.forEach(function(r){ %>
-    <%- include('./role_item.ejs', {role: r, canEdit: canEdit}); %>
+    <%- include('./role_item.ejs', {role: r, canEdit: canEdit, hasPower: power > r.power}); %>
 <% }); %>

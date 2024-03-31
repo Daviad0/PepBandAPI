@@ -123,7 +123,7 @@
                     <div class="flex center wrap" id="group-members">
                         <% for(let i = 0; i < users.length; i++) { %>
                             <% let u = users[i] %>
-                            <div class="user resolve-further flex center" <%= permissions.includes("groups") || permissions.includes("other_users_membership") || elevated ? 'onclick="manageUser(this)"' : '' %>  data-uid="<%= u.uid %>" data-elevated="<%= u.elevated %>" data-username="<%= u.mtu_id %>">
+                            <div class="user resolve-further flex center" <%= permissions.includes("groups") || permissions.includes("other_users_membership") || elevated ? "onclick=manageUser(this)" : '' %>  data-uid="<%= u.uid %>" data-elevated="<%= u.elevated %>" data-username="<%= u.mtu_id %>">
                                 <span class="medium"><%= u.full_name %></span>
                                 <% if(u.elevated) { %>
                                     <span class="spacing-left material-symbols-rounded">star</span>
