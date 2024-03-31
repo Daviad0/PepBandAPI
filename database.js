@@ -27,6 +27,9 @@ class Database {
             port: this.port,
         });
 
+
+        this.authState = 0;
+
         
 
         //  Server=${this.link},${this.port};Initial Catalog=${this.name};Persist Security Info=False;User ID=${this.username};Password=${this.password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
@@ -640,7 +643,10 @@ class Database {
     }
 
     async setPermission(permission_uniq_name, description){
+        
         let existing_permission = await this.getPermission(permission_uniq_name)
+
+        this.authState += 1;
 
         if(existing_permission.success && existing_permission.data.length > 0){
             var permission = existing_permission.data[0]
@@ -654,6 +660,8 @@ class Database {
     }
 
     deletePermission(permission_uniq_name){
+        this.authState += 1;
+
         return this.edit("DELETE FROM permissions WHERE permission_uniq_name = '" + permission_uniq_name + "'")
     }
 
@@ -662,6 +670,8 @@ class Database {
     }
 
     setPermission_rid(rid, permission_uniq_name){
+        this.authState += 1;
+
         return this.edit("INSERT INTO role_permissions (rid, permission_uniq_name, granted) VALUES (" + rid + ", '" + permission_uniq_name + "', CURRENT_TIMESTAMP)")
     }
 
@@ -672,6 +682,8 @@ class Database {
 
     async setUserRole(uid, rid){
         let existing_user = await this.getIdentity_uid(uid)
+
+        this.authState += 1;
 
         if(existing_user.success && existing_user.data.length > 0){
             var user = existing_user.data[0]
@@ -715,6 +727,8 @@ class Database {
     async setRole(rid, name, power, description, icon){
         let existing_role = await this.getRole(rid)
 
+        this.authState += 1;
+
         if(existing_role.success && existing_role.data.length > 0){
             var role = existing_role.data[0]
 
@@ -735,6 +749,9 @@ class Database {
     }
 
     deleteRole(rid){
+
+        this.authState += 1;
+
         return this.edit("DELETE FROM identity_management_roles WHERE rid = " + rid)
     }
 

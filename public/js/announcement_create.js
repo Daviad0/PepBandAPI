@@ -1,6 +1,8 @@
 var eventType = null;
 var eventTemplate = null;
 
+let icon = null;
+
 function updateEventTypePreview(element){
     let etyid = element.value;
     let url = "/api/event/type/" + etyid;
@@ -123,8 +125,8 @@ function iconChoose(){
             icon_viewer.removeAttribute("hidden");
             icon_viewer.innerHTML = current_dialog_data.selected;
 
-            changeProperty("icon", current_dialog_data.selected);
-            
+            icon = current_dialog_data.selected;
+
             hideDialog();
         },
         extra: {}
@@ -144,7 +146,7 @@ function imageChoose(){
             icon_viewer.removeAttribute("hidden");
             icon_viewer.src = current_dialog_data.selected;
 
-            changeProperty("icon", "IMAGE:" + current_dialog_data.selected);
+            icon = "IMAGE:" + current_dialog_data.selected;
             
             hideDialog();
         },

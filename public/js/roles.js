@@ -232,8 +232,9 @@ function removePermission(element){
     showDialog({
         title: "Remove " + permission + " from Role?",
         description: "Are you sure that you want to remove " + permission + " from this role? All users with this role will no longer be able to access any links, buttons, or other features that require this permission.",
-        type: "buttons",
         icon: "delete",
+        type: "urgent_buttons",
+        lottie: "/lotties/BreakingActionEdit.json",
         buttons: [
             {
                 text: "Remove Permission",

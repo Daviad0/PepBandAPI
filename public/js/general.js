@@ -194,6 +194,38 @@ function showDialog(properties){
     switch(dialog_type){
         case "menu":
             break;
+        case "urgent_buttons": 
+            
+            dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
+
+            let lottie = selectedOptionDiv.querySelector("#dialog-urgent_buttons-lottie");
+            if(lottie){
+                lottie.load(properties.lottie);
+            }
+
+            title = properties.title;
+            description = properties.description;
+            icon = properties.icon;
+            preselectedButtons = properties.buttons;
+        
+            dialog_title.innerHTML = title;
+            dialog_description.innerHTML = description;
+        
+            dialog_buttons_static.innerHTML = "";
+            preselectedButtons.forEach((button) => {
+                // expecting text, class, and onclick
+                // background may be defined 
+                let button_element = document.createElement("button");
+                button_element.innerHTML = button.text;
+                button_element.classList.add(button.class);
+                button_element.classList.add("dialog-button");
+                if(button.background){
+                    button_element.classList.add(button.background);
+                }
+                button_element.onclick = button.onclick;
+                dialog_buttons_static.appendChild(button_element);
+            });
+            break;
         case "buttons": 
             
             let dialog_buttons = selectedOptionDiv.querySelector("#dialog-buttons");
@@ -288,6 +320,9 @@ function showDialog(properties){
             break;
         case "song":
 
+            let dialog_song_empty = selectedOptionDiv.querySelector("#dialog-song-empty");
+            dialog_song_empty.classList.add("no-display");
+
             dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
             dialog_buttons_static.innerHTML = "";
             title = properties.title;
@@ -338,6 +373,9 @@ function showDialog(properties){
             dialog_getSongs();
             break;
         case "user":
+
+            let dialog_user_empty = selectedOptionDiv.querySelector("#dialog-user-empty");
+            dialog_user_empty.classList.add("no-display");
 
             dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
             dialog_buttons_static.innerHTML = "";
@@ -391,6 +429,8 @@ function showDialog(properties){
             break;
 
         case "permission":
+            let dialog_permission_empty = selectedOptionDiv.querySelector("#dialog-permission-empty");
+            dialog_permission_empty.classList.add("no-display");
 
             dialog_buttons_static = selectedOptionDiv.querySelector("#dialog-buttons");
             dialog_buttons_static.innerHTML = "";
@@ -443,6 +483,9 @@ function showDialog(properties){
             dialog_getPermissions();
             break;
         case "icon":
+
+            let dialog_icon_empty = selectedOptionDiv.querySelector("#dialog-icon-empty");
+            dialog_icon_empty.classList.add("no-display");
 
             let dialog_buttons_static_icon = selectedOptionDiv.querySelector("#dialog-buttons");
             dialog_buttons_static_icon.innerHTML = "";
@@ -764,6 +807,8 @@ function dialog_icon_changeSearch(){
 
     parentDiv.innerHTML = "";
 
+    let shownIcons = 0;
+
     for(var i = 0; i < icons.length; i++){
         if(iconsLeftToShow <= 0) break;
 
@@ -797,8 +842,16 @@ function dialog_icon_changeSearch(){
 
         parentDiv.appendChild(option);
 
+        shownIcons++;
+
         iconsLeftToShow --;
 
+    }
+
+    if(shownIcons == 0){
+        document.getElementById("dialog-icon-empty").classList.remove("no-display");
+    }else{
+        document.getElementById("dialog-icon-empty").classList.add("no-display");
     }
 }
 
@@ -809,6 +862,9 @@ function dialog_song_changeSearch(){
 
     let songs = current_dialog_data["songs"];
     // hide songs that don't match the filter
+
+    let shownSongs = 0;
+
     for(let i = 0; i < songs.length; i += 1){
         let song = songs[i];
 
@@ -820,9 +876,17 @@ function dialog_song_changeSearch(){
 
         if(song.name.toLowerCase().includes(name.toLowerCase()) && song.artist.toLowerCase().includes(artist.toLowerCase()) && (category == "any" || song.category == category)){
             songElement.classList.remove("no-display");
+            shownSongs++;
         }else{
             songElement.classList.add("no-display");
         }
+    
+    }
+
+    if(shownSongs == 0){
+        document.getElementById("dialog-song-empty").classList.remove("no-display");
+    }else{
+        document.getElementById("dialog-song-empty").classList.add("no-display");
     
     }
 }
@@ -832,18 +896,27 @@ function dialog_user_changeSearch(){
     let full_name = document.getElementById("dialog-user-search-full_name").value;
 
     let users = current_dialog_data["users"];
+    let shownUsers = 0;
+    let maxShownUsers = 100;
     // hide songs that don't match the filter
     for(let i = 0; i < users.length; i += 1){
         let user = users[i];
 
         let userElement = document.querySelector(`.dialog-user[data-uid="${user.uid}"]`);
 
-        if(user.mtu_id.toLowerCase().includes(username.toLowerCase()) && (user.full_name.toLowerCase().includes(full_name.toLowerCase()))){
+        if(user.mtu_id.toLowerCase().includes(username.toLowerCase()) && (user.full_name.toLowerCase().includes(full_name.toLowerCase())) && shownUsers < maxShownUsers){
             userElement.classList.remove("no-display");
+            shownUsers++;
         }else{
             userElement.classList.add("no-display");
         }
-    
+    }
+
+    if(shownUsers == 0){
+        document.getElementById("dialog-user-empty").classList.remove("no-display");
+    }
+    else{
+        document.getElementById("dialog-user-empty").classList.add("no-display");
     }
 
 }
@@ -926,6 +999,12 @@ function dialog_getPermissions(){
                 dialog_permissions.appendChild(option);
 
             });
+
+            if(permissions.length == 0){
+                document.getElementById("dialog-permission-empty").classList.remove("no-display");
+            }
+        }else{
+            hideDialog();
         }
     });
 }
@@ -979,6 +1058,8 @@ function dialog_getUsers(){
 
 
             });
+
+            dialog_user_changeSearch();
         }
         else{
             dialog_users.innerHTML = "<span class='error'>Error getting users</span>";

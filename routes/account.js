@@ -29,6 +29,9 @@ router.get( '/authenticate', cas.bounce, (req, res) => {
         if(result != null){
             db.update_user_information(req.session[cas.session_info].udc_identifier, req.session[cas.session_info].displayname, req.session[cas.session_info].mail);
             req.session.user = result;
+
+            
+
             res.redirect('/');
         } else {
             res.send(result);

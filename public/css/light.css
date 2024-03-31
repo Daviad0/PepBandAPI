@@ -203,3 +203,7 @@ select{
 .dialog-song-selected{
     border: 2px solid #ffcd00;
 }
+
+.empty-section{
+    background-color: rgba(0,0,0,0.2);
+}

@@ -114,6 +114,8 @@ function deleteConfig(element){
         title: "Remove Critical Configuration",
         description: "You are attempting to remove configuration from this website that could impact users' ability to use this application. Please confirm that you want to remove this configuration.",
         icon: "destruction",
+        type: "urgent_buttons",
+        lottie: "/lotties/BreakingActionDelete.json",
         buttons: [
             {
                 text: "Remove Configuration",

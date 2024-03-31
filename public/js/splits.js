@@ -87,8 +87,9 @@ function deleteSplit(element){
     showDialog({
         title: "Are You Sure?",
         description: "Deleting a split will remove it from all groups and events that use it. This action cannot be undone. If you would like to remove the ability to join this split, you can always change the status of the split to be not open! Are you sure you want to continue?",
-        type: "buttons",
         icon: "delete",
+        type: "urgent_buttons",
+        lottie: "/lotties/BreakingActionDelete.json",
         buttons: [
             {
                 text: "Delete Split",

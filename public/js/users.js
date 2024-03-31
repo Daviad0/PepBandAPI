@@ -101,6 +101,8 @@ function deleteUser(element){
 
 
     showDialog({
+        type: "urgent_buttons",
+        lottie: "/lotties/BreakingActionDelete.json",
         title: "Delete User '" + users.find(u => u.uid == uid).full_name + "'?",
         description: "You are about to delete the user '" + users.find(u => u.uid == uid).full_name + "'. This user's records will be removed from our database, but will be able to sign in through MTU's SSO to create a new account at any time.",
         icon: "delete",
@@ -225,6 +227,8 @@ function editUserRole(element){
             title: "You are Editing Yourself",
             description: "You are currently changing your role to " + roles.find(r => r.rid == value).name + ". Are you sure that you want to continue with this edit?",
             icon: "content_copy",
+            type: "urgent_buttons",
+            lottie: "/lotties/BreakingActionEdit.json",
             buttons: [
                 {
                     text: "Change Role",
@@ -298,6 +302,8 @@ function editSelectedUsersRole(element){
         title: "Editing " + selectedUsers.length + " User" + (selectedUsers.length == 1 ? "" : "s") + " Role",
         description: "All selected users will receive " + role.name + " immediately. Are you sure that you want to continue with this mass edit?",
         icon: "content_copy",
+        type: "urgent_buttons",
+        lottie: "/lotties/BreakingActionEdit.json",
         buttons: [
             {
                 text: "Change Role" + (selectedUsers.length == 1 ? "" : "s"),

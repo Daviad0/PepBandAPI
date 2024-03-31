@@ -661,6 +661,8 @@ function deleteEvent(etid, name){
         title: "Deleting Event Template" + (name ? `: ${name}` : ""),
         description: "Are you sure that you would like to delete this event template? This will not damage any events that have been made with this template, but no further events can use this template after it's been deleted. All deletions are final and all data will be lost from this template!",
         icon: "delete",
+        type: "urgent_buttons",
+        lottie: "/lotties/BreakingActionDelete.json",
         buttons: [
             {
                 text: "Delete Forever",

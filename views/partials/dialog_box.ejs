@@ -20,6 +20,33 @@
                 <a onclick="hideDialog()" class="option material-symbols-rounded medium">close</a>
             </div>
         </div>
+
+        
+        <div class="dialog-option no-display" data-dialogtype="urgent_buttons">
+            <div class="flex center">
+                <lottie-player id="dialog-urgent_buttons-lottie" src="/lotties/error.json" class="urgent-lottie" background="transparent" speed="1" delay="0.5" autoplay loop></lottie-player>
+            </div>
+            
+
+            <div>
+                
+                <div class="dialog-information">
+                    <div class="flex center">
+                        <span class="large" id="dialog-title">Title</span>
+                    </div>
+                    <div class="flex center spacing-top">
+                        <span class="small" id="dialog-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum </span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex apart" id="dialog-button-parent">
+                <div></div>
+                <div class="flex center dialog-buttons wrap" id="dialog-buttons">
+                    <button class="button-main dialog-button">Confirm</button>
+                    <button class="button-main dialog-button">Cancel</button>
+                </div>
+            </div>
+        </div>
         <div class="dialog-option no-display" data-dialogtype="buttons">
             <div class="dialog-header">
                 <div class="dialog-icon-flex">
@@ -131,6 +158,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="no-display flex center" id="dialog-song-empty">
+                    <%- include('empty.ejs', {filters: true, message: "No songs found..."}) %>
+                </div>
                 <div class="flex center wrap dialog-song-parent" id="dialog-song-parent">
                     
                 </div>
@@ -180,9 +210,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex center wrap dialog-song-parent" id="dialog-user-parent">
+                <div class="no-display flex center" id="dialog-user-empty">
+                    <%- include('empty.ejs', {filters: true, message: "No users found..."}) %>
+                </div>
+                <div class="flex center start wrap dialog-song-parent" id="dialog-user-parent">
                     
                 </div>
+                
             </div>
             
 
@@ -211,7 +245,10 @@
 
             </div>
             <div class="dialog-song-container">
-                <div class="flex center wrap dialog-song-parent" id="dialog-permission-parent">
+                <div class="no-display flex center" id="dialog-permission-empty">
+                    <%- include('empty.ejs', {filters: false, message: "No additional permissions found..."}) %>
+                </div>
+                <div class="flex center start wrap dialog-song-parent" id="dialog-permission-parent">
                     
                 </div>
             </div>
@@ -251,7 +288,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex center wrap dialog-song-parent" id="dialog-icon-parent">
+                <div class="no-display flex center" id="dialog-icon-empty">
+                    <%- include('empty.ejs', {filters: true, message: "No icons found..."}) %>
+                </div>
+                <div class="flex center start wrap dialog-song-parent" id="dialog-icon-parent">
                     
                 </div>
             </div>

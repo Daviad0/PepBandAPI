@@ -566,10 +566,14 @@ button:disabled{
 
 .dialog-user-parent{
     width: 70vw;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .dialog-song-parent{
     width: 70vw;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .dialog-user{
@@ -638,3 +642,17 @@ button:disabled{
 
 
 
+
+
+.empty-section{
+    margin:10px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    max-width: 400px;
+}
+
+.urgent-lottie{
+    width: 200px;
+    height: 200px;
+    margin: 10px;
+}

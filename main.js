@@ -32,6 +32,18 @@ app.use(bodyParser.json());
 // authentication update every time a page is loaded
 app.use((req, res, next) => {
     if(req.session.user){
+
+        let regenerateAuthState = false;
+
+        if(!req.session.role) regenerateAuthState = true;
+        if(req.session.authState == undefined) regenerateAuthState = true;
+        if(req.session.authState != db.authState) regenerateAuthState = true;
+
+        if(!regenerateAuthState){
+            next();
+            return;
+        }
+
         db.getIdentityRole(req.session.user.uid).then((result) => {
             console.log(result)
             if(result.data.length == 0) {
@@ -40,6 +52,7 @@ app.use((req, res, next) => {
                 return;
             }
             req.session.role = result.data[0];
+            req.session.authState = db.authState;
             next();
         })
     } else {
