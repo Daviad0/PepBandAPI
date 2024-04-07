@@ -130,10 +130,10 @@ function deleteUser(element){
                             updateSelectedUsers();
                         }else{
                             if(result.message){
-                                showError(error_span, result.message);
+                                showGeneralError(result.message, "emergency_home");
                             }
                             else{
-                                showError(error_span, "Error deleting user");
+                                showGeneralError("Unexpected error occurred", "emergency_home");
                             }
                         }
                     });
@@ -245,12 +245,12 @@ function editUserRole(element){
                             if(result.success){
                                 element.classList.remove("input-error");
                                 element.setAttribute("data-initvalue", value);
-                                showError(error_span, "");
+                                showGeneralError(null,null)
                             }
                             else{
                                 element.classList.add("input-error");
                                 element.value = element.getAttribute("data-initvalue");
-                                showError(error_span, result.message);
+                                showGeneralError(result.message, "emergency_home")
                             }
                         });
     
@@ -282,11 +282,11 @@ function editUserRole(element){
     apiPost(url, data, (result) => {
         if(result.success){
             element.classList.remove("input-error");
-            showError(error_span, "");
+            showGeneralError(null,null)
         }
         else{
             element.classList.add("input-error");
-            showError(error_span, result.message);
+            showGeneralError(result.message, "emergency_home")
         }
     });
 }

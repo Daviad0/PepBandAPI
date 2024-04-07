@@ -283,6 +283,11 @@ router.post("/announcement/create", async (req, res) => {
     // expecting icon in body, OK if null
     // expecting published in body, not OK if null
     // expecting until in body, OK if null
+    // expecting postToEveryone in body, OK if null
+    // expecting postToGids in body, OK if null
+    // expecting postToSids in body, OK if null
+    // expecting notifyNow in body, OK if null
+        // notifyNow is only valid if published is in the past
 
     if(! await permissionCheck(req, res, ["announcements", "announcements_edit"])) return;
 
@@ -292,6 +297,13 @@ router.post("/announcement/create", async (req, res) => {
     let published = req.body.published;
     let until = req.body.until;
     let uid = req.session.user.uid;
+
+    let postToEveryone = req.body.postToEveryone;
+    let postToGids = req.body.postToGids;
+    let postToSids = req.body.postToSids;
+    let notifyNow = req.body.notifyNow;
+
+
 
     if(!name){
         res.status(400).send({message: "Missing name"});
@@ -312,7 +324,34 @@ router.post("/announcement/create", async (req, res) => {
         icon = null;
     }
 
-    db.setAnnouncement(null, name, content, icon, uid, published, until).then((result) => {
+    if(!postToEveryone){
+        postToEveryone = false;
+    }
+    if(!postToGids){
+        postToGids = [];
+    }
+    if(!postToSids){
+        postToSids = [];
+    }
+    if(!notifyNow){
+        notifyNow = false;
+    }
+
+    db.setAnnouncement(null, name, content, icon, uid, published, until, postToEveryone, notifyNow).then((result) => {
+        
+        // set the announcement to the groups and splits
+
+        let aid = result.data[0].aid;
+
+        postToGids.forEach((gid) => {
+            db.setAnnouncementGroup(aid, gid, true);
+        });
+
+        postToSids.forEach((sid) => {
+            db.setAnnouncementSplit(aid, sid, true);
+        });
+
+
         res.send(result);
     });
 });
@@ -325,6 +364,8 @@ router.post("/announcement", async (req, res) => {
     // expecting icon in body, OK if null
     // expecting published in body, OK if null
     // expecting until in body, OK if null
+    // expecting global in body, OK if null
+    // expecting notified in body, OK if null
 
     if(! await permissionCheck(req, res, ["announcements_edit"])) return;
 
@@ -334,13 +375,15 @@ router.post("/announcement", async (req, res) => {
     let icon = req.body.icon;
     let published = req.body.published;
     let until = req.body.until;
+    let global = req.body.global;
+    let notified = req.body.notified;
 
     if(!aid){
         res.status(400).send({message: "Missing aid"});
         return;
     }
 
-    db.setAnnouncement(aid, name, content, icon, null, published, until).then((result) => {
+    db.setAnnouncement(aid, name, content, icon, null, published, until, global, notified).then((result) => {
         res.send(result);
     });
 });

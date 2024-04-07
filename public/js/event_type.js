@@ -39,7 +39,7 @@ function editEventType(element){
         // get span with same uniq_name as element and the name as error
         
         
-        showError(error_span, "Property cannot be empty! Please enter a value.");
+        showGeneralError("Property cannot be empty!", "circle")
         return;
     }
 
@@ -54,9 +54,9 @@ function editEventType(element){
 
     apiPost(url, data, (result) => {
         if(result.success){
-            showError(error_span, "");
+            showGeneralError(null,null)
         }else{
-            showError(error_span, result.message);
+            showGeneralError("Unexpected error occurred","emergency_home")
         }
     })
 }

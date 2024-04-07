@@ -752,8 +752,10 @@ router.get("/group/:gid", async (req, res) => {
 });
 
 router.get("/group/:gid/edit", async (req, res) => {
-    
-    if(! await permissionCheck(req, res, ["groups", "other_users_membership"])) return;
+    let allMembership = (await db.getGroupMembers(gid)).data;
+    let isElevated = req.session.user ? allMembership.find(m => m.uid == req.session.user.uid && m.elevated) : false;
+
+    if(!isElevated && ! await permissionCheck(req, res, ["groups", "other_users_membership"])) return;
 
     var permissionsToPass = (await permissionsRequest(req, ["events", "events_edit", "groups", "splits", "other_users_membership"]));
     
@@ -787,11 +789,11 @@ router.get("/group/:gid/edit", async (req, res) => {
 
     group = group[0];
 
-    let allMembership = (await db.getGroupMembers(gid)).data;
+    
     let splits = (await db.getSplits(gid)).data;
     splits = splits.filter(s => s.gid == group.gid);
 
-    let isElevated = allMembership.find(m => m.uid == req.session.user.uid && m.elevated);
+    
 
     var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
 
@@ -856,8 +858,10 @@ router.get("/group/:gid/edit", async (req, res) => {
 });
 
 router.get("/split/:sid/edit", async (req, res) => {
+    let allMembership = (await db.getSplitMembers(sid)).data;
+    let isElevated = req.session.user ? allMembership.find(m => m.uid == req.session.user.uid && m.elevated) : false;
     
-    if(! await permissionCheck(req, res, ["splits", "groups", "other_users_membership"])) return;
+    if(!isElevated && ! await permissionCheck(req, res, ["splits", "groups", "other_users_membership"])) return;
     
     var permissionsToPass = (await permissionsRequest(req, ["events", "events_edit", "groups", "splits", "other_users_membership"]));
 
@@ -889,10 +893,10 @@ router.get("/split/:sid/edit", async (req, res) => {
 
     split = split[0];
 
-    let allMembership = (await db.getSplitMembers(sid)).data;
+    
     let group = (await db.getGroup(split.gid)).data[0];
 
-    let isElevated = allMembership.find(m => m.uid == req.session.user.uid && m.elevated);
+    
 
     var gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
 
@@ -1287,7 +1291,52 @@ router.get("/announcement/create", async (req, res) => {
     
     var images = await generateImagesList("corner_images");
 
-    res.render("announcement_create", {user: req.session.user, role: req.session.role, images: images});
+    let splits = (await db.getSplits()).data;
+    let groups = (await db.getGroups()).data;
+
+    let gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
+
+    for(var i = 0; i < groups.length; i++){
+        let group = groups[i];
+
+        if(gradientBackground.length > 0){
+            group.gradientBackground = gradientBackground[0].value;
+        }
+        // check if color is in hex format
+        if(group.color.match(/^#[0-9A-F]{6}$/i)){
+            // generate RGBA representation
+            var colorA = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",0.7)";
+            var colorB = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",1)";
+    
+            group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+        }else{
+            group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+            group.color = "#000000";
+        }
+    }
+
+    for(var i = 0; i < splits.length; i++){
+        let split = splits[i];
+
+        if(gradientBackground.length > 0){
+            split.gradientBackground = gradientBackground[0].value;
+        }
+        // check if color is in hex format
+        if(split.color.match(/^#[0-9A-F]{6}$/i)){
+            // generate RGBA representation
+            var colorA = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",0.7)";
+            var colorB = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",1)";
+    
+            split.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+        }else{
+            split.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+            split.color = "#000000";
+        }
+    }
+
+    
+
+    res.render("announcement_create", {user: req.session.user, role: req.session.role, images: images, groups: groups, splits: splits});
 
 });
 

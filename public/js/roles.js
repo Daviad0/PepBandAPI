@@ -53,7 +53,7 @@ function editRole(element){
 
     if(element.value == ""){
         element.classList.add("input-error");
-        showError(error_span, "Property cannot be empty");
+        showGeneralError("Property cannot be empty!", "circle");
         return;
     }
     element.classList.remove("input-error");
@@ -67,10 +67,10 @@ function editRole(element){
 
     apiPost(url, data, (result) => {
         if(result.success){
-            showError(error_span, "");
+            showGeneralError(null,null)
         }else{
             element.classList.add("input-error");
-            showError(error_span, "Error updating role");
+            showGeneralError("Unexpected error occurred","emergency_home")
         }
     });
 }
@@ -91,10 +91,10 @@ function deleteRole(element){
             option.remove();
         }else{
             if(result.message){
-                showError(error_span, result.message);
+                showGeneralError(result.message, "emergency_home");
             }
             else{
-                showError(error_span, "Error deleting role");
+                showGeneralError("Unexpected error occurred","emergency_home");
             }
         }
     });

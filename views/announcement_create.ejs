@@ -12,13 +12,13 @@
         <div class="mainbody">
             <span class="large">Create Announcement</span>
             <div class="form">
-                <div class="flex apart">
+                <div class="flex apart wrap">
                     <div class="announcement-create-detail-item">
                         <div class="flex apart">
                             <span class="tiny announcement-create-detail-tag">Announcement Title</span>
                         </div>
                         <div class="flex apart">
-                            <input name="name" type="text" class="input announcement-create-detail-value" placeholder="Super Cool Event"/>
+                            <input name="title" type="text" class="input announcement-create-detail-value" placeholder="Super Cool Event"/>
                         </div>
                     </div>
                     
@@ -27,8 +27,19 @@
                             <span class="tiny announcement-create-detail-tag">Publish Date</span>
                         </div>
                         <div class="flex center">
-                            <input type="time" class="input" placeholder="Publish Time" name="published_time" />
-                            <input type="date" class="input" placeholder="Publish Date" name="published_date" />
+                            <div class="flex center spacing-right">
+                                <input type="time" class="input" onchange="changePublishDate()" placeholder="Publish Time" name="published_time" />
+                                <input type="date" class="input" onchange="changePublishDate()" placeholder="Publish Date" name="published_date" />
+                            </div>
+                            <div>
+                                <span class="tiny">Publish Now</span>
+                                <label class="checkbox-container">
+                            
+                                    <input type="checkbox" onchange="changePublishNow(this)" id="announcement-create-publish-now"/>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            
                         </div>
                     </div>
                     <div class="announcement-create-detail-item">
@@ -41,42 +52,132 @@
                         </div>
                     </div>
                 </div>
-                <div class="announcement-create-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny announcement-create-detail-tag">Announcement Content</span>
-                    </div>
-                    <div class="flex apart">
-                        <textarea class="input textarea small" placeholder="Description" name="description"></textarea>
-                    </div>
-                </div> 
-                
-                <div class="flex center section">
-                    <div class="announcement-create-detail-item">
-                        <div class="flex center icon-container">
-                            <span class="material-symbols-rounded icon" hidden id="announcement-create-icon"></span>
-                            <img class="icon no-display" id="announcement-create-image"/>
+
+                <div class="flex apart spacing-top wrap">
+                    <div>
+                        <div class="flex center">
+                            <div class="postings spacing-bottom form">
+                                <div class="flex center spacing">
+                                    <span class="medium">Post to Groups and Splits</span>
+                                </div>
+                                <div class="flex apart spacing split-attend-item">
+                                    <span class="small"><strong>Group / Split</strong></span>
+                                    <span class="small"><strong>Post To</strong></span>
+                                    
+                                </div>
+                                <div class="spacing-top posting-items">
+                                    <div class="flex apart split-attend-item">
+                                        <div class="flex center">
+                                            <div class="flex center tag-text info-bg">
+                                                <span class="small material-symbols-rounded">public</span>
+                                                <span class="small">Everyone</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" class="post-to" data-all="everyone" name="show"/>
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                    <% for(let i = 0; i < groups.length; i++) { %>
+                                        <% let group = groups[i] %>
+                                        <div class="flex apart split-attend-item">
+                                            <div class="flex center">
+                                                <div class="flex center tag-text info-bg" style="background: <%= group.color %>; background: <%= group.gradientBackground %>">
+                                                    <span class="small material-symbols-rounded"><%= group.icon %></span>
+                                                    <span class="small"><%= group.name %></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <label class="checkbox-container">
+                                                <input type="checkbox" class="post-to" data-gid="<%= group.gid %>" name="show"/>
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <% let groupSplits = splits.filter(s => s.gid == group.gid) %>
+                                        <% for(let j = 0; j < groupSplits.length; j++) { %>
+                                            <% let split = groupSplits[j] %>
+                                            <div class="flex apart split-attend-item">
+                                                <div class="flex center">
+                                                    <span class="small"><%= group.name %></span>
+                                                    <span class="small material-symbols-rounded">arrow_forward</span>
+                                                    <div class="flex center tag-text info-bg" style="background: <%= split.color %>; background: <%= split.gradientBackground %>">
+                                                        <span class="small material-symbols-rounded"><%= split.icon %></span>
+                                                        <span class="small"><%= split.name %></span>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                                <label class="checkbox-container">
+                                                    <input type="checkbox" class="post-to" data-sid="<%= split.sid %>" name="show"/>
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        <% } %>
+                                        
+                                    <% } %>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex apart">
-                            <span class="tiny announcement-create-detail-tag">Announcement Icon</span>
-                        </div>
-                        <div class="flex apart">
-                            <input name="icon" type="text" hidden disabled class="input announcement-create-detail-value" placeholder="Icon"/>
-                        </div>
                     </div>
-                    <div class="flex center">
-                        <button onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
-                        <button onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Choose Image</span></button>
+                    <div class="announcement-right-col">
+                        <div class="announcement-create-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny announcement-create-detail-tag">Announcement Content</span>
+                            </div>
+                            <div class="flex apart">
+                                <textarea class="input textarea small" placeholder="Description" name="content"></textarea>
+                            </div>
+                        </div> 
+                        
+                        <div class="section">
+                            <div class="flex center spacing-right">
+                                <div class="announcement-create-detail-item">
+                                    <div class="flex center icon-container">
+                                        <span class="material-symbols-rounded icon" hidden id="announcement-create-icon"></span>
+                                        <img class="icon no-display" id="announcement-create-image"/>
+                                    </div>
+                                    <div class="flex apart">
+                                        <span class="tiny announcement-create-detail-tag">Announcement Icon</span>
+                                    </div>
+                                    <div class="flex apart">
+                                        <input name="icon" type="text" hidden disabled class="input announcement-create-detail-value" placeholder="Icon"/>
+                                    </div>
+                                </div>
+                                <div class="flex center">
+                                    <button onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
+                                    <button onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Choose Image</span></button>
+                                </div>
+                            </div>
+                            <div class="flex center spacing-top">
+                                <span class="small spacing-right">Notify on Post</span>
+                                <span class="small material-symbols-rounded spacing-right" title="Notifies the selected groups as soon as the announcement is published!">question_mark</span>
+                                <label class="checkbox-container">
+                                    
+                                    <input type="checkbox" id="announcement-create-notify" disabled/>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
+
+                
 
 
                 <div class="flex center spacing">
                     <span class="small no-display error error-message" name="error" id="announcement-create-error"></span>
                 </div>
 
+                
+                
+
                 <div class="flex center">
-                    <button class="button-main" onclick="submitEventForCreation()"><span class="button-text">Post Announcement</span></button>
+                    <button class="button-main" onclick="postAnnouncement()"><span class="button-text">Post Announcement</span></button>
                 </div>
+
+                
 
             </div>
         </div>

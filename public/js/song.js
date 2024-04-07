@@ -91,7 +91,7 @@ function editSong(element){
 
     if(element.value == ""){
         element.classList.add("input-error");
-        showError(error_span, "Name cannot be empty");
+        showGeneralError("Property cannot be empty!", "circle");
         return;
     }
 
@@ -112,10 +112,10 @@ function editSong(element){
     apiPost(url, data, (result) => {
         if(result.success){
             element.classList.remove("input-error");
-            showError(error_span, null);
+            showGeneralError(null,null)
         }else{
             element.classList.add("input-error");
-            showError(error_span, "Error updating song");
+            showGeneralError("Unexpected error occurred","emergency_home")
         }
     });
 }
@@ -136,10 +136,10 @@ function deleteSong(element){
             song_item.remove();
         }else{
             if(result.message){
-                showError(error_span, result.message);
+                showGeneralError(result.message, "emergency_home");
             }
             else{
-                showError(error_span, "Error deleting song");
+                showGeneralError("Unexpected error occurred","emergency_home");
             }
         }
     });
@@ -237,14 +237,14 @@ function cloneSong(element){
     apiPost(url, data, (result) => {
         if(result.success){
             updateSongView(result.data[0]);
-            showError(error_span, null);
+            showGeneralError(null,null)
             updateNonAutomatic();
         }else{
             if(result.message){
-                showError(error_span, result.message);
+                showGeneralError(result.message, "emergency_home");
             }
             else{
-                showError(error_span, "Error cloning song");
+                showGeneralError("Unexpected error occurred","emergency_home");
             }
         }
     });
@@ -263,7 +263,7 @@ function customSongUsageResolve(element){
     apiGet(url, (result) => {
         if(result.success){
             songUsage[soid] = result.data;
-            showError(error_span, null);
+            showGeneralError(null,null)
 
 
             element.classList.add("no-display");
@@ -275,7 +275,7 @@ function customSongUsageResolve(element){
             editSongUsageView(select);
 
         }else{
-            showError(error_span, "Error getting song usage");
+            showGeneralError("Unexpected error occurred","emergency_home");
         }
     })
 

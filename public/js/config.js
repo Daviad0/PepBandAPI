@@ -80,7 +80,7 @@ function editConfig(element){
         // get span with same uniq_name as element and the name as error
         
         
-        showError(error_span, "Property cannot be empty! Please enter a value.");
+        showGeneralError("Property cannot be empty!","circle")
         return;
     }
 
@@ -98,10 +98,10 @@ function editConfig(element){
         if(result.success){
             // do nothing
 
-            showError(error_span, null);
+            showGeneralError(null,null)
         }else{
             element.classList.add("input-error");
-            showError(error_span, "An unexpected error occurred while saving the configuration change!");
+            showGeneralError("Unexpected error occured!","emergency_mode")
         }
     })
 }
@@ -134,9 +134,9 @@ function deleteConfig(element){
                             config_item.remove();
                         }else{
                             if(!result.message){
-                                showError(error_span, "An unexpected error occurred while deleting the configuration!");
+                                showGeneralError("Unexpected error occurred!","emergency_mode")
                             }else{
-                                showError(error_span, result.message);
+                                showGeneralError(result.message,"emergency_mode")
                             }
                             
                         }

@@ -583,6 +583,80 @@ router.post("/split/:sid/delete", async (req, res) => {
 
 });
 
+router.get("/group/:gid/announcements", async (req, res) => {
+    if(! await permissionCheck(req, res, [])) return;
+
+    var gid = req.params.gid;
+
+    if(!gid){
+        res.status(400).send({message: "Missing gid"});
+        return;
+    }
+
+    var announcements = (await db.getAnnouncementsGroups_gid(gid));
+
+    res.send(announcements);
+});
+
+router.get("/split/:sid/announcements", async (req, res) => {
+    if(! await permissionCheck(req, res, [])) return;
+
+    var sid = req.params.sid;
+
+    if(!sid){
+        res.status(400).send({message: "Missing sid"});
+        return;
+    }
+
+    var announcements = (await db.getAnnouncementsSplits_sid(sid));
+
+    res.send(announcements);
+});
+
+router.post("/group/:gid/announcement", async (req, res) => {
+    // expecting aid in body, not OK if null
+
+    if(! await permissionCheck(req, res, ["announcements_edit", "groups"])) return;
+
+    var gid = req.params.gid;
+    var aid = req.body.aid;
+
+    if(!aid){
+        res.status(400).send({message: "aid property required to update announcement"});
+        return;
+    }
+    if(!gid){
+        res.status(400).send({message: "gid property required to update announcement"});
+        return;
+    }
+
+    db.setAnnouncementGroup(aid, gid).then((result) => {
+        res.send(result);
+    });
+});
+
+router.post("/split/:sid/announcement", async (req, res) => {
+    // expecting aid in body, not OK if null
+
+    if(! await permissionCheck(req, res, ["announcements_edit", "splits", "groups"])) return;
+
+    var sid = req.params.sid;
+    var aid = req.body.aid;
+
+    if(!aid){
+        res.status(400).send({message: "aid property required to update announcement"});
+        return;
+    }
+    if(!sid){
+        res.status(400).send({message: "sid property required to update announcement"});
+        return;
+    }
+
+    db.setAnnouncementSplit(aid, sid).then((result) => {
+        res.send(result);
+    });
+});
+
 module.exports = (useDb) => {
     db = useDb;
     return router;

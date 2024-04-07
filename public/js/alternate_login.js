@@ -26,17 +26,17 @@ function tryLogin() {
     apiPost(url, data, (result) => {
         if(result.success){
             window.location = "/";
-            showError(error_span, null);
+            showGeneralError(null,null)
         }else{
+            showGeneralError(result.message, "emergency_home");
             
-            showError(error_span, result.message);
         }
     });
 }
 
 function tryCreate(){
     let error_span = document.getElementById("create-error");
-    showError(error_span, null);
+    showGeneralError(null,null)
     var email = document.querySelector("input[name='create_email']").value;
     var full_name = document.querySelector("input[name='create_full_name']").value;
     var password = document.querySelector("input[name='create_password']").value;
@@ -79,8 +79,7 @@ function tryCreate(){
         document.querySelector("input[name='create_password']").classList.add("input-error");
         document.querySelector("input[name='create_confirm']").classList.add("input-error");
 
-        
-        showError(error_span, "Passwords do not match");
+        showGeneralError("Passwords do not match","vpn_key")
         return;
     }else{
         document.querySelector("input[name='create_password']").classList.remove("input-error");
@@ -92,10 +91,10 @@ function tryCreate(){
     apiPost(url, data, (result) => {
         if(result.success){
             window.location = "/";
-            showError(error_span, null);
+            showGeneralError(null,null)
         }else{
             
-            showError(error_span, result.message);
+            showGeneralError(result.message,"emergency_home")
         }
     });
 }

@@ -83,9 +83,9 @@ function submitEventForCreation(){
 
     let show = document.querySelector("input[name='show']").checked;
 
-    showError(error_span, null);
+    showGeneralError(null,null)
     if(name == "" || etyid == null || start == "Invalid Date" || end == "Invalid Date"){
-        showError(error_span, "Please fill out all fields");
+        showGeneralError("Please fill out all fields","indeterminate_question_box")
         return;
     }
     

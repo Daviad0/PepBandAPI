@@ -623,6 +623,14 @@ button:disabled{
     margin-bottom:24px;
 }
 
+/*
+If the checkbox is disabled, add a greyed out effect
+*/
+
+.checkbox-container input:disabled ~ .checkmark {
+    cursor: not-allowed;
+}
+
 .checkbox-container input{
     position: absolute;
     opacity: 0;

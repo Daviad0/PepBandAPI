@@ -49,10 +49,10 @@ function saveTemplateStructure(){
         if(result.success){
             // do nothing
             
-            showError(error_span, null);
+            showGeneralError(null,null)
         }else{
             changeSaveButtonState(false);
-            showError(error_span, "An unexpected error occurred while saving the configuration change!");
+            showGeneralError("Unexpected error occurred!", "emergency_home");
         }
     })
 
@@ -66,7 +66,7 @@ function editTemplate(element){
         // get span with same uniq_name as element and the name as error
         
         
-        showError(error_span, "Property cannot be empty! Please enter a value.");
+        showGeneralError("Property cannot be empty!","circle")
         return;
     }
 
@@ -82,10 +82,10 @@ function editTemplate(element){
         if(result.success){
             // do nothing
 
-            showError(error_span, null);
+            showGeneralError(null,null)
         }else{
             element.classList.add("input-error");
-            showError(error_span, "An unexpected error occurred while saving the configuration change!");
+            showGeneralError("Unexpected error occurred!", "emergency_home");
         }
     })
 }
