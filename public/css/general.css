@@ -7,23 +7,23 @@ span{
     text-align: center;
 }
 .xlarge{
-    font-size: 36px;
+    font-size: 36px !important;
     font-weight: bold;
 }
 .large{
-    font-size: 24px;
+    font-size: 24px !important;
     font-weight: bold;
 }
 .medium{
-    font-size: 18px;
+    font-size: 18px !important;
     font-weight: bold;
 }
 .small{
-    font-size: 14px;
+    font-size: 14px !important;
     font-weight: normal;
 }
 .tiny{
-    font-size: 10px;
+    font-size: 10px !important;
     font-weight: normal;
 }
 

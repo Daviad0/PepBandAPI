@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit Announcement</title>
+    <%- include('./partials/links.ejs'); %>
+    <link rel="stylesheet" href="/css/announcement_edit.css" />
+  </head>
+  <body>
+    <% let publishedDateString = announcement.published.getFullYear() + "-" + (announcement.published.getMonth() + 1).toString().padStart(2, '0') + "-" + announcement.published.getDate().toString().padStart(2, '0') %>
+    <% let publishedTimeString = announcement.published.getHours().toString().padStart(2, '0') + ":" + announcement.published.getMinutes().toString().padStart(2, '0') %>
+    <% let untilDateString = announcement.until.getFullYear() + "-" + (announcement.until.getMonth() + 1).toString().padStart(2, '0') + "-" + announcement.until.getDate().toString().padStart(2, '0') %>
+    <% let untilTimeString = announcement.until.getHours().toString().padStart(2, '0') + ":" + announcement.until.getMinutes().toString().padStart(2, '0') %>
+    <script>
+        let aid = "<%= announcement.aid %>";
+    </script>
+    <%- include('./partials/header.ejs'); %>
+    <script src="/js/announcement_edit.js"></script>
+    <script src="/js/manage_announcement.js"></script>
+    <div class="mainbodyoutside flex center">
+        <div class="mainbody">
+            <span class="large">Edit Announcement</span>
+            <span class="small">Editing Announcement with ID <strong><%= announcement.aid %></strong></span>
+            <div class="flex center spacing">
+                <button class="button-main" onclick="deleteAnnouncement('<%= announcement.aid %>')"><span class="button-text">Delete Announcement</span></button>
+                <button class="button-main" onclick="renotifyAnnouncement('<%= announcement.aid %>')"><span class="button-text">Renotify Announcement</span></button>
+            </div>
+            <div class="form spacing-top">
+                <div class="flex apart wrap">
+                    <div class="announcement-edit-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny announcement-edit-detail-tag">Announcement Title</span>
+                        </div>
+                        <div class="flex apart">
+                            <input name="title" type="text" class="input announcement-edit-detail-value" placeholder="Super Cool Event" value="<%= announcement.name %>"/>
+                        </div>
+                    </div>
+                    
+                    <div class="announcement-edit-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny announcement-edit-detail-tag">Publish Date</span>
+                        </div>
+                        <div class="flex center">
+                            <div class="flex center spacing-right">
+                                <input type="time" class="input" placeholder="Publish Time" name="published_time" value="<%= publishedTimeString %>"/>
+                                <input type="date" class="input" placeholder="Publish Date" name="published_date" value="<%= publishedDateString %>" />
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="announcement-edit-detail-item">
+                        <div class="flex apart">
+                            <span class="tiny announcement-edit-detail-tag">Effective Until</span>
+                        </div>
+                        <div class="flex center">
+                            <input type="time" class="input" placeholder="Until Time" name="until_time" value="<%= untilTimeString %>" />
+                            <input type="date" class="input" placeholder="Until Date" name="until_date" value="<%= untilDateString %>" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex apart spacing-top wrap">
+                    <div>
+                        <div class="flex center">
+                            <div class="postings spacing-bottom form">
+                                <div class="flex center spacing">
+                                    <span class="medium">Post to Groups and Splits</span>
+                                </div>
+                                <div class="flex apart spacing split-attend-item">
+                                    <span class="small"><strong>Group / Split</strong></span>
+                                    <span class="small"><strong>Post To</strong></span>
+                                    
+                                </div>
+                                <div class="spacing-top posting-items">
+                                    <div class="flex apart split-attend-item">
+                                        <div class="flex center">
+                                            <div class="flex center tag-text info-bg">
+                                                <span class="small material-symbols-rounded">public</span>
+                                                <span class="small">Everyone</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" class="post-to" data-all="everyone" name="show" <%= announcement.global ? "checked" : "" %>/>
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                    <% for(let i = 0; i < groups.length; i++) { %>
+                                        <% let group = groups[i] %>
+                                        <% let announcementGroup = announcement.groups.find(g => g.gid == group.gid) %>
+                                        <div class="flex apart split-attend-item">
+                                            <div class="flex center">
+                                                <div class="flex center tag-text info-bg" style="background: <%= group.color %>; background: <%= group.gradientBackground %>">
+                                                    <span class="small material-symbols-rounded"><%= group.icon %></span>
+                                                    <span class="small"><%= group.name %></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <label class="checkbox-container">
+                                                <input type="checkbox" class="post-to" data-gid="<%= group.gid %>" name="show" <%= announcementGroup ? "checked" : "" %>/>
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <% let groupSplits = splits.filter(s => s.gid == group.gid) %>
+                                        <% for(let j = 0; j < groupSplits.length; j++) { %>
+                                            <% let split = groupSplits[j] %>
+                                            <% let announcementSplit = announcement.splits.find(s => s.sid == split.sid) %>
+                                            <div class="flex apart split-attend-item">
+                                                <div class="flex center">
+                                                    <span class="small"><%= group.name %></span>
+                                                    <span class="small material-symbols-rounded">arrow_forward</span>
+                                                    <div class="flex center tag-text info-bg" style="background: <%= split.color %>; background: <%= split.gradientBackground %>">
+                                                        <span class="small material-symbols-rounded"><%= split.icon %></span>
+                                                        <span class="small"><%= split.name %></span>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                                <label class="checkbox-container">
+                                                    <input type="checkbox" class="post-to" data-sid="<%= split.sid %>" name="show" <%= announcementSplit ? "checked" : "" %>/>
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        <% } %>
+                                        
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="announcement-right-col">
+                        <div class="announcement-edit-detail-item">
+                            <div class="flex apart">
+                                <span class="tiny announcement-edit-detail-tag">Announcement Content</span>
+                            </div>
+                            <div class="flex apart">
+                                <textarea class="input textarea small" placeholder="Description" name="content"><%= announcement.content %></textarea>
+                            </div>
+                        </div> 
+                        
+                        <div class="section">
+                            <div class="flex center spacing-right">
+                                <div class="announcement-edit-detail-item">
+                                    <div class="flex center icon-container">
+                                        <span class="material-symbols-rounded icon" id="announcement-edit-icon"><%= announcement.icon %></span>
+                                        <img class="icon no-display" id="announcement-edit-image"/>
+                                    </div>
+                                    <div class="flex apart">
+                                        <span class="tiny announcement-edit-detail-tag">Announcement Icon</span>
+                                    </div>
+                                    <div class="flex apart">
+                                        <input name="icon" type="text" hidden disabled class="input announcement-edit-detail-value" placeholder="Icon"/>
+                                    </div>
+                                </div>
+                                <div class="flex center">
+                                    <button onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
+                                    <button onclick="imageChoose(this)" class="button-alternate"><span class="button-text">Choose Image</span></button>
+                                </div>
+                            </div>
+                            <div class="flex center spacing-top">
+                                <span class="small spacing-right">Notification Sent</span>
+                                <span class="small material-symbols-rounded spacing-right" title="Tracks if a notification has already been sent out regarding this announcement. If unchecked, a new notification will be sent to the selected groups!">question_mark</span>
+                                <label class="checkbox-container">
+                                    
+                                    <input type="checkbox" id="announcement-edit-notified" value="<%= announcement.notified %>"/>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+
+                <div class="flex center spacing">
+                    <span class="small no-display error error-message" name="error" id="announcement-edit-error"></span>
+                </div>
+
+                
+                
+
+                <div class="flex center">
+                    <button class="button-main" onclick="postAnnouncement()"><span class="button-text">Post Announcement</span></button>
+                </div>
+
+                
+
+            </div>
+        </div>
+        
+    </div>
+    <%- include('./partials/footer.ejs'); %>
+  </body>
+</html>

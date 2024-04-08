@@ -211,7 +211,25 @@ router.get("/events", async (req, res) => {
 
     events = events.slice(0, 10);
 
-    res.render("events", {user: req.session.user, role: req.session.role, events: events, images: images, eventTypes: eventTypes, permissions: permissionsToPass});
+    let announcements = (await db.getAnnouncements()).data;
+    let announcementsToPass = [];
+    let announcementsTaken = 0;
+    let now = new Date();
+    for(var i = 0; i < announcements.length && announcementsTaken < 5; i++){
+        let announcement = announcements[i];
+        
+
+        if(new Date(announcement.published) > now || new Date(announcement.until) < now){
+            continue;
+        }
+
+        if(announcement.global){
+            announcementsToPass.push(announcement);
+            announcementsTaken++;
+        }
+    }
+
+    res.render("events", {user: req.session.user, role: req.session.role, events: events, images: images, eventTypes: eventTypes, permissions: permissionsToPass, announcements: announcementsToPass});
 });
 
 
@@ -1282,12 +1300,12 @@ router.get("/account", async (req, res) => {
 
     let splits = (await db.getIdentitySplits(uid)).data;
 
-    res.render("account", {user: req.session.user, role: req.session.role, groups: groups, splits: splits, images: images, userDetails: user});
+    res.render("account", {user: req.session.user, role: req.session.role, groups: groups, splits: splits, images: images, userDetails: user, permissions: permissionsToPass});
 
 });
 
 router.get("/announcement/create", async (req, res) => {
-    //if(! await permissionCheck(req, res, ["announcements"])) return;
+    if(! await permissionCheck(req, res, ["announcements"])) return;
     
     var images = await generateImagesList("corner_images");
 
@@ -1338,6 +1356,83 @@ router.get("/announcement/create", async (req, res) => {
 
     res.render("announcement_create", {user: req.session.user, role: req.session.role, images: images, groups: groups, splits: splits});
 
+});
+
+router.get("/announcement/:aid/edit", async (req, res) => {
+    if(! await permissionCheck(req, res, ["announcements_edit"])) return;
+
+    var images = await generateImagesList("corner_images");
+
+    let aid = req.params.aid;
+    if(aid == "" || isNaN(aid)){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Announcement not found"
+        }});
+        return;
+    }
+
+    let splits = (await db.getSplits()).data;
+    let groups = (await db.getGroups()).data;
+
+    let gradientBackground = (await db.getConfigProperty_uniq_name("event_gradient_background")).data;
+
+    for(var i = 0; i < groups.length; i++){
+        let group = groups[i];
+
+        if(gradientBackground.length > 0){
+            group.gradientBackground = gradientBackground[0].value;
+        }
+        // check if color is in hex format
+        if(group.color.match(/^#[0-9A-F]{6}$/i)){
+            // generate RGBA representation
+            var colorA = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",0.7)";
+            var colorB = "rgba(" + parseInt(group.color.substring(1, 3), 16) + "," + parseInt(group.color.substring(3, 5), 16) + "," + parseInt(group.color.substring(5, 7), 16) + ",1)";
+    
+            group.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+        }else{
+            group.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+            group.color = "#000000";
+        }
+    }
+
+    for(var i = 0; i < splits.length; i++){
+        let split = splits[i];
+
+        if(gradientBackground.length > 0){
+            split.gradientBackground = gradientBackground[0].value;
+        }
+        // check if color is in hex format
+        if(split.color.match(/^#[0-9A-F]{6}$/i)){
+            // generate RGBA representation
+            var colorA = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",0.7)";
+            var colorB = "rgba(" + parseInt(split.color.substring(1, 3), 16) + "," + parseInt(split.color.substring(3, 5), 16) + "," + parseInt(split.color.substring(5, 7), 16) + ",1)";
+    
+            split.gradientBackground = `linear-gradient(160deg, ${colorA}, ${colorB})`;
+        }else{
+            split.gradientBackground = "linear-gradient(160deg, rgba(0,0,0,0.7), rgba(0,0,0,1))";
+            split.color = "#000000";
+        }
+    }
+
+    let announcement = (await db.getAnnouncement(req.params.aid));
+    if(announcement.data.length == 0){
+        res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
+            code: 404,
+            message: "Announcement not found"
+        }});
+        return;
+    }
+
+    announcement = announcement.data[0];
+
+    let announcementGroups = (await db.getAnnouncementsGroups_aid(aid)).data;
+    let announcementSplits = (await db.getAnnouncementsSplits_aid(aid)).data;
+
+    announcement.groups = announcementGroups;
+    announcement.splits = announcementSplits;
+
+    res.render("announcement_edit", {user: req.session.user, role: req.session.role, images: images, groups: groups, splits: splits, announcement: announcement, announcementGroups: announcementGroups, announcementSplits: announcementSplits});
 });
 
 

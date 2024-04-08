@@ -3,56 +3,10 @@ var eventTemplate = null;
 
 let icon = null;
 
-function changePublishNow(element){
-    let publish_now = element.checked;
-    let publish_date = document.querySelector("input[name='published_date']");
-    let publish_time = document.querySelector("input[name='published_time']");
-    if(publish_now){
-        publish_date.value = "";
-        publish_time.value = "";
-        publish_date.setAttribute("disabled", "true");
-        publish_time.setAttribute("disabled", "true");
-    }else{
-        publish_date.removeAttribute("disabled");
-        publish_time.removeAttribute("disabled");
-    }
-
-    changePublishDate();
-
-}
-
-function changePublishDate(){
-    let publish_notify = document.getElementById("announcement-create-notify");
-
-    let publish_now = document.getElementById("announcement-create-publish-now").checked;
-    if(publish_now){
-        publish_notify.removeAttribute("disabled");
-        return;
-    }
-
-    let publish_date = document.querySelector("input[name='published_date']").value;
-    let publish_time = document.querySelector("input[name='published_time']").value;
-    let publish = new Date(Date.parse(publish_date));
-    publish.setHours(publish_time.split(":")[0]);
-    publish.setMinutes(publish_time.split(":")[1]);
-    publish.setSeconds(0);
-
-    let now = new Date();
-
-    if(publish < now){
-        publish_notify.removeAttribute("disabled");
-        return;
-    }
-
-    publish_notify.setAttribute("disabled", "true");
-    publish_notify.checked = false;
-}
-
 function postAnnouncement(){
 
     showGeneralError(null, null);
 
-    let error_span = document.getElementById("announcement-create-error");
     let name = document.querySelector("input[name='title']").value;
     let content = document.querySelector("textarea[name='content']").value;
     let published_date = document.querySelector("input[name='published_date']").valueAsDate;
@@ -64,11 +18,6 @@ function postAnnouncement(){
     published.setHours(published_time.split(":")[0]);
     published.setMinutes(published_time.split(":")[1]);
     published.setSeconds(0);
-
-    let publish_now = document.getElementById("announcement-create-publish-now").checked;
-    if(publish_now){
-        published = new Date();
-    }
     
     let until_date = document.querySelector("input[name='until_date']").valueAsDate;
     let until_time = document.querySelector("input[name='until_time']").value;
@@ -98,11 +47,7 @@ function postAnnouncement(){
     });
     postToEveryone = postToEveryoneElement.checked;
 
-    let notityNow = document.getElementById("announcement-create-notify").checked;
-    let now = new Date();
-    if(published > now && notityNow){
-        notityNow = false;
-    }
+    let notified = document.getElementById("announcement-edit-notified").checked;
 
 
     showGeneralError(null, null);
@@ -126,8 +71,9 @@ function postAnnouncement(){
         return;
     }
 
-    let url = "/api/global/announcement/create";
+    let url = "/api/global/announcement/";
     let data = {
+        aid: aid,
         name: name,
         content: content, 
         published: published.toISOString(),
@@ -136,7 +82,7 @@ function postAnnouncement(){
         postToEveryone: postToEveryone,
         postToGids: postToGids,
         postToSids: postToSids,
-        notifyNow: notityNow
+        notified: notified
     };
 
     apiPost(url, data, (result) => {
@@ -154,9 +100,9 @@ function iconChoose(){
         type: "icon",
         icon: "ink_highlighter",
         onchoose: () => {
-            let image_viewer = document.querySelector("#announcement-create-image");
+            let image_viewer = document.querySelector("#announcement-edit-image");
             image_viewer.classList.add("no-display");
-            let icon_viewer = document.querySelector("#announcement-create-icon");
+            let icon_viewer = document.querySelector("#announcement-edit-icon");
             icon_viewer.removeAttribute("hidden");
             icon_viewer.innerHTML = current_dialog_data.selected;
 
@@ -175,9 +121,9 @@ function imageChoose(){
         type: "image",
         icon: "ink_highlighter",
         onchoose: () => {
-            let image_viewer = document.querySelector("#announcement-create-image");
+            let image_viewer = document.querySelector("#announcement-edit-image");
             image_viewer.classList.add("no-display");
-            let icon_viewer = document.querySelector("#announcement-create-icon");
+            let icon_viewer = document.querySelector("#announcement-edit-icon");
             icon_viewer.removeAttribute("hidden");
             icon_viewer.src = current_dialog_data.selected;
 

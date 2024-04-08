@@ -1,0 +1,5 @@
+<div>
+    <% announcements.forEach(function(a){ %>
+        <%- include('./announcement_item.ejs', {announcement: a, canEdit: canEdit}); %>
+    <% }); %>
+</div>

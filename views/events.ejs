@@ -8,6 +8,7 @@
   <body>
     <%- include('./partials/header.ejs'); %>
     <% let defaultEventType = { etyid: "DEFAULT_ETID", name: "DEFAULT_NAME", icon: "bolt", color: "#ffffff" } %>
+    <script src="/js/manage_announcement.js"></script>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
             <div class="splitpage">
@@ -38,6 +39,10 @@
                             <button class="button-main"><span class="button-text">Add Announcement</span></button>
                         <% } %>
                         
+                        
+                    </div>
+                    <div class="announcements spacing-top">
+                        <%- include('./partials/config/all_announcements.ejs', {announcements: announcements, canEdit: permissions.includes("announcements_edit")}); %>
                     </div>
                     
                     

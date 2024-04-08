@@ -1,0 +1,117 @@
+
+.form{
+    margin:10px;
+    border: 1px dashed rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
+
+.form .section{
+    margin: 10px 0px;
+}
+
+.announcement-right-col{
+    width: 60%;
+}
+
+.announcement-edit-detail-item{
+    margin: 10px;
+}
+
+.announcement-edit-details{
+    flex-wrap: wrap;
+}
+
+.announcement-edit-detail-value{
+    font-weight: bold;
+    resize: none;
+}
+
+.announcement-edit-item{
+    padding: 15px 0px;
+    border-bottom: 1px dashed #ccc;
+
+}
+
+.announcement-edit-main-info{
+    margin: 5px;
+}
+
+.announcement-edit-detail-tag{
+    margin-left:5px;
+    margin-bottom: 2px;
+}
+
+.announcement-edit-list{
+    height: 100%;
+    overflow-y: auto;
+    flex-wrap: wrap;
+}
+.announcement-edit-header{
+    margin-bottom: 20px;
+
+}
+.announcement-edit-footer{
+    margin-top: 20px;
+}
+
+.announcement-edit-vertical-flex{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    height: calc(100vh - 100px);
+}
+
+.no-display{
+    display: none;
+}
+
+.error-message{
+    margin-top:5px;
+}
+
+.permission-input{
+    width: 50px;
+}
+
+.message-in-box{
+    margin: 5px 10px;
+    margin-top:10px;
+}
+
+.textarea{
+    width: 100%;
+    height: 200px;
+    resize: none;
+}
+
+.icon-preview{
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    margin: 0px 5px;
+}
+
+.split-attend-item{
+    margin: 5px 10px;
+}
+
+.split-attend-item .tag-text{
+    border:none;
+    padding-left:0px;
+}
+
+.split-attend-item .material-symbols-rounded{
+    margin: 0px 5px;
+
+}
+
+.postings{
+    width: 300px;
+}
+
+.posting-items{
+    max-height: 300px;
+    overflow-y: auto;
+}
