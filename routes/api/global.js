@@ -366,6 +366,8 @@ router.post("/announcement", async (req, res) => {
     // expecting until in body, OK if null
     // expecting global in body, OK if null
     // expecting notified in body, OK if null
+    // expecting postToGids in body, OK if null
+    // expecting postToSids in body, OK if null
 
     if(! await permissionCheck(req, res, ["announcements_edit"])) return;
 
@@ -378,14 +380,78 @@ router.post("/announcement", async (req, res) => {
     let global = req.body.global;
     let notified = req.body.notified;
 
+    let postToGids = req.body.postToGids;
+    let postToSids = req.body.postToSids;
+
+    let currentAnnouncementGroups = (await db.getAnnouncementsGroups_aid(aid)).data;
+    let currentAnnouncementSplits = (await db.getAnnouncementsSplits_aid(aid)).data;
+
+    let removeFromGroups = currentAnnouncementGroups.filter((group) => {
+        return !postToGids.includes(group.gid);
+    });
+    let removeFromSplits = currentAnnouncementSplits.filter((split) => {
+        return !postToSids.includes(split.sid);
+    });
+
+    let addToGroups = postToGids.filter((gid) => {
+        return !currentAnnouncementGroups.find((group) => {
+            return group.gid == gid;
+        });
+    });
+
+    let addToSplits = postToSids.filter((sid) => {
+        return !currentAnnouncementSplits.find((split) => {
+            return split.sid == sid;
+        });
+    });
+
+
+
     if(!aid){
         res.status(400).send({message: "Missing aid"});
         return;
     }
 
+    if(!name){
+        name = null;
+    }
+    if(!content){
+        content = null;
+    }
+    if(!icon){
+        icon = null;
+    }
+    if(!published){
+        published = null;
+    }
+    if(!until){
+        until = null;
+    }
+    if(!global){
+        global = null;
+    }
+    if(!notified){
+        notified = null;
+    }
+
     db.setAnnouncement(aid, name, content, icon, null, published, until, global, notified).then((result) => {
         res.send(result);
     });
+
+    removeFromGroups.forEach((group) => {
+        db.deleteAnnouncementGroup(aid, group.gid);
+    });
+    removeFromSplits.forEach((split) => {
+        db.deleteAnnouncementSplit(aid, split.sid);
+    });
+
+    addToGroups.forEach((gid) => {
+        db.setAnnouncementGroup(aid, gid, true);
+    });
+    addToSplits.forEach((sid) => {
+        db.setAnnouncementSplit(aid, sid, true);
+    });
+
 });
 
 router.post("/announcement/:aid/delete", async (req, res) => {

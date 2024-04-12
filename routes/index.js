@@ -770,6 +770,13 @@ router.get("/group/:gid", async (req, res) => {
 });
 
 router.get("/group/:gid/edit", async (req, res) => {
+
+    let gid = req.params.gid;
+    if(gid == ""){
+        res.redirect("/groups");
+        return;
+    }
+
     let allMembership = (await db.getGroupMembers(gid)).data;
     let isElevated = req.session.user ? allMembership.find(m => m.uid == req.session.user.uid && m.elevated) : false;
 
@@ -779,11 +786,7 @@ router.get("/group/:gid/edit", async (req, res) => {
     
     var images = await generateImagesList("corner_images");
 
-    let gid = req.params.gid;
-    if(gid == ""){
-        res.redirect("/groups");
-        return;
-    }
+    
     // check if gid is number
     if(isNaN(gid)){
         res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
@@ -876,6 +879,12 @@ router.get("/group/:gid/edit", async (req, res) => {
 });
 
 router.get("/split/:sid/edit", async (req, res) => {
+    let sid = req.params.sid;
+    if(sid == ""){
+        res.redirect("/groups");
+        return;
+    }
+
     let allMembership = (await db.getSplitMembers(sid)).data;
     let isElevated = req.session.user ? allMembership.find(m => m.uid == req.session.user.uid && m.elevated) : false;
     
@@ -885,11 +894,7 @@ router.get("/split/:sid/edit", async (req, res) => {
 
     var images = await generateImagesList("corner_images");
 
-    let sid = req.params.sid;
-    if(sid == ""){
-        res.redirect("/groups");
-        return;
-    }
+    
     // check if gid is number
     if(isNaN(sid)){
         res.status(404).render("special/error", {user: req.session.user, role: req.session.role, error: {
@@ -1210,15 +1215,22 @@ router.get("/report/overrides", async (req, res) => {
 });
 
 router.get("/songs", async (req, res) => {
-    
-    if(! await permissionCheck(req, res, ["songs", "songs_remove"])) return;
-    
-    var permissionsToPass = (await permissionsRequest(req, ["songs", "songs_remove"]));
+    if(! await permissionCheck(req, res, [])) return;
 
     var images = await generateImagesList("corner_images");
     var songs = (await db.getSongs()).data;
 
-    res.render("songs", {user: req.session.user, role: req.session.role, songs: songs, images: images, permissions: permissionsToPass});
+    let permissionsToPass = (await permissionsRequest(req, ["songs", "songs_remove"]));
+
+    if(permissionsToPass.length == 0){
+        
+        res.render("songs", {user: req.session.user, role: req.session.role, songs: songs, images: images});
+        return;
+    }
+    
+    
+
+    res.render("songs_edit", {user: req.session.user, role: req.session.role, songs: songs, images: images, permissions: permissionsToPass});
 
 });
 

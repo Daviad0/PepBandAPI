@@ -698,7 +698,7 @@ class Database {
         }
     }
 
-    async update_user_information(mtu_uid, full_name, email){
+    async update_user_information(mtu_uid, full_name, email, rid){
         full_name = sanitizer.sanitize(full_name);
         email = sanitizer.sanitize(email);
 
@@ -707,7 +707,7 @@ class Database {
 
 
 
-        let query = "UPDATE identity_management SET full_name = '" + full_name + "', email = '" + email + "' WHERE mtu_uid = '" + mtu_uid + "'";
+        let query = "UPDATE identity_management SET full_name = '" + full_name + "', email = '" + email + "', rid = " + rid + " WHERE mtu_uid = '" + mtu_uid + "'";
 
         return await this.edit(query)
     }
@@ -1166,6 +1166,8 @@ class Database {
                 until = announcement.until
                 reuseUntil = true;
             }
+            if(global == null) global = announcement.global
+            if(notified == null) notified = announcement.notified
 
             name = sanitizer.sanitize(name)
             content = sanitizer.sanitize(content)

@@ -91,6 +91,9 @@
                             <% } %>
                             <%- include('./partials/event/event_basic.ejs', {event: e, eventType: applicableEventType, canEdit: permissions.includes("events_edit")}); %>
                         <% }); %>
+                        <% if(events.length == 0) { %>
+                            <%- include('partials/empty.ejs', {filters: false, message: "No upcoming events!"}) %>
+                        <% } %>
                     </div>
                 </div>
                 <div class="content-right">
@@ -107,6 +110,9 @@
                             <% splits.forEach(split => { %>
                                 <%- include('./partials/config/split_item_view.ejs', {split: split}) %>
                             <% }) %>
+                            <% if(splits.length == 0) { %>
+                                <%- include('partials/empty.ejs', {filters: false, message: "No splits! Create one?"}) %>
+                            <% } %>
                         </div>
                     </div>
                     

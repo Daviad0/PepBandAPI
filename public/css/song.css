@@ -108,3 +108,11 @@
 .song-usage{
     margin-left:10px;
 }
+
+.song-detail-item-view{
+    width: 30%;
+}
+
+.song-details-view{
+    width: 80%;
+}

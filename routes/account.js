@@ -25,9 +25,17 @@ var cas = new CASAuthentication({
 
 router.get( '/authenticate', cas.bounce, (req, res) => {
     // all MTU-related accounts will have a uid determined by the identity table
-    db.setup_user_cas(req.session[cas.session_name], req.session[cas.session_info].udc_identifier, true).then((result) => {
+    db.setup_user_cas(req.session[cas.session_name], req.session[cas.session_info].udc_identifier, true).then(async (result) => {
         if(result != null){
-            db.update_user_information(req.session[cas.session_info].udc_identifier, req.session[cas.session_info].displayname, req.session[cas.session_info].mail);
+
+            var default_role = (await db.getConfigProperty_uniq_name("registered_default_rid_mtu"));
+            if(default_role.data.length == 0){
+                default_role = null;
+            }else{
+                default_role = default_role.data[0].value;
+            }
+
+            db.update_user_information(req.session[cas.session_info].udc_identifier, req.session[cas.session_info].displayname, req.session[cas.session_info].mail, default_role);
             req.session.user = result;
 
             

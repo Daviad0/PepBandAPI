@@ -76,11 +76,14 @@
                     <div class="flex center">
                         <span class="large spacing">Upcoming Events</span>
                     </div>
-                    <div class="spacing-top">
+                    <div class="flex center wrap">
                         <% events.forEach(event => { %>
                             <% let eventType = eventTypes.find(et => et.etyid == event.etyid) %>
                             <%- include('./partials/event/event_basic.ejs', {event: event, splits: splits, eventType: eventType, canEdit: permissions.includes("events") || permissions.includes("events_edit")}) %>
                         <% }) %>
+                        <% if(events.length == 0) { %>
+                            <%- include('partials/empty.ejs', {filters: false, message: "No upcoming events for " + group.name + "!"}) %>
+                        <% } %>
                     </div>
 
                     
@@ -93,6 +96,9 @@
                             <% splits.forEach(split => { %>
                                 <%- include('./partials/config/split_item_view.ejs', {split: split}) %>
                             <% }) %>
+                            <% if(splits.length == 0) { %>
+                                <%- include('partials/empty.ejs', {filters: false, message: "This group has no splits!"}) %>
+                            <% } %>
                         </div>
                     </div>
                     

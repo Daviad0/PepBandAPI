@@ -95,6 +95,9 @@
                             <% let attending = eventParticipation.find(ep => ep.eid == e.eid); %>
                             <%- include('./partials/event/event_basic_split.ejs', {event: e, eventType: applicableEventType, attending: attending != undefined, edit: permissions.includes("groups") || permissions.includes("splits") || elevated}); %>
                         <% }); %>
+                        <% if(events.length == 0) { %>
+                            <%- include('partials/empty.ejs', {filters: false, message: "No upcoming events!"}) %>
+                        <% } %>
                     </div>
                 </div>
                 <div class="content-right">

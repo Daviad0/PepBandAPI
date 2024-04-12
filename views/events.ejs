@@ -29,6 +29,9 @@
                             <% } %>
                             <%- include('./partials/event/event_basic.ejs', {event: e, eventType: applicableEventType, canEdit: permissions.includes("events_edit")}); %>
                         <% }); %>
+                        <% if(events.length == 0) { %>
+                            <%- include('partials/empty.ejs', {filters: false, message: "No upcoming events available!"}) %>
+                        <% } %>
                     </div>
                     
                 </div>
@@ -40,9 +43,13 @@
                         <% } %>
                         
                         
+                        
                     </div>
                     <div class="announcements spacing-top">
                         <%- include('./partials/config/all_announcements.ejs', {announcements: announcements, canEdit: permissions.includes("announcements_edit")}); %>
+                        <% if(announcements.length == 0) { %>
+                            <%- include('partials/empty.ejs', {filters: false, message: "No current announcements!"}) %>
+                        <% } %>
                     </div>
                     
                     

@@ -1,8 +1,6 @@
 var eventType = null;
 var eventTemplate = null;
 
-let icon = null;
-
 function postAnnouncement(){
 
     showGeneralError(null, null);
@@ -79,7 +77,7 @@ function postAnnouncement(){
         published: published.toISOString(),
         until: until.toISOString(),
         icon: icon,
-        postToEveryone: postToEveryone,
+        global: postToEveryone,
         postToGids: postToGids,
         postToSids: postToSids,
         notified: notified

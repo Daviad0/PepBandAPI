@@ -8,20 +8,22 @@
   <body>
     <% let default_song = {soid: "DEFAULT_SOID", name: "DEFAULT_NAME", artist: "DEFAULT_ARTIST", friendly_name: "DEFAULT_FRIENDLYNAME", modification: "DEFAULT_MODIFICATION", updated: "DEFAULT_UPDATED", duration: "DEFAULT_DURATION", source: "DEFAULT_SOURCE", category: "DEFAULT_CATEGORY" } %>
     <script>
-        let song_template = `<%- include('./partials/config/song_item_view.ejs', {song: default_song}) %>`;
+        let song_template = `<%- include('./partials/config/song_item.ejs', {song: default_song, canRemove: permissions.includes("songs_remove")}) %>`;
+        let canRemoveSongs = `<%= permissions.includes("songs_remove") %>`;
+        canRemoveSongs = canRemoveSongs == "true";
     </script>
     <%- include('./partials/header.ejs'); %>
-    <script src="/js/song.js"></script>
+    <script src="/js/songs_edit.js"></script>
     <div class="mainbodyoutside flex center">
         <div class="mainbody">
             <div class="song-vertical-flex">
                 <div class="song-header">
                     <div class="flex center">
-                        <span class="large spacing">All Available Songs</span>
+                        <span class="large spacing">Manage Song List</span>
                     </div>
                     
     
-                    <span class="small spacing">Below are all of the available songs that are currently played by the band! If you have any additional requests, click the "Request Another Song" button!</span>
+                    <span class="small spacing">Manage all of the available songs that can be selected for events. </span>
                     <div class="message message-warning">
                         <span class="small message-content">Removing songs can cause problems for both events and event templates.</span>
                     </div>
@@ -51,6 +53,12 @@
                             </div>
                         </div>
                         
+                    </div>
+                    
+                    <div class="flex center spacing">
+                        <span class="small spacing">Song Name</span>
+                        <input type="text" class="input small" placeholder="New Song Name" name="name" id="song-create-name" />
+                        <button class="button-main" onclick="createSong()" id="song-create"><span class="button-text">Create Song</span></button>
                     </div>
                     
                     

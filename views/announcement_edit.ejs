@@ -12,6 +12,7 @@
     <% let untilTimeString = announcement.until.getHours().toString().padStart(2, '0') + ":" + announcement.until.getMinutes().toString().padStart(2, '0') %>
     <script>
         let aid = "<%= announcement.aid %>";
+        let icon = "<%= announcement.icon %>";
     </script>
     <%- include('./partials/header.ejs'); %>
     <script src="/js/announcement_edit.js"></script>
@@ -161,7 +162,7 @@
                                 <span class="small material-symbols-rounded spacing-right" title="Tracks if a notification has already been sent out regarding this announcement. If unchecked, a new notification will be sent to the selected groups!">question_mark</span>
                                 <label class="checkbox-container">
                                     
-                                    <input type="checkbox" id="announcement-edit-notified" value="<%= announcement.notified %>"/>
+                                    <input type="checkbox" id="announcement-edit-notified" <%= announcement.notified ? "checked" : "" %>/>
                                     <span class="checkmark"></span>
                                 </label>
                             </div>

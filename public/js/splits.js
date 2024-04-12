@@ -43,7 +43,7 @@ function createSplit(){
             let option = document.createElement("option");
             option.value = result.data[0].sid;
             option.innerHTML = result.data[0].name;
-            document.getElementById("split-default-split").appendChild(option);
+            document.getElementById("split-list").appendChild(option);
         }else{
             document.getElementById("split-create-name").classList.add("input-error");
             button.removeAttribute("disabled");

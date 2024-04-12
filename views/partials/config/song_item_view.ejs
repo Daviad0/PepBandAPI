@@ -1,0 +1,88 @@
+<!--
+
+    "song" parameter is passed from the above snippet
+
+    - soid
+    - name
+    - friendly_name
+    - artist
+    - modification
+    - duration
+    - source
+
+
+
+-->
+
+<div class="song-item" data-soid="<%= song.soid %>">
+    <div>
+        <div class="flex apart song-details">
+            <div class="flex apart end song-details-view">
+                <div class="fill">
+                    <div class="flex center song-details">
+                        <div class="song-detail-item song-detail-item-view">
+                            <div class="flex apart">
+                                <span class="small song-detail-tag">Song</span>
+                            </div>
+                            <div class="flex apart">
+                                <span class="medium song-detail-tag"><%= (song.friendly_name == null || song.friendly_name == "") ? song.name : song.friendly_name  %></span>
+                            </div>
+                        </div>
+                        <div class="song-detail-item song-detail-item-view">
+                            <div class="flex apart">
+                                <span class="small song-detail-tag">By</span>
+                            </div>
+                            <div class="flex apart">
+                                <span class="medium song-detail-value"><%= song.artist == "" ? "Unknown Artist" : song.artist %></span>
+                            </div>
+                        </div>
+                        <div class="song-detail-item song-detail-item-view">
+                            <div class="flex apart">
+                                <span class="small song-detail-tag">Modification</span>
+                            </div>
+                            <div class="flex apart">
+                                <span class="medium song-detail-value"><%= song.modification == "" ? "No Modification" : song.modification %></span>                                  
+                            </div>
+                        </div>
+                    </div>
+                    <div class="song-expand song-expand-hide" data-soid="<%= song.soid %>">
+                        <div class="flex apart">
+                            <div class="flex center fill">
+                                
+                                <div class="song-detail-item song-details-view">
+                                    <div class="flex apart">
+                                        <span class="small song-detail-tag">Duration</span>
+                                    </div>
+                                    <div class="flex apart">
+                                        <span class="medium song-detail-value"><%= song.duration %> seconds</span>
+                                        
+                                        
+                                    </div>
+                                </div>
+        
+                            </div>
+                        </div>
+                    
+                        
+                        
+                        
+                    </div>
+                </div>
+
+                <div onclick="toggleSongExpansion(this)" class="song-expand-button flex center" data-soid="<%= song.soid %>">
+                    <span class="material-symbols-rounded song-expand-button-content medium">arrow_downward</span>
+                </div>
+            </div>
+            
+            <div>
+                <span class="medium tag-text <%= song.category == "regular" ? "info" : (song.category == "quick" ? "success" : "gray") %>-bg"><%= song.category %></span>
+            </div>
+            
+        </div>
+        <div>
+            <span class="small no-display error error-message" name="error" data-soid="<%= song.soid%>"></span>
+        </div>
+    </div>
+    
+    
+</div>
