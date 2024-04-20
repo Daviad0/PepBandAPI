@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const session = require('express-session');
+
 dotenv.config();
 
 console.log("ENV: ");

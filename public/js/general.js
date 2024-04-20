@@ -549,6 +549,9 @@ function showDialog(properties){
             title = properties.title;
             icon = properties.icon;
 
+            document.getElementById("dialog-image-preview").src = "/images/placeholder.png";
+            document.getElementById("dialog-image-input").value = "";
+
 
             dialog_title.innerHTML = title;
             dialog_icon.innerHTML = icon;
@@ -567,10 +570,25 @@ function showDialog(properties){
                     }
                 },
                 {
-                    text: "Select",
+                    text: "Submit",
                     class: "button-main",
                     onclick: () => {
-                        current_dialog_data["onchoose"](current_dialog_data["selected"]);
+                        
+                        let url = "/api/global/image";
+
+                        let formData = new FormData();
+                        formData.append("file", current_dialog_data["selected"]);
+                        apiPostFile(url, formData, (result) => {
+                            if(result.success){
+                                showGeneralError(null, null);
+                                current_dialog_data["onchoose"](result.url);
+                            }else{
+                                showGeneralError(result.message, "error");
+                            }
+                        })
+
+
+
                     }
                 }
             ]
@@ -633,6 +651,20 @@ function dialog_input_changeValue(element){
     let property = element.getAttribute("name");
     let value = element.value;
     current_dialog_data["inputs"][property] = value;
+}
+
+function dialog_image_changeFile(element){
+    let file = element.files[0];
+    let reader = new FileReader();
+    reader.onload = (e) => {
+        let url = e.target.result;
+        let image = document.getElementById("dialog-image-preview");
+        image.src = url;
+        current_dialog_data["selected"] = file;
+        // document.getElementById("dialog-icon-select").removeAttribute("disabled");
+    }
+    reader.readAsDataURL(file);
+
 }
 
 function dialog_icon_changeIcon(element){
@@ -1170,4 +1202,47 @@ function showPrivacyPolicy(){
             }
         ]
     })
+}
+
+function setIconSection(result, idType, id, hiddenElement){
+    let original = result;
+    let type = "icon";
+    if(result.startsWith("IMAGE:")){
+        type = "image";
+        result = result.substring(6);
+        if(result.endsWith(".json")){
+            type = "lottie";
+        }
+    }
+
+    let image_viewer = document.querySelector(`img[data-${idType}='${id}'][name='icon_image']`);
+    let icon_viewer = document.querySelector(`span[data-${idType}='${id}'][name='icon_icon']`);
+    let lottie_viewer = document.querySelector(`lottie-player[data-${idType}='${id}'][name='icon_lottie']`);
+
+    if(type == "icon"){
+        if(image_viewer) image_viewer.classList.add("no-display");
+        if(lottie_viewer) lottie_viewer.classList.add("no-display");
+        icon_viewer.classList.remove("no-display");
+
+        icon_viewer.innerHTML = result;
+    }else if(type == "image"){
+        if(icon_viewer) icon_viewer.classList.add("no-display");
+        if(lottie_viewer) lottie_viewer.classList.add("no-display");
+        image_viewer.classList.remove("no-display");
+
+        image_viewer.src = result;
+    }  
+    else if(type == "lottie"){
+        if(icon_viewer) icon_viewer.classList.add("no-display");
+        if(image_viewer) image_viewer.classList.add("no-display");
+        lottie_viewer.classList.remove("no-display");
+
+        lottie_viewer.load(result);
+    }
+
+    if(hiddenElement){
+        hiddenElement.value = original;
+        hiddenElement.dispatchEvent(new Event("change"));
+    }
+
 }

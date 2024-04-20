@@ -4,6 +4,15 @@ const router = express.Router("/api/global");
 
 var db;
 
+const multer = require('multer');
+const fs = require('fs');
+
+const upload = multer({
+    dest: 'temp/'
+})
+
+const { uploadFile, retrieveFiles } = require('../../images.js');
+
 /*
  LOGIN - user must be logged in
 */
@@ -467,6 +476,76 @@ router.post("/announcement/:aid/delete", async (req, res) => {
         res.send(result);
     });
     
+});
+
+router.get("/images", async (req, res) => {
+    
+    // if(! await permissionCheck(req, res, ["images"])) return;
+
+    retrieveFiles(10, (files) => {
+        res.send(files);
+    });
+    
+});
+
+let allowedFileTypes = [".png", ".jpg", ".jpeg", ".json", ".gif"];
+
+router.post("/image", upload.single("file"), async (req, res) => {
+
+
+    if(!req.file){
+        res.status(400).send({message: "Missing file"});
+        return;
+    }
+
+    let filePath = req.file.path;
+
+    let name = req.file.originalname;
+    
+    // if(! await permissionCheck(req, res, ["images"])) {
+    //     fs.unlinkSync(filePath);
+    //     return;
+    // }
+
+    // if(!req.files || !req.files.image){
+    //     res.status(400).send({message: "Missing image"});
+    //     fs.unlinkSync(filePath);
+
+    //     return;
+    // }
+
+    if(!allowedFileTypes.includes(name.slice(name.lastIndexOf(".")).toLowerCase())){
+        res.status(400).send({message: "Invalid file type"});
+        fs.unlinkSync(filePath);
+        return;
+    }
+
+    let destination = "images/" + name;
+
+    uploadFile(filePath, destination, (err, file) => {
+        if(err){
+            res.status(500).send({message: "Error uploading file"});
+            fs.unlinkSync(filePath);
+            return;
+        }
+
+        // strip URL of query parameter
+        file = file.split("?")[0];
+
+        res.send({success: true, url: file});
+    });
+
+    
+    
+
+
+
+
+    // // let image = req.files.image;
+
+    // // let image_id = (await db.setImage(image)).data[0].image_id;
+
+    // res.send({success: true});
 });
 
 module.exports = (useDb) => {

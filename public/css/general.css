@@ -664,3 +664,22 @@ If the checkbox is disabled, add a greyed out effect
     height: 200px;
     margin: 10px;
 }
+
+
+.dialog-form{
+    margin:10px;
+    border: 1px dashed rgba(0,0,0,0.5);
+    padding:10px;
+    border-radius: 8px;
+}
+
+.dialog-image-preview{
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+.icon{
+    max-width: 40px;
+}

@@ -52,17 +52,9 @@
             </div>
         </div>
         <div>
-            <div class="role-detail-item flex center">
-                <div class="flex center icon-container">
-                    <span class="material-symbols-rounded icon" data-rid="<%= role.rid %>" <%= role.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= role.icon %></span>
-                    <img class="icon<%= role.icon.startsWith("IMAGE:") ? "" : " no-display" %>" data-rid="<%= role.rid %>" name="icon_image"  src="<%= role.icon %>"/>
-                </div>
-                <div class="flex apart">
-                    <span class="tiny role-detail-tag">Visible Icon</span>
-                </div>
-                <div class="flex apart">
-                    <input data-rid="<%= role.rid %>" onchange="editRole(this)" hidden disabled name="icon" type="text" class="input role-detail-value" placeholder="Icon" value="<%= role.icon %>"/>
-                </div>
+            <%- include('../../special/icon.ejs', {parentClass: "role-detail-item", icon: role.icon, label: "Visible Icon", labelClass: "role-detail-tag", idDataProperty: "rid", id: role.rid}) %>
+            <div class="flex apart">
+                <input data-rid="<%= role.rid %>" onchange="editRole(this)" hidden disabled name="icon" type="text" class="input role-detail-value" placeholder="Icon" value="<%= role.icon %>"/>
             </div>
             <% if(canEdit){ %>
                 <div class="flex center">
