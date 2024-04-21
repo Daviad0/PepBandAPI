@@ -682,4 +682,10 @@ If the checkbox is disabled, add a greyed out effect
 
 .icon{
     max-width: 40px;
+    max-height: 40px;
+}
+
+.icon-small{
+    max-width: 20px !important;
+    max-height: 20px !important;
 }

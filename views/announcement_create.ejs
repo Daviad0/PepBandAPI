@@ -84,7 +84,8 @@
                                         <div class="flex apart split-attend-item">
                                             <div class="flex center">
                                                 <div class="flex center tag-text info-bg" style="background: <%= group.color %>; background: <%= group.gradientBackground %>">
-                                                    <span class="small material-symbols-rounded"><%= group.icon %></span>
+                                                    <%- include('./special/icon.ejs', {parentClass: "small", iconClass: "small", icon: group.icon, label: "", labelClass: "", idDataProperty: "gid", id: group.gid}) %>
+                                                    <!-- <span class="small material-symbols-rounded"><%= group.icon %></span> -->
                                                     <span class="small"><%= group.name %></span>
                                                 </div>
                                             </div>
@@ -102,7 +103,8 @@
                                                     <span class="small"><%= group.name %></span>
                                                     <span class="small material-symbols-rounded">arrow_forward</span>
                                                     <div class="flex center tag-text info-bg" style="background: <%= split.color %>; background: <%= split.gradientBackground %>">
-                                                        <span class="small material-symbols-rounded"><%= split.icon %></span>
+                                                        <%- include('./special/icon.ejs', {parentClass: "small", iconClass: "small", icon: split.icon, label: "", labelClass: "", idDataProperty: "sid", id: split.sid}) %>
+                                                        <!-- <span class="small material-symbols-rounded"><%= split.icon %></span> -->
                                                         <span class="small"><%= split.name %></span>
                                                     </div>
                                                 </div>
@@ -132,17 +134,9 @@
                         
                         <div class="section">
                             <div class="flex center spacing-right">
-                                <div class="announcement-create-detail-item">
-                                    <div class="flex center icon-container">
-                                        <span class="material-symbols-rounded icon" hidden id="announcement-create-icon"></span>
-                                        <img class="icon no-display" id="announcement-create-image"/>
-                                    </div>
-                                    <div class="flex apart">
-                                        <span class="tiny announcement-create-detail-tag">Announcement Icon</span>
-                                    </div>
-                                    <div class="flex apart">
-                                        <input name="icon" type="text" hidden disabled class="input announcement-create-detail-value" placeholder="Icon"/>
-                                    </div>
+                                <%- include('./special/icon.ejs', {parentClass: "announcement-create-detail-item", iconClass: "", icon: "bolt", label: "Announcement Icon", labelClass: "announcement-create-detail-tag", idDataProperty: "aid", id: -1}) %>
+                                <div class="flex apart">
+                                    <input name="icon" type="text" hidden disabled class="input announcement-create-detail-value" value="bolt" placeholder="Icon"/>
                                 </div>
                                 <div class="flex center">
                                     <button onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>

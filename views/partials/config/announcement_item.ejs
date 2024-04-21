@@ -3,7 +3,8 @@
 <div class="floating-box announcement spacing-bottom" data-aid="<%= announcement.aid %>">
     <div class="flex apart">
         <div class="flex center spacing-right">
-            <span class="huge material-symbols-rounded"><%= announcement.icon %></span>
+            <%- include('../../special/icon.ejs', {parentClass: "huge", iconClass: "huge", icon: announcement.icon, label: "", labelClass: "", idDataProperty: "aid", id: announcement.aid}) %>
+            <!-- <span class="huge material-symbols-rounded"><%= announcement.icon %></span> -->
         </div>
         
         <div class="flex apart announcement-content">

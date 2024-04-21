@@ -37,17 +37,9 @@
     </div>
     <div class="flex center event-type-details">
         <div>
-            <div class="event-type-detail-item flex center">
-                <div class="flex center icon-container">
-                    <span class="material-symbols-rounded icon" data-etyid="<%= eventType.etyid %>" <%= eventType.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= eventType.icon %></span>
-                    <img class="icon<%= eventType.icon.startsWith("IMAGE:") ? "" : " no-display" %>" data-etyid="<%= eventType.etyid %>" name="icon_image"  src="<%= eventType.icon %>"/>
-                </div>
-                <div class="flex apart">
-                    <span class="tiny event-type-detail-tag">Visible Icon</span>
-                </div>
-                <div class="flex apart">
-                    <input data-etyid="<%= eventType.etyid %>" onchange="editEventType(this)" hidden disabled name="icon" type="text" class="input event-type-detail-value" placeholder="Icon" value="<%= eventType.icon %>"/>
-                </div>
+            <%- include('../../special/icon.ejs', {parentClass: "event-type-detail-item", icon: eventType.icon, label: "Visible Icon", labelClass: "event-type-detail-tag", idDataProperty: "etyid", id: eventType.etyid}) %>
+            <div class="flex apart">
+                <input data-etyid="<%= eventType.etyid %>" onchange="editEventType(this)" hidden disabled name="icon" type="text" class="input event-type-detail-value" placeholder="Icon" value="<%= eventType.icon %>"/>
             </div>
             <div class="flex center">
                 <button data-etyid="<%= eventType.etyid %>" onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Choose Icon</span></button>
