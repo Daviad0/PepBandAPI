@@ -18,12 +18,9 @@ function iconChoose(){
         type: "icon",
         icon: "ink_highlighter",
         onchoose: () => {
-            let image_viewer = document.querySelector("#split-image");
-            image_viewer.classList.add("no-display");
-            let icon_viewer = document.querySelector("#split-icon");
-            icon_viewer.removeAttribute("hidden");
-            icon_viewer.innerHTML = current_dialog_data.selected;
+            setIconSection(current_dialog_data["selected"][0], "sid", sid, null);
 
+        	
             changeProperty("icon", current_dialog_data.selected);
             
             hideDialog();
@@ -39,13 +36,12 @@ function imageChoose(){
         type: "image",
         icon: "ink_highlighter",
         onchoose: () => {
-            let image_viewer = document.querySelector("#split-image");
-            image_viewer.classList.add("no-display");
-            let icon_viewer = document.querySelector("#split-icon");
-            icon_viewer.removeAttribute("hidden");
-            icon_viewer.src = current_dialog_data.selected;
+            // let hidden_image_value = document.querySelector("input[data-rid='" + rid + "'][name='icon']");
+            setIconSection("IMAGE:" + url, "sid", sid, null);
 
-            changeProperty("icon", "IMAGE:" + current_dialog_data.selected);
+        	// hideDialog();
+
+            changeProperty("icon", "IMAGE:" + url);
             
             hideDialog();
         },

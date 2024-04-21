@@ -21,7 +21,8 @@
             <div class="flex apart split" style="background: <%= split.color %>;background: <%= split.gradientBackground %>">
                 <div class="flex center">
                     <div>
-                        <span class="xlarge material-symbols-rounded"><%= split.icon %></span>
+                        <!-- <span class="xlarge material-symbols-rounded"><%= split.icon %></span> -->
+                        <%- include('./special/icon.ejs', {parentClass: "xlarge", iconClass: "xlarge", icon: split.icon, label: "", labelClass: "", idDataProperty: "sid", id: split.sid}) %>
                     </div>
                     <div class="spacing">
                         <span class="small">SPLIT</span>

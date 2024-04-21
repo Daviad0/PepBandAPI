@@ -674,8 +674,8 @@ If the checkbox is disabled, add a greyed out effect
 }
 
 .dialog-image-preview{
-    width: 100px;
-    height: 100px;
+    max-width: 100px;
+    max-height: 100px;
     border-radius: 8px;
     margin: 10px;
 }

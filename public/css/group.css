@@ -120,9 +120,6 @@ If the screen is smaller than 600px, stack the links on top of each other, inste
     margin-top:10px;
 }
 
-.icon-container{
-    margin-top:5px;
-}
 
 .song-slot{
     border-radius: 8px;
@@ -195,8 +192,4 @@ If the screen is smaller than 600px, stack the links on top of each other, inste
 
 .event-date{
     margin-top:10px;
-}
-
-.icon-container{
-    margin-top:5px;
 }

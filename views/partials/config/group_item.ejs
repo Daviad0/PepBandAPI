@@ -47,17 +47,9 @@
     </div>
     <div class="flex center">
         <div>
-            <div class="group-detail-item flex center">
-                <div class="flex center icon-container">
-                    <span class="material-symbols-rounded icon" data-gid="<%= group.gid %>" <%= group.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= group.icon %></span>
-                    <img class="icon<%= group.icon.startsWith("IMAGE:") ? "" : " no-display" %>" data-gid="<%= group.gid %>" name="icon_image"  src="<%= group.icon %>"/>
-                </div>
-                <div class="flex apart">
-                    <span class="tiny group-detail-tag">Group Icon</span>
-                </div>
-                <div class="flex apart">
-                    <input data-gid="<%= group.gid %>" onchange="editGroup(this)" hidden disabled name="icon" type="text" class="input group-detail-value" placeholder="Icon" value="<%= group.icon %>"/>
-                </div>
+            <%- include('../../special/icon.ejs', {parentClass: "group-detail-item", icon: group.icon, label: "Group Icon", labelClass: "group-detail-tag", idDataProperty: "gid", id: group.gid}) %>
+            <div class="flex apart">
+                <input data-gid="<%= group.gid %>" onchange="editGroup(this)" hidden disabled name="icon" type="text" class="input group-detail-value" placeholder="Icon" value="<%= group.icon %>"/>
             </div>
             <div class="flex center">
                 <button data-gid="<%= group.gid %>" onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Icon</span></button>

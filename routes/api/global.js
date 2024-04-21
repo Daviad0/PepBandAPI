@@ -483,7 +483,7 @@ router.get("/images", async (req, res) => {
     // if(! await permissionCheck(req, res, ["images"])) return;
 
     retrieveFiles(10, (files) => {
-        res.send(files);
+        res.send({success: true, data: files});
     });
     
 });

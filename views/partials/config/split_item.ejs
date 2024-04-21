@@ -48,17 +48,9 @@
     </div>
     <div class="flex center">
         <div>
-            <div class="split-detail-item flex center">
-                <div class="flex center icon-container">
-                    <span class="material-symbols-rounded icon" data-sid="<%= split.sid %>" <%= split.icon.startsWith("IMAGE:") ? "hidden" : "" %> name="icon_icon"><%= split.icon %></span>
-                    <img class="icon<%= split.icon.startsWith("IMAGE:") ? "" : " no-display" %>" data-sid="<%= split.sid %>" name="icon_image"  src="<%= split.icon %>"/>
-                </div>
-                <div class="flex apart">
-                    <span class="tiny split-detail-tag">Split Icon</span>
-                </div>
-                <div class="flex apart">
-                    <input data-sid="<%= split.sid %>" onchange="editSplit(this)" hidden disabled name="icon" type="text" class="input split-detail-value" placeholder="Icon" value="<%= split.icon %>"/>
-                </div>
+            <%- include('../../special/icon.ejs', {parentClass: "split-detail-item", icon: split.icon, label: "Split Icon", labelClass: "split-detail-tag", idDataProperty: "sid", id: split.sid}) %>
+            <div class="flex apart">
+                <input data-sid="<%= split.sid %>" onchange="editSplit(this)" hidden disabled name="icon" type="text" class="input split-detail-value" placeholder="Icon" value="<%= split.icon %>"/>
             </div>
             <div class="flex center">
                 <button data-sid="<%= split.sid %>" onclick="iconChoose(this)" class="button-alternate"><span class="button-text">Icon</span></button>

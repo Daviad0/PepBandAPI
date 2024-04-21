@@ -29,8 +29,9 @@
                 <div class="flex center">
                     <div class="icon-view spacing-right">
                         <div class="flex center">
-                            <span class="xlarge material-symbols-rounded" <%= group.icon.startsWith("IMAGE:") ? 'hidden' : '' %> id="group-icon"><%= group.icon %></span>
-                            <img src="<%= group.icon %>" class="icon-image <%= group.icon.startsWith("IMAGE:") ? '' : 'no-display' %>" id="group-image" />
+                            <%- include('./special/icon.ejs', {parentClass: "xlarge", iconClass: "xlarge", icon: group.icon, label: "", labelClass: "", idDataProperty: "gid", id: group.gid}) %>
+                            <!-- <span class="xlarge material-symbols-rounded" <%= group.icon.startsWith("IMAGE:") ? 'hidden' : '' %> id="group-icon"><%= group.icon %></span>
+                            <img src="<%= group.icon %>" class="icon-image <%= group.icon.startsWith("IMAGE:") ? '' : 'no-display' %>" id="group-image" /> -->
                             <div class="group-detail-item">
                                 <div class="flex apart">
                                     <span class="tiny group-detail-tag">Color</span>

@@ -8,17 +8,18 @@
     - labelClass
     - idDataProperty
     - id
+    - iconClass
 
 -->
 
 
 <div class="<%= parentClass ? parentClass : "" %> flex center">
     <div class="flex center icon-container">
-        <span class="material-symbols-rounded icon<%= icon.startsWith("IMAGE:") ? " no-display" : "" %>" <%= "data-" + idDataProperty + "=" + id + "" %> name="icon_icon" ><%= icon %></span>
+        <span class="material-symbols-rounded icon<%= icon.startsWith("IMAGE:") ? " no-display" : "" %><%= iconClass ? " " + iconClass : "" %>" <%= "data-" + idDataProperty + "=" + id + "" %> name="icon_icon" ><%= icon %></span>
         <img class="icon<%= icon.startsWith("IMAGE:") && !icon.endsWith(".json") ? "" : " no-display" %>" <%= "data-" + idDataProperty + "=" + id + "" %> name="icon_image" src="<%= icon.substring(6) %>"/>
         <lottie-player class="icon<%= icon.startsWith("IMAGE:") && icon.endsWith(".json") ? "" : " no-display" %>" <%= "data-" + idDataProperty + "=" + id + "" %> name="icon_lottie" src="<%= icon.substring(6) %>" background="transparent"  speed="1"  loop  autoplay></lottie-player>
     </div>
     <div class="flex apart">
-        <span class="tiny <%= labelClass ? labelClass : "" %>"><%= label ? label : "Visible Icon" %></span>
+        <span class="tiny <%= labelClass ? labelClass : "" %>"><%= label != null ? label : "Visible Icon" %></span>
     </div>
 </div>

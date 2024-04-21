@@ -332,24 +332,17 @@
                     </div>
                 </div>
             </div>
-            <div class="dialog-song-container flex center">
+            
+            <div class="dialog-song-container flex apart flex-column">
+                <div class="flex center wrap dialog-song-parent" id="dialog-image-parent">
+
+                </div>
                 <div class="dialog-form flex center">
                     <img id="dialog-image-preview" class="dialog-image-preview" src="/images/placeholder.png"/>
                     <input onchange="dialog_image_changeFile(this)" type="file" id="dialog-image-input" class="input" accept=".png,.jpg,.jpeg,.json"/>
                 </div>
             </div>
-            <!-- <div class="flex center wrap dialog-song-parent" id="dialog-icon-parent">
-                <div class="dialog-detail-item">
-                    <div class="flex apart">
-                        <span class="tiny dialog-detail-tag">Icon Name</span>
-                    </div>
-                    <div class="flex apart">
-                        <input onchange="dialog_icon_changeIcon(this)" type="text" class="input dialog-detail-value" id="dialog-icon-input" placeholder="Icon Name"/>
-                    </div>
-                </div>
-                
-                <span class="material-symbols-rounded large" id="dialog-icon-preview">bolt</span>
-            </div> -->
+            
 
             <div class="flex apart" id="dialog-button-parent">
                 <div></div>

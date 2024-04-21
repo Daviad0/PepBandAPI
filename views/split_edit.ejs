@@ -28,8 +28,9 @@
                 <div class="flex center">
                     <div class="icon-view spacing-right">
                         <div class="flex center">
-                            <span class="xlarge material-symbols-rounded" <%= split.icon.startsWith("IMAGE:") ? 'hidden' : '' %> id="split-icon"><%= split.icon %></span>
-                            <img src="<%= split.icon %>" class="icon-image <%= split.icon.startsWith("IMAGE:") ? '' : 'no-display' %>" id="split-image" />
+                            <%- include('./special/icon.ejs', {parentClass: "xlarge", iconClass: "xlarge", icon: split.icon, label: "", labelClass: "", idDataProperty: "sid", id: split.sid}) %>
+                            <!-- <span class="xlarge material-symbols-rounded" <%= split.icon.startsWith("IMAGE:") ? 'hidden' : '' %> id="split-icon"><%= split.icon %></span>
+                            <img src="<%= split.icon %>" class="icon-image <%= split.icon.startsWith("IMAGE:") ? '' : 'no-display' %>" id="split-image" /> -->
                             <div class="split-detail-item">
                                 <div class="flex apart">
                                     <span class="tiny split-detail-tag">Color</span>

@@ -51,6 +51,10 @@ function retrieveFiles(amount, callback){
                 action: 'read',
                 expires: '03-17-2025'
             }).then(signedUrls => {
+
+                // strip query string from url
+                signedUrls[0] = signedUrls[0].split("?")[0];
+
                 fileUrls.push(signedUrls[0]);
                 counter++;
 

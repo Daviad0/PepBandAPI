@@ -560,6 +560,7 @@ function showDialog(properties){
             current_dialog_data["onchoose"] = properties.onchoose || (() => {});
             current_dialog_data["selected"] = [];
             current_dialog_data["multiple"] = false;
+            current_dialog_data["images"] = [];
             current_dialog_data["extra"] = properties.extra || {};
             preselectedButtons = [
                 {
@@ -575,6 +576,13 @@ function showDialog(properties){
                     onclick: () => {
                         
                         let url = "/api/global/image";
+
+                        // if the selected is a URL, then just set that (don't worry about updating)
+                        if(current_dialog_data["selected"].includes("http") || current_dialog_data["selected"].includes("https")){
+                            showGeneralError(null, null);
+                            current_dialog_data["onchoose"](current_dialog_data["selected"]);
+                            return;
+                        }
 
                         let formData = new FormData();
                         formData.append("file", current_dialog_data["selected"]);
@@ -593,13 +601,16 @@ function showDialog(properties){
                 }
             ]
 
+
+            dialog_getImages();
+
             preselectedButtons.forEach((button) => {
                 // expecting text, class, and onclick
                 // background may be defined 
                 let button_element = document.createElement("button");
-                if(button.text == "Select"){
+                if(button.text == "Submit"){
                     button_element.setAttribute("disabled", "disabled");
-                    button_element.setAttribute("id", "dialog-icon-select");
+                    button_element.setAttribute("id", "dialog-image-select");
                 }
                 button_element.innerHTML = button.text;
                 button_element.classList.add(button.class);
@@ -647,6 +658,7 @@ function showSmallMenu(){
     });
 }
 
+
 function dialog_input_changeValue(element){
     let property = element.getAttribute("name");
     let value = element.value;
@@ -654,6 +666,12 @@ function dialog_input_changeValue(element){
 }
 
 function dialog_image_changeFile(element){
+
+    if(element.files.length == 0){
+        document.getElementById("dialog-image-select").setAttribute("disabled", "disabled");
+        return;
+    }
+
     let file = element.files[0];
     let reader = new FileReader();
     reader.onload = (e) => {
@@ -661,7 +679,7 @@ function dialog_image_changeFile(element){
         let image = document.getElementById("dialog-image-preview");
         image.src = url;
         current_dialog_data["selected"] = file;
-        // document.getElementById("dialog-icon-select").removeAttribute("disabled");
+        document.getElementById("dialog-image-select").removeAttribute("disabled");
     }
     reader.readAsDataURL(file);
 
@@ -789,6 +807,36 @@ function dialog_permission_toggleSelected(element){
 
     document.getElementById("dialog-permission-select").removeAttribute("disabled");
 
+}
+
+function dialog_image_toggleSelected(element){
+    let url = element.getAttribute("data-url");
+
+    if(current_dialog_data["selected"] == url){
+        // remove from selected
+        current_dialog_data["selected"] = null;
+
+        element.classList.remove("dialog-song-selected");
+        
+        document.getElementById("dialog-image-input").removeAttribute("disabled");
+        document.getElementById("dialog-image-input").value = "";
+        document.getElementById("dialog-image-select").setAttribute("disabled", "disabled");
+        return;
+    }
+
+    current_dialog_data["selected"] = url;
+
+    // disable the file selector
+    document.getElementById("dialog-image-input").setAttribute("disabled", "disabled");
+    document.getElementById("dialog-image-input").value = "";
+    document.getElementById("dialog-image-select").removeAttribute("disabled");
+
+    let selected = document.querySelectorAll(".dialog-song-selected");
+    selected.forEach((element) => {
+        element.classList.remove("dialog-song-selected");
+    });
+
+    element.classList.add("dialog-song-selected");
 }
 
 function dialog_song_toggleSelected(element){
@@ -952,6 +1000,52 @@ function dialog_user_changeSearch(){
     }
 
 }
+
+function dialog_getImages(){
+    
+    let url = "/api/global/images";
+
+    apiGet(url, (result) => {
+        if(result.success){
+            let images = result.data;
+            let parentDiv = document.getElementById("dialog-image-parent");
+
+            parentDiv.innerHTML = "";
+
+            images.forEach((image) => {
+                let option = document.createElement("div");
+                option.classList.add("floating-box");
+                option.classList.add("dialog-image");
+
+                option.setAttribute("data-url", image);
+                option.onclick = () => {
+                    dialog_image_toggleSelected(option);
+                }
+
+                option.innerHTML = `
+
+                <div class="flex center">
+                    
+                    <div class="fill">
+                        <div class="flex center">
+                            <img src="${image}" class="dialog-image-preview"/>
+                            
+                        </div>
+                        
+                        
+                    </div>
+                
+                </div>
+
+                `;
+
+                parentDiv.appendChild(option);
+
+            })
+        }
+    });
+}
+
 
 function dialog_getIcons(){
 

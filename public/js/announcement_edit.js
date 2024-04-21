@@ -98,11 +98,7 @@ function iconChoose(){
         type: "icon",
         icon: "ink_highlighter",
         onchoose: () => {
-            let image_viewer = document.querySelector("#announcement-edit-image");
-            image_viewer.classList.add("no-display");
-            let icon_viewer = document.querySelector("#announcement-edit-icon");
-            icon_viewer.removeAttribute("hidden");
-            icon_viewer.innerHTML = current_dialog_data.selected;
+            setIconSection(current_dialog_data["selected"][0], "aid", aid, null);
 
             icon = current_dialog_data.selected;
 
@@ -118,14 +114,10 @@ function imageChoose(){
         description: "Image",
         type: "image",
         icon: "ink_highlighter",
-        onchoose: () => {
-            let image_viewer = document.querySelector("#announcement-edit-image");
-            image_viewer.classList.add("no-display");
-            let icon_viewer = document.querySelector("#announcement-edit-icon");
-            icon_viewer.removeAttribute("hidden");
-            icon_viewer.src = current_dialog_data.selected;
+        onchoose: (url) => {
+            setIconSection("IMAGE:" + url, "aid", aid, null);
 
-            icon = "IMAGE:" + current_dialog_data.selected;
+            icon = "IMAGE:" + url;
             
             hideDialog();
         },

@@ -167,19 +167,11 @@ function imageChoose(element){
         description: "Image",
         type: "image",
         icon: "delete",
-        onchoose: () => {
+        onchoose: (url) => {
         	// here, current_dialog_data has a selected property
 
-            let image_viewer = document.querySelector("img[data-sid='" + sid + "'][name='icon_image']");
-            image_viewer.removeAttribute("hidden");
-            image_viewer.src = current_dialog_data.selected;
-            let icon_viewer = document.querySelector("span[data-sid='" + sid + "'][name='icon_icon']");
-            icon_viewer.classList.add("no-display");
-
             let hidden_image_value = document.querySelector("input[data-sid='" + sid + "'][name='icon']");
-            hidden_image_value.value = current_dialog_data.selected;
-            // trigger change event for hidden_icon_value
-            hidden_icon_value.dispatchEvent(new Event("change"));
+            setIconSection("IMAGE:" + url, "sid", sid, hidden_image_value);
 
         	hideDialog();
         },
@@ -216,16 +208,8 @@ function iconChoose(element){
         onchoose: () => {
         	// here, current_dialog_data has a selected property
 
-            let image_viewer = document.querySelector("img[data-sid='" + sid + "'][name='icon_image']");
-            image_viewer.classList.add("no-display");
-            let icon_viewer = document.querySelector("span[data-sid='" + sid + "'][name='icon_icon']");
-            icon_viewer.removeAttribute("hidden");
-            icon_viewer.innerHTML = current_dialog_data.selected;
-
             let hidden_icon_value = document.querySelector("input[data-sid='" + sid + "'][name='icon']");
-            hidden_icon_value.value = current_dialog_data.selected;
-            // trigger change event for hidden_icon_value
-            hidden_icon_value.dispatchEvent(new Event("change"));
+            setIconSection(current_dialog_data["selected"][0], "sid", sid, hidden_icon_value);
 
         	hideDialog();
         },

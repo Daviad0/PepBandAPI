@@ -36,7 +36,8 @@
                 <div class="flex apart group" style="background: <%= group.color %>;background: <%= group.gradientBackground %> ">
                     <div class="flex center">
                         <div>
-                            <span class="large material-symbols-rounded"><%= group.icon %></span>
+                            <%- include('./special/icon.ejs', {parentClass: "large", iconClass: "large", icon: group.icon, label: "", labelClass: "", idDataProperty: "gid", id: group.gid}) %>
+                            <!-- <span class="large material-symbols-rounded"><%= group.icon %></span> -->
                         </div>
                         <div class="spacing">
                             <span class="large"><%= group.name %></span>

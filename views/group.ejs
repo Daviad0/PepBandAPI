@@ -27,7 +27,8 @@
             <div class="flex apart group" style="background: <%= group.color %>;background: <%= group.gradientBackground %>;border-radius: <%= membership != undefined ? '16px 16px 16px 4px' : '16px'%> ">
                 <div class="flex center">
                     <div>
-                        <span class="xlarge material-symbols-rounded"><%= group.icon %></span>
+                        <!-- <span class="xlarge material-symbols-rounded"><%= group.icon %></span> -->
+                        <%- include('./special/icon.ejs', {parentClass: "xlarge", iconClass: "xlarge", icon: group.icon, label: "", labelClass: "", idDataProperty: "gid", id: group.sid}) %>
                     </div>
                     <div class="spacing">
                         <span class="small">GROUP</span>
