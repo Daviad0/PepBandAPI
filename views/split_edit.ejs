@@ -71,12 +71,12 @@
             </div>
             <div class="flex apart">
                 <div class="flex center start">
-                    <div class="split-note flex center gray-bg">
+                    <div class="split-note flex center gray-bg" onclick="window.location = '/split/<%= split.sid %>'">
                         <span class="small">You are editing this split!</span>
                     </div>
                     <div class="split-note flex center group" onclick="window.location = '/group/<%= split.gid %>'" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
-                        <span class="small">A Part of </span>
-                        <span class="small material-symbols-rounded"><%= group.icon %></span>
+                        <span class="small spacing-right">A Part of </span>
+                        <%- include('./special/icon.ejs', {parentClass: "small", iconClass: "small", icon: group.icon, label: "", labelClass: "", idDataProperty: "gid", id: group.gid}) %>
                         <span class="small"><strong><%= group.name %></strong></span>
                     </div>
                 </div>

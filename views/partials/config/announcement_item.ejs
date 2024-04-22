@@ -1,4 +1,7 @@
-<% let formattedPublish = announcement.published.toISOString().substring(0,10) + " @ " + announcement.published.toISOString().substring(11,16)  %>
+
+<% let publishedDateString = announcement.published.getFullYear() + "-" + (announcement.published.getMonth() + 1).toString().padStart(2, '0') + "-" + announcement.published.getDate().toString().padStart(2, '0') %>
+<% let publishedTimeString = announcement.published.getHours().toString().padStart(2, '0') + ":" + announcement.published.getMinutes().toString().padStart(2, '0') %>
+
 
 <div class="floating-box announcement spacing-bottom" data-aid="<%= announcement.aid %>">
     <div class="flex apart">
@@ -10,7 +13,7 @@
         <div class="flex apart announcement-content">
             <div>
                 <span class="medium announcement-title"><%= announcement.name %></span>
-                <span class="tiny announcement-title">Published <%= formattedPublish %></span>
+                <span class="tiny announcement-title">Published <%= publishedDateString %> @ <%= publishedTimeString %></span>
             </div>
             
         </div>

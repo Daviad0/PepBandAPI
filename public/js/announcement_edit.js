@@ -7,24 +7,18 @@ function postAnnouncement(){
 
     let name = document.querySelector("input[name='title']").value;
     let content = document.querySelector("textarea[name='content']").value;
-    let published_date = document.querySelector("input[name='published_date']").valueAsDate;
+    let published_date = document.querySelector("input[name='published_date']").value;
     let published_time = document.querySelector("input[name='published_time']").value;
 
     // format as proper date string
     // convert to Date
-    var published = new Date(Date.parse(published_date));
-    published.setHours(published_time.split(":")[0]);
-    published.setMinutes(published_time.split(":")[1]);
-    published.setSeconds(0);
-    
-    let until_date = document.querySelector("input[name='until_date']").valueAsDate;
+    var published = new Date(Date.parse(published_date + "T" + published_time + ":00+00:00"));
+
+    let until_date = document.querySelector("input[name='until_date']").value;
     let until_time = document.querySelector("input[name='until_time']").value;
     // format as proper date string
     // convert to Date
-    var until = new Date(Date.parse(until_date));
-    until.setHours(until_time.split(":")[0]);
-    until.setMinutes(until_time.split(":")[1]);
-    until.setSeconds(0);
+    var until = new Date(Date.parse(until_date + "T" + until_time + ":00+00:00"));
 
     let postToGids = [];
     let postToSids = [];

@@ -577,8 +577,8 @@ function showDialog(properties){
                         
                         let url = "/api/global/image";
 
-                        // if the selected is a URL, then just set that (don't worry about updating)
-                        if(current_dialog_data["selected"].includes("http") || current_dialog_data["selected"].includes("https")){
+                        // if the selected is not a file
+                        if(typeof current_dialog_data["selected"] != "object"){
                             showGeneralError(null, null);
                             current_dialog_data["onchoose"](current_dialog_data["selected"]);
                             return;

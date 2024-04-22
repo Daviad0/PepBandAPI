@@ -66,8 +66,8 @@
 
                     <% } %>
                     <div class="split-note flex center group" onclick="window.location = '/group/<%= split.gid %>'" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
-                        <span class="small">A Part of </span>
-                        <span class="small material-symbols-rounded"><%= group.icon %></span>
+                        <span class="small spacing-right">A Part of </span>
+                        <%- include('./special/icon.ejs', {parentClass: "small", iconClass: "small", icon: group.icon, label: "", labelClass: "", idDataProperty: "gid", id: group.gid}) %>
                         <span class="small"><strong><%= group.name %></strong></span>
                     </div>
                 </div>

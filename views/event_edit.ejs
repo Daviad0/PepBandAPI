@@ -142,6 +142,7 @@
                                 <% for(let i = 0; i < splits.length; i++) { %>
                                     <% let split = splits[i] %>
                                     <% let group = groups.find(g => g.gid == split.gid) %>
+                                    <% if(group == undefined) { continue; } %>
                                     <% let attending = eventParticipation.find(ep => ep.sid == split.sid) != undefined %>
                                     <div class="flex apart split-attend-item">
                                         <div class="flex center">

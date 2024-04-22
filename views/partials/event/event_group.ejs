@@ -3,7 +3,7 @@
         <div class="group" onclick="window.location = '/group/<%= group.gid %>'" data-gid="<%= group.gid %>" style="background: <%= group.color %>;background: <%= group.gradientBackground %>">
             <div class="flex apart">
                 <div class="flex center">
-                    <span class="small material-symbols-rounded"><%= group.icon %></span>
+                    <%- include('../../special/icon.ejs', {parentClass: "large", iconClass: "large", icon: group.icon, label: "", labelClass: "", idDataProperty: "gid", id: group.gid}) %>
                     <span class="medium"><%= group.name %></span>
                 
                 </div>
@@ -17,7 +17,7 @@
             <div class="group" onclick="window.location = '/split/<%= split.sid %>'" data-sid="<%= split.sid %>" style="background: <%= split.color %>;background: <%= split.gradientBackground %>">
                 <div class="flex apart">
                     <div class="flex center">
-                        <span class="small material-symbols-rounded"><%= split.icon %></span>
+                        <%- include('../../special/icon.ejs', {parentClass: "large", iconClass: "large", icon: split.icon, label: "", labelClass: "", idDataProperty: "sid", id: split.sid}) %>
                         <span class="small"><%= split.name %></span>
                     
                     </div>

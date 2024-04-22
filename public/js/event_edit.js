@@ -124,10 +124,7 @@ function editEventTime(element){
             date = document.querySelector(`input[name="end_date"]`).value;
         }
 
-        let end = new Date(Date.parse(date));
-        end.setHours(time.split(":")[0]);
-        end.setMinutes(time.split(":")[1]);
-        end.setSeconds(0);
+        let end = new Date(Date.parse(date + "T" + time + ":00+00:00"));
         
         document.querySelector(`input[name="ending"]`).value = end.toISOString();
         editEvent(document.querySelector(`input[name="ending"]`));
