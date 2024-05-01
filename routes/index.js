@@ -93,7 +93,11 @@ async function permissionCheck(req, res, permissions_allowed){
 }
 
 router.get("/authenticate", (req, res) => {
-    res.redirect("/account/authenticate");
+    console.log(req.query);
+
+    let isApp = req.isApp == true || req.query.app == "true";
+
+    res.redirect("/account/authenticate" + (isApp ? "?app=true" : ""));
 })
 
 async function generateImagesList(config_name){
@@ -1447,6 +1451,9 @@ router.get("/announcement/:aid/edit", async (req, res) => {
     res.render("announcement_edit", {user: req.session.user, role: req.session.role, images: images, groups: groups, splits: splits, announcement: announcement, announcementGroups: announcementGroups, announcementSplits: announcementSplits});
 });
 
+router.get("/redirect", (req, res) => {
+    res.render("special/redirect", {user: req.session.user, role: req.session.role});
+})
 
 // WARNING: this route must be last
 

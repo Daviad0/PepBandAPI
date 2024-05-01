@@ -20,10 +20,50 @@ var cas = new CASAuthentication({
     },
     session_name    : 'cas_user',
     session_info    : 'cas_userinfo',
-    destroy_session : true
+    destroy_session : false
+});
+
+
+// token is the key, value is the user's session
+let user_app_sessions = {};
+
+
+
+// middleware to check if the user is using the app
+function isUsingApp(req, res, next){
+
+    // set session to remember if the user is using the app
+
+
+    if(req.query.app == "true"){
+        req.isApp = true;
+        req.session.isApp = true;
+    }else{
+        req.isApp = false;
+        req.session.isApp = false;
+    }
+    next();
+    
+}
+
+router.use(isUsingApp);
+
+router.get("/validate", async (req, res) => {
+    let token = req.query.token;
+
+    if(!user_app_sessions[token]){
+        res.status(403).send({message: "Invalid token"});
+        return;
+    }
+
+    req.session.user = user_app_sessions[token];
+
+    res.send(user_app_sessions[token]);
 });
 
 router.get( '/authenticate', cas.bounce, (req, res) => {
+    console.log(req.query);
+    let isApp = req.isApp == true || req.query.app == "true";
     // all MTU-related accounts will have a uid determined by the identity table
     db.setup_user_cas(req.session[cas.session_name], req.session[cas.session_info].udc_identifier, true).then(async (result) => {
         if(result != null){
@@ -38,9 +78,18 @@ router.get( '/authenticate', cas.bounce, (req, res) => {
             db.update_user_information(req.session[cas.session_info].udc_identifier, req.session[cas.session_info].displayname, req.session[cas.session_info].mail, default_role);
             req.session.user = result;
 
+
             
 
-            res.redirect('/');
+            if(isApp){
+                // create a token for the user
+                let token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                user_app_sessions[token] = req.session.user;
+
+                res.redirect("pepband://login?token=" + token);
+            }
+            else
+                res.redirect('/');
         } else {
             res.send(result);
         }

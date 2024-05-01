@@ -242,7 +242,7 @@ router.get("/list", async (req, res) => {
         // filter out events that are not shown
         events = events.filter(e => e.show == 1);
 
-        res.send(events);
+        res.send({events: events});
     })
 });
 
