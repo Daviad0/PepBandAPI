@@ -1368,9 +1368,14 @@ router.get("/announcement/create", async (req, res) => {
         }
     }
 
+    let events = (await db.getEvents()).data;
+    // filter to only future events (where start or end date is after now)
+    let now = new Date();
+    events = events.filter(e => new Date(e.ending) > now);
+
     
 
-    res.render("announcement_create", {user: req.session.user, role: req.session.role, images: images, groups: groups, splits: splits});
+    res.render("announcement_create", {user: req.session.user, role: req.session.role, images: images, groups: groups, splits: splits, events: events});
 
 });
 

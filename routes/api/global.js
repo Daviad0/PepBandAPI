@@ -297,6 +297,7 @@ router.post("/announcement/create", async (req, res) => {
     // expecting postToSids in body, OK if null
     // expecting notifyNow in body, OK if null
         // notifyNow is only valid if published is in the past
+    // expecting related_event in body, OK if null
 
     if(! await permissionCheck(req, res, ["announcements", "announcements_edit"])) return;
 
@@ -306,6 +307,7 @@ router.post("/announcement/create", async (req, res) => {
     let published = req.body.published;
     let until = req.body.until;
     let uid = req.session.user.uid;
+    let related_event = req.body.related_event;
 
     let postToEveryone = req.body.postToEveryone;
     let postToGids = req.body.postToGids;
@@ -345,8 +347,11 @@ router.post("/announcement/create", async (req, res) => {
     if(!notifyNow){
         notifyNow = false;
     }
+    if(!related_event){
+        related_event = null;
+    }
 
-    db.setAnnouncement(null, name, content, icon, uid, published, until, postToEveryone, notifyNow).then((result) => {
+    db.setAnnouncement(null, name, content, icon, uid, published, until, postToEveryone, notifyNow, related_event).then((result) => {
         
         // set the announcement to the groups and splits
 
@@ -375,6 +380,7 @@ router.post("/announcement", async (req, res) => {
     // expecting until in body, OK if null
     // expecting global in body, OK if null
     // expecting notified in body, OK if null
+    // expecting related_event in body, OK if null
     // expecting postToGids in body, OK if null
     // expecting postToSids in body, OK if null
 
@@ -388,6 +394,7 @@ router.post("/announcement", async (req, res) => {
     let until = req.body.until;
     let global = req.body.global;
     let notified = req.body.notified;
+    let related_event = req.body.related_event;
 
     let postToGids = req.body.postToGids;
     let postToSids = req.body.postToSids;
@@ -442,8 +449,11 @@ router.post("/announcement", async (req, res) => {
     if(!notified){
         notified = null;
     }
+    if(!related_event){
+        related_event = null;
+    }
 
-    db.setAnnouncement(aid, name, content, icon, null, published, until, global, notified).then((result) => {
+    db.setAnnouncement(aid, name, content, icon, null, published, until, global, notified, related_event).then((result) => {
         res.send(result);
     });
 
